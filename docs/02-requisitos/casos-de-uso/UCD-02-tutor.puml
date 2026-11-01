@@ -1,0 +1,61 @@
+@startuml UCD-02-tutor
+!include _estilo.iuml
+title UCD-02 · Módulo do tutor
+
+actor "Tutor" as Tutor
+actor "Calendário externo" as Cal <<sistema externo>>
+actor "Gateway de pagamento" as Gw <<sistema externo>>
+actor "Provedor de IA" as IA <<sistema externo>>
+
+rectangle Jaguara {
+  usecase "UC-04 Gerenciar pet" as UC04
+  usecase "UC-05 Vincular responsável ao pet" as UC05
+  usecase "UC-11 Compartilhar perfil do pet" as UC11
+  usecase "UC-15 Gerenciar memorial do pet" as UC15
+  usecase "UC-12 Visualizar vacinação" as UC12
+  usecase "UC-13 Cadastrar vacinação" as UC13
+  usecase "UC-14 Gerenciar medicamentos" as UC14
+  usecase "UC-34 Gerenciar documentos do pet" as UC34
+  usecase "UC-35 Consultar linha do tempo do pet" as UC35
+  usecase "UC-36 Gerenciar exames do pet" as UC36
+  usecase "UC-37 Gerenciar alergias e restrições" as UC37
+  usecase "UC-08 Registrar alimentação" as UC08
+  usecase "UC-10 Gerenciar calendário" as UC10
+  usecase "UC-09 Sincronizar calendário externo" as UC09
+  usecase "UC-06 Controlar despesas" as UC06
+  usecase "UC-07 Emitir relatório de despesas" as UC07
+  usecase "UC-33 Visualizar catálogo de serviços" as UC33
+  usecase "UC-40 Solicitar agendamento de serviço" as UC40
+  usecase "UC-42 Consultar e acompanhar solicitações" as UC42
+  usecase "UC-44 Realizar pagamento" as UC44
+  usecase "UC-45 Gerenciar pagamentos" as UC45
+  usecase "UC-43 Conversar em chat" as UC43
+}
+
+Tutor -- UC04
+Tutor -- UC05
+Tutor -- UC11
+Tutor -- UC15
+Tutor -- UC12
+Tutor -- UC14
+Tutor -- UC34
+Tutor -- UC35
+Tutor -- UC36
+Tutor -- UC37
+Tutor -- UC08
+Tutor -- UC10
+Tutor -- UC09
+Tutor -- UC06
+Tutor -- UC07
+Tutor -- UC33
+Tutor -- UC42
+Tutor -- UC45
+Tutor -- UC43
+
+UC13 .> UC12 : <<extend>>
+UC40 .> UC33 : <<extend>>
+UC44 .> UC42 : <<extend>>
+UC09 -- Cal
+UC44 -- Gw
+UC43 -- IA
+@enduml

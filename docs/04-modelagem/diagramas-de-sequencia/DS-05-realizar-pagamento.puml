@@ -1,0 +1,45 @@
+@startuml DS-05-realizar-pagamento
+!include _estilo.iuml
+title DS-05 · Realizar pagamento (UC-44, RF43, RN39)
+
+actor Tutor
+participant App as "App do tutor"
+participant API as "API\nPagamentoController"
+participant Pag as "PagamentoService"
+participant GW as "GatewayPagamentoAdapter"
+participant Gateway as "Gateway de pagamento"
+participant Notif as "NotificacaoService"
+database DB as "PostgreSQL"
+
+Tutor -> App : escolhe pagar o serviço com PIX
+App -> API : POST /pagamentos {agendamentoId, metodo PIX}
+API -> Pag : iniciar(agendamento, metodo)
+Pag -> DB : INSERT pagamento (status PENDENTE, valor = precoContratado)
+Pag -> GW : criarCobranca(pagamento)
+GW -> Gateway : cria cobrança (chave de idempotência = pagamento.id)
+Gateway --> GW : codigoTransacao e QR code
+GW --> Pag : cobrança criada
+Pag -> DB : UPDATE pagamento SET codigo_transacao
+API --> App : 201 Created {qrCode}
+App --> Tutor : exibe o QR code
+
+... o tutor paga no aplicativo do banco ...
+
+Gateway -> API : POST /webhooks/pagamentos (assinatura HMAC)
+API -> GW : validarAssinatura(payload)
+GW --> API : evento válido
+API -> Pag : processarEvento(codigoTransacao, status)
+alt pagamento aprovado
+  Pag -> DB : UPDATE pagamento SET status ACEITO, data_confirmacao (RN39)
+  Pag -> Notif : agendar(pagamento, destinatarios tutor e empresa)
+else pagamento recusado
+  Pag -> DB : UPDATE pagamento SET status RECUSADO
+  Pag -> Notif : agendar(pagamento, destinatario tutor)
+end
+API --> Gateway : 200 OK
+
+note over Pag
+  O pagamento só é concluído com a
+  confirmação do gateway (RN39).
+end note
+@enduml

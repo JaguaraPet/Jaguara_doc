@@ -1,0 +1,31 @@
+@startuml DA-02-cadastro-com-confirmacao
+!include _estilo.iuml
+title DA-02 · Cadastro com confirmação de e-mail (UC-01, UC-32; RN01, RN02)
+
+|Visitante|
+start
+:Abrir tela de cadastro;
+:Escolher perfil (tutor ou empresa);
+:Informar dados obrigatórios e aceitar termos;
+|Sistema|
+repeat
+  :Validar campos obrigatórios e formato;
+  :Verificar unicidade de CPF ou CNPJ e e-mail (RN01);
+  backward:Corrigir dados;
+repeat while (Dados válidos e únicos?) is (não) not (sim)
+:Criar conta PENDENTE_CONFIRMACAO;
+:Registrar consentimento dos termos (UC-46);
+:Gerar token de confirmação e enviar e-mail;
+|Visitante|
+if (Confirmou o e-mail dentro da validade?) then (sim)
+  |Sistema|
+  :Ativar conta (RN02);
+  :Registrar auditoria;
+  stop
+else (não)
+  |Sistema|
+  :Manter conta inativa;
+  :Permitir reenvio do e-mail;
+  stop
+endif
+@enduml

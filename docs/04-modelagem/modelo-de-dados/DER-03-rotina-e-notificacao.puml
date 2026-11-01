@@ -1,0 +1,85 @@
+@startuml DER-03-rotina-e-notificacao
+!include _estilo.iuml
+title DER-03 · Rotina e notificação
+
+entity "usuario" as Usuario #EFEFEF
+entity "pet" as Pet #EFEFEF
+entity "evento_calendario" as EventoCalendario {
+  * id : uuid <<PK>>
+  --
+  * titulo : varchar(255)
+    descricao : text
+  * tipo : tipo_evento
+  * data_hora_inicio : timestamptz
+    data_hora_fim : timestamptz
+    local : varchar(255)
+  * origem : origem_evento
+    id_externo : varchar(255)
+  * pet_id : uuid <<FK>>
+  * criado_por_id : uuid <<FK>>
+    calendario_externo_id : uuid <<FK>>
+}
+entity "calendario_externo" as CalendarioExterno {
+  * id : uuid <<PK>>
+  --
+  * provedor : provedor_calendario
+  * conta_externa : varchar(255)
+  * token_autorizacao : varchar(255)
+  * autorizado : boolean
+    ultima_sincronizacao : timestamptz
+  * usuario_id : uuid <<FK>>
+}
+entity "plano_alimentar" as PlanoAlimentar {
+  * id : uuid <<PK>>
+  --
+  * alimento : varchar(255)
+  * meta_diaria_gramas : numeric(10,2)
+    limite_diario_gramas : numeric(10,2)
+  * refeicoes_por_dia : integer
+  * data_inicio : date
+  * ativo : boolean
+  * pet_id : uuid <<FK>>
+}
+entity "registro_alimentacao" as RegistroAlimentacao {
+  * id : uuid <<PK>>
+  --
+  * data_hora : timestamptz
+  * alimento : varchar(255)
+  * quantidade_gramas : numeric(10,2)
+    observacao : text
+  * pet_id : uuid <<FK>>
+    plano_id : uuid <<FK>>
+}
+entity "notificacao" as Notificacao {
+  * id : uuid <<PK>>
+  --
+  * titulo : varchar(255)
+  * mensagem : text
+  * canal : canal_notificacao
+  * data_programada : timestamptz
+    data_envio : timestamptz
+  * status : status_notificacao
+  * tentativas : integer
+  * destinatario_id : uuid <<FK>>
+  * origem_tipo : varchar(40)
+  * origem_id : uuid
+}
+entity "configuracao_notificacao" as ConfiguracaoNotificacao {
+  * id : uuid <<PK>>
+  --
+  * tipo_evento : tipo_evento
+  * canal : canal_notificacao
+  * antecedencia_minutos : integer
+  * ativa : boolean
+  * usuario_id : uuid <<FK>>
+}
+Pet ||--}o EventoCalendario
+Usuario ||--}o EventoCalendario
+CalendarioExterno |o--}o EventoCalendario
+Usuario ||--}o CalendarioExterno
+Pet ||--}o PlanoAlimentar
+Pet ||--}o RegistroAlimentacao
+PlanoAlimentar |o--}o RegistroAlimentacao
+Usuario ||--}o ConfiguracaoNotificacao
+Usuario ||--}o Notificacao
+@enduml

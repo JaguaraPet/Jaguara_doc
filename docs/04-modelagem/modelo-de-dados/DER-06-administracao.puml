@@ -1,0 +1,82 @@
+@startuml DER-06-administracao
+!include _estilo.iuml
+title DER-06 · Administração
+
+entity "usuario" as Usuario #EFEFEF
+entity "administrador" as Administrador #EFEFEF
+entity "log_auditoria" as LogAuditoria {
+  * id : uuid <<PK>>
+  --
+  * data_hora : timestamptz
+  * acao : varchar(255)
+  * entidade : varchar(255)
+  * entidade_id : varchar(255)
+    detalhes : text
+  * nivel : nivel_log
+    ip_origem : varchar(255)
+    autor_id : uuid <<FK>>
+}
+entity "chamado_suporte" as ChamadoSuporte {
+  * id : uuid <<PK>>
+  --
+  * protocolo : varchar(255) <<UK>>
+  * titulo : varchar(255)
+  * descricao : text
+  * status : status_chamado
+  * data_abertura : timestamptz
+    data_fechamento : timestamptz
+  * solicitante_id : uuid <<FK>>
+    atendente_id : uuid <<FK>>
+}
+entity "intervencao_suporte" as IntervencaoSuporte {
+  * id : uuid <<PK>>
+  --
+  * data_hora : timestamptz
+  * descricao : text
+  * acao_executada : varchar(255)
+  * chamado_id : uuid <<FK>>
+  * executada_por_id : uuid <<FK>>
+}
+entity "integracao" as Integracao {
+  * id : uuid <<PK>>
+  --
+  * nome : varchar(255)
+  * tipo : tipo_integracao
+  * endpoint_url : varchar(2048)
+  * credenciais_cifradas : varchar(255)
+    parametros : text
+  * ativa : boolean
+  * configurada_por_id : uuid <<FK>>
+}
+entity "webhook" as Webhook {
+  * id : uuid <<PK>>
+  --
+  * url : varchar(2048)
+  * eventos : varchar(255)[]
+  * segredo_assinatura : varchar(255)
+  * metodo_autenticacao : varchar(255)
+  * ativo : boolean
+  * configurado_por_id : uuid <<FK>>
+    integracao_id : uuid <<FK>>
+}
+entity "relatorio" as Relatorio {
+  * id : uuid <<PK>>
+  --
+  * tipo : tipo_relatorio
+  * periodo_inicio : date
+  * periodo_fim : date
+    filtros : text
+  * formato : formato_relatorio
+  * gerado_em : timestamptz
+  * gerado_por_id : uuid <<FK>>
+}
+Usuario |o--}o LogAuditoria
+Usuario ||--}o ChamadoSuporte
+Administrador |o--}o ChamadoSuporte
+ChamadoSuporte ||--}o IntervencaoSuporte
+Administrador ||--}o IntervencaoSuporte
+Administrador ||--}o Integracao
+Administrador ||--}o Webhook
+Integracao |o--}o Webhook
+Usuario ||--}o Relatorio
+@enduml

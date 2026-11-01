@@ -1,0 +1,53 @@
+@startuml UCD-03-enterprise
+!include _estilo.iuml
+title UCD-03 · Módulo Enterprise
+
+actor "Usuário Enterprise" as UsuEnt <<abstrato>>
+actor "Empresa Enterprise" as Empresa
+actor "Funcionário Enterprise" as Func
+UsuEnt <|-- Empresa
+UsuEnt <|-- Func
+
+rectangle Jaguara {
+  usecase "UC-16 Gerenciar permissões\ndos funcionários" as UC16
+  usecase "UC-19 Gerenciar funcionários" as UC19
+  usecase "UC-17 Emitir BI" as UC17
+  usecase "UC-18 Emitir relatórios" as UC18
+  usecase "UC-38 Gerenciar catálogo de serviços" as UC38
+  usecase "UC-41 Gerenciar solicitações de serviço" as UC41
+  usecase "UC-39 Agendar serviço" as UC39
+  usecase "UC-24 Controlar agenda" as UC24
+  usecase "UC-23 Registrar serviços e atendimentos" as UC23
+  usecase "UC-21 Gerenciar clientes" as UC21
+  usecase "UC-20 Consultar pets vinculados" as UC20
+  usecase "UC-22 Visualizar perfil do pet" as UC22
+  usecase "UC-35 Consultar linha do tempo do pet" as UC35
+  usecase "UC-36 Gerenciar exames do pet" as UC36
+  usecase "UC-37 Gerenciar alergias e restrições" as UC37
+  usecase "UC-43 Conversar em chat" as UC43
+  usecase "UC-45 Gerenciar pagamentos" as UC45
+}
+
+Empresa -- UC16
+Empresa -- UC19
+Empresa -- UC17
+Empresa -- UC18
+UsuEnt -- UC38
+UsuEnt -- UC41
+UsuEnt -- UC39
+UsuEnt -- UC24
+UsuEnt -- UC23
+UsuEnt -- UC21
+UsuEnt -- UC20
+UsuEnt -- UC22
+UsuEnt -- UC35
+UsuEnt -- UC36
+UsuEnt -- UC37
+UsuEnt -- UC43
+Empresa -- UC45
+
+UC41 .> UC39 : <<include>>
+UC39 .> UC24 : <<extend>>
+UC23 .> UC24 : <<extend>>
+UC22 .> UC20 : <<extend>>
+@enduml

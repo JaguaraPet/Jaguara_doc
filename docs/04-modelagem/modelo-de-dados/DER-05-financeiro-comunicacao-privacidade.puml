@@ -1,0 +1,126 @@
+@startuml DER-05-financeiro-comunicacao-privacidade
+!include _estilo.iuml
+title DER-05 · Financeiro, comunicação e privacidade
+
+entity "usuario" as Usuario #EFEFEF
+entity "tutor" as Tutor #EFEFEF
+entity "pet" as Pet #EFEFEF
+entity "empresa_enterprise" as EmpresaEnterprise #EFEFEF
+entity "agendamento" as Agendamento #EFEFEF
+entity "categoria_despesa" as CategoriaDespesa {
+  * id : uuid <<PK>>
+  --
+  * nome : varchar(255) <<UK>>
+    descricao : text
+}
+entity "despesa" as Despesa {
+  * id : uuid <<PK>>
+  --
+  * descricao : text
+  * valor : numeric(12,2)
+  * data : date
+    comprovante_url : varchar(2048)
+  * pet_id : uuid <<FK>>
+  * categoria_id : uuid <<FK>>
+    pagamento_id : uuid <<FK>>
+}
+entity "pagamento" as Pagamento {
+  * id : uuid <<PK>>
+  --
+  * codigo_transacao : varchar(255) <<UK>>
+  * valor : numeric(12,2)
+  * data_hora : timestamptz
+  * metodo : metodo_pagamento
+  * status : status_pagamento
+    data_confirmacao : timestamptz
+    nota_fiscal_url : varchar(2048)
+  * pagador_id : uuid <<FK>>
+    recebedor_id : uuid <<FK>>
+    agendamento_id : uuid <<FK>>
+    assinatura_id : uuid <<FK>>
+}
+entity "solicitacao_reembolso" as SolicitacaoReembolso {
+  * id : uuid <<PK>>
+  --
+  * motivo : text
+  * valor : numeric(12,2)
+  * data_solicitacao : timestamptz
+  * status : status_reembolso
+    data_analise : timestamptz
+  * pagamento_id : uuid <<FK>>
+}
+entity "assinatura" as Assinatura {
+  * id : uuid <<PK>>
+  --
+  * plano : tipo_plano
+  * data_inicio : date
+    data_fim : date
+  * status : status_assinatura
+  * tutor_id : uuid <<FK>>
+}
+entity "conversa" as Conversa {
+  * id : uuid <<PK>>
+  --
+  * tipo : tipo_conversa
+  * data_inicio : timestamptz
+  * status : status_conversa
+  * tutor_id : uuid <<FK>>
+    empresa_id : uuid <<FK>>
+    pet_id : uuid <<FK>>
+}
+entity "mensagem" as Mensagem {
+  * id : uuid <<PK>>
+  --
+  * conteudo : text
+  * data_hora_envio : timestamptz
+  * lida : boolean
+    anexo_url : varchar(2048)
+  * conversa_id : uuid <<FK>>
+    remetente_id : uuid <<FK>>
+}
+entity "termo_uso" as TermoUso {
+  * id : uuid <<PK>>
+  --
+  * versao : varchar(255) <<UK>>
+  * titulo : varchar(255)
+  * conteudo : text
+  * data_vigencia : date
+  * obrigatorio : boolean
+}
+entity "consentimento" as Consentimento {
+  * id : uuid <<PK>>
+  --
+  * aceito : boolean
+  * data_aceite : timestamptz
+    data_revogacao : timestamptz
+  * ip_origem : varchar(255)
+  * usuario_id : uuid <<FK>>
+  * termo_id : uuid <<FK>>
+}
+entity "solicitacao_privacidade" as SolicitacaoPrivacidade {
+  * id : uuid <<PK>>
+  --
+  * tipo : tipo_solicitacao_privacidade
+  * data_solicitacao : timestamptz
+  * status : status_solicitacao_privacidade
+    data_conclusao : timestamptz
+  * usuario_id : uuid <<FK>>
+}
+Pet ||--}o Despesa
+CategoriaDespesa ||--}o Despesa
+Pagamento |o--}o Despesa
+Tutor ||--}o Pagamento
+EmpresaEnterprise |o--}o Pagamento
+Agendamento |o--}o Pagamento
+Assinatura |o--}o Pagamento
+Pagamento ||--}o SolicitacaoReembolso
+Tutor ||--}o Assinatura
+Tutor ||--}o Conversa
+EmpresaEnterprise |o--}o Conversa
+Pet |o--}o Conversa
+Conversa ||--}o Mensagem
+Usuario |o--}o Mensagem
+Usuario ||--}o Consentimento
+TermoUso ||--}o Consentimento
+Usuario ||--}o SolicitacaoPrivacidade
+@enduml

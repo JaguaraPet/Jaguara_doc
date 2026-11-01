@@ -1,0 +1,62 @@
+@startuml DA-01-agendamento-ponta-a-ponta
+!include _estilo.iuml
+title DA-01 · Agendamento de serviço, da solicitação ao pagamento (UC-33, UC-40, UC-41, UC-23, UC-44)
+
+|Tutor|
+start
+:Abrir catálogo da empresa (UC-33);
+:Escolher serviço e pet;
+|Sistema|
+:Calcular horários disponíveis\n(horários de atuação menos agendamentos);
+if (Há horário disponível?) then (não)
+  :Exibir "Não há horários disponíveis";
+  stop
+else (sim)
+endif
+|Tutor|
+:Escolher horário e enviar solicitação (UC-40);
+|Sistema|
+if (Horário ainda livre e sem conflito para o pet? (RN14, RN29)) then (não)
+  :Informar conflito e atualizar horários;
+  |Tutor|
+  :Escolher outro horário;
+  |Sistema|
+else (sim)
+endif
+:Registrar solicitação PENDENTE\ne histórico (RN38);
+:Notificar a empresa;
+|Empresa|
+:Analisar solicitação (UC-41);
+if (Aceitar? (RN40)) then (não)
+  :Informar motivo da recusa;
+  |Sistema|
+  :Registrar RECUSADA e notificar o tutor;
+  stop
+else (sim)
+  |Sistema|
+  :Criar agendamento com preço contratado (RN27)\ne evento no calendário do pet;
+  :Marcar solicitação ACEITA e notificar o tutor;
+endif
+fork
+  :Agendar lembrete com antecedência configurada (RN37);
+fork again
+  |Tutor|
+  if (Pagar antecipadamente?) then (sim)
+    :Pagar o serviço (UC-44);
+    |Sistema|
+    if (Gateway confirmou? (RN39)) then (sim)
+      :Pagamento ACEITO;
+    else (não)
+      :Pagamento RECUSADO;
+    endif
+  else (não)
+  endif
+end fork
+|Empresa|
+:Prestar o serviço no horário;
+:Registrar atendimento com itens (UC-23);
+|Sistema|
+:Atendimento FINALIZADO, agendamento REALIZADO,\nsolicitação CONCLUIDA;
+:Atualizar linha do tempo do pet;
+stop
+@enduml

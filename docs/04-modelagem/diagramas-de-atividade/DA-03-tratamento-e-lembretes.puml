@@ -1,0 +1,32 @@
+@startuml DA-03-tratamento-e-lembretes
+!include _estilo.iuml
+title DA-03 · Tratamento medicamentoso e lembretes (UC-14, UC-31; RN18, RN37)
+
+|Tutor|
+start
+:Cadastrar medicamento, dosagem,\nintervalo, início e fim (UC-14);
+|Sistema|
+:Registrar tratamento ATIVO;
+:Calcular horários das doses;
+:Agendar uma notificação por dose\ncom a antecedência configurada (RN37);
+while (Tratamento ATIVO e há dose futura?) is (sim)
+  :Aguardar horário programado;
+  :Enviar lembrete aos responsáveis do pet (RN18);
+  if (Envio falhou?) then (sim)
+    :Registrar falha e reagendar\n(até 5 tentativas);
+  else (não)
+    :Marcar notificação ENVIADA;
+  endif
+  |Tutor|
+  if (Finalizar tratamento?) then (sim)
+    |Sistema|
+    :Marcar tratamento FINALIZADO;
+    :Cancelar notificações pendentes;
+    stop
+  else (não)
+    |Sistema|
+  endif
+endwhile (não)
+:Encerrar tratamento na data de fim;
+stop
+@enduml

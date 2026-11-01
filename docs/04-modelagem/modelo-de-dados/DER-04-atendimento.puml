@@ -1,0 +1,133 @@
+@startuml DER-04-atendimento
+!include _estilo.iuml
+title DER-04 · Atendimento (Enterprise)
+
+entity "usuario" as Usuario #EFEFEF
+entity "tutor" as Tutor #EFEFEF
+entity "pet" as Pet #EFEFEF
+entity "funcionario_enterprise" as FuncionarioEnterprise #EFEFEF
+entity "evento_calendario" as EventoCalendario #EFEFEF
+entity "empresa_enterprise" as EmpresaEnterprise #EFEFEF
+entity "cliente" as Cliente {
+  * id : uuid <<PK>>
+  --
+  * codigo : varchar(255)
+  * data_vinculo : date
+    observacoes : text
+  * consentimento_lgpd : boolean
+    data_consentimento : timestamptz
+  * ativo : boolean
+  * empresa_id : uuid <<FK>>
+  * tutor_id : uuid <<FK>>
+}
+entity "servico" as Servico {
+  * id : uuid <<PK>>
+  --
+  * nome : varchar(255)
+  * descricao : text
+  * categoria : categoria_servico
+  * preco : numeric(12,2)
+  * duracao_minutos : integer
+  * ativo : boolean
+  * empresa_id : uuid <<FK>>
+}
+entity "recurso" as Recurso {
+  * id : uuid <<PK>>
+  --
+  * nome : varchar(255)
+  * tipo : tipo_recurso
+  * ativo : boolean
+  * empresa_id : uuid <<FK>>
+}
+entity "horario_atuacao" as HorarioAtuacao {
+  * id : uuid <<PK>>
+  --
+  * dia_semana : dia_semana
+  * hora_inicio : time
+  * hora_fim : time
+    funcionario_id : uuid <<FK>>
+    recurso_id : uuid <<FK>>
+}
+entity "solicitacao_servico" as SolicitacaoServico {
+  * id : uuid <<PK>>
+  --
+  * data_solicitacao : timestamptz
+  * data_hora_desejada : timestamptz
+  * status : status_solicitacao
+    motivo_recusa : text
+    observacoes : text
+  * tutor_id : uuid <<FK>>
+  * pet_id : uuid <<FK>>
+  * servico_id : uuid <<FK>>
+}
+entity "historico_solicitacao" as HistoricoSolicitacao {
+  * id : uuid <<PK>>
+  --
+  * data_hora : timestamptz
+    status_anterior : status_solicitacao
+  * status_novo : status_solicitacao
+    descricao : text
+  * solicitacao_id : uuid <<FK>>
+  * autor_id : uuid <<FK>>
+}
+entity "agendamento" as Agendamento {
+  * id : uuid <<PK>>
+  --
+  * data_hora_inicio : timestamptz
+  * data_hora_fim : timestamptz
+  * preco_contratado : numeric(12,2)
+  * status : status_agendamento
+    solicitacao_id : uuid <<FK>>
+  * servico_id : uuid <<FK>>
+  * pet_id : uuid <<FK>>
+    profissional_id : uuid <<FK>>
+    recurso_id : uuid <<FK>>
+    evento_id : uuid <<FK>>
+}
+entity "atendimento" as Atendimento {
+  * id : uuid <<PK>>
+  --
+  * data_hora_inicio : timestamptz
+    data_hora_fim : timestamptz
+  * procedimentos_realizados : text
+    observacoes_clinicas : text
+  * status : status_atendimento
+    finalizado_em : timestamptz
+    agendamento_id : uuid <<FK>>
+  * pet_id : uuid <<FK>>
+  * registrado_por_id : uuid <<FK>>
+    profissional_id : uuid <<FK>>
+}
+entity "item_atendimento" as ItemAtendimento {
+  * id : uuid <<PK>>
+  --
+  * quantidade : integer
+  * valor_unitario : numeric(12,2)
+    observacao : text
+  * atendimento_id : uuid <<FK>>
+  * servico_id : uuid <<FK>>
+}
+EmpresaEnterprise ||--}o Cliente
+Tutor ||--}o Cliente
+EmpresaEnterprise ||--}o Servico
+EmpresaEnterprise ||--}o Recurso
+FuncionarioEnterprise |o--}o HorarioAtuacao
+Recurso |o--}o HorarioAtuacao
+Tutor ||--}o SolicitacaoServico
+Pet ||--}o SolicitacaoServico
+Servico ||--}o SolicitacaoServico
+SolicitacaoServico ||--}o HistoricoSolicitacao
+Usuario ||--}o HistoricoSolicitacao
+SolicitacaoServico |o--|o Agendamento
+Servico ||--}o Agendamento
+Pet ||--}o Agendamento
+FuncionarioEnterprise |o--}o Agendamento
+Recurso |o--}o Agendamento
+EventoCalendario |o--}o Agendamento
+Agendamento |o--|o Atendimento
+Pet ||--}o Atendimento
+Usuario ||--}o Atendimento
+FuncionarioEnterprise |o--}o Atendimento
+Atendimento ||--}o ItemAtendimento
+Servico ||--}o ItemAtendimento
+@enduml

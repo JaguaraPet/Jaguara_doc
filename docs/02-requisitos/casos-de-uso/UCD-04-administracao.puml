@@ -1,0 +1,29 @@
+@startuml UCD-04-administracao
+!include _estilo.iuml
+title UCD-04 · Administração e sistema
+
+actor "Administrador" as Admin
+actor "Sistema (agendador)" as Sistema <<temporal>>
+actor "Serviço de notificação" as Notif <<sistema externo>>
+actor "Sistema parceiro" as Parceiro <<sistema externo>>
+
+rectangle Jaguara {
+  usecase "UC-25 Monitorar desempenho e logs" as UC25
+  usecase "UC-26 Prestar suporte operacional" as UC26
+  usecase "UC-27 Gerenciar integrações" as UC27
+  usecase "UC-28 Gerenciar contas de usuários" as UC28
+  usecase "UC-29 Gerenciar permissões globais" as UC29
+  usecase "UC-30 Gerenciar webhooks" as UC30
+  usecase "UC-31 Disparar notificações automáticas" as UC31
+}
+
+Admin -- UC25
+Admin -- UC26
+Admin -- UC27
+Admin -- UC28
+Admin -- UC29
+Admin -- UC30
+Sistema -- UC31
+UC31 -- Notif
+UC30 -- Parceiro
+@enduml

@@ -1,0 +1,44 @@
+@startuml DS-06-notificacao-automatica
+!include _estilo.iuml
+title DS-06 · Disparo de notificação automática (UC-31, RF32, RN18, RN37)
+
+participant Origem as "Serviço de origem\n(tratamento, vacina, evento,\nagendamento, solicitação)"
+participant Notif as "NotificacaoService"
+queue Fila as "Fila de jobs\n(BullMQ e Redis)"
+participant Worker as "NotificacaoWorker"
+participant Push as "PushAdapter"
+participant Ext as "Serviço de push\nou de e-mail"
+database DB as "PostgreSQL"
+
+== Agendamento ==
+Origem -> Notif : agendar(origem: Notificavel)
+Notif -> DB : SELECT configuracao_notificacao do destinatário
+Notif -> Notif : dataProgramada = dataReferencia - antecedenciaMinutos (RN37)
+Notif -> DB : INSERT notificacao (status AGENDADA)
+Notif -> Fila : job com atraso até dataProgramada
+
+== Disparo ==
+Fila -> Worker : job vencido
+Worker -> DB : SELECT notificacao (status AGENDADA)
+Worker -> Push : enviar(notificacao)
+Push -> Ext : envia a mensagem
+alt envio aceito
+  Ext --> Push : 2xx
+  Worker -> DB : UPDATE notificacao SET status ENVIADA, data_envio
+else falha
+  Ext --> Push : erro
+  Worker -> Worker : tentativas = tentativas + 1
+  alt tentativas < 5
+    Worker -> DB : UPDATE notificacao SET tentativas
+    Worker -> Fila : reagenda com espera exponencial
+  else tentativas = 5
+    Worker -> DB : UPDATE notificacao SET status FALHOU
+    Worker -> DB : INSERT log_auditoria (nivel ALERTA)
+  end
+end
+
+note over Origem, Notif
+  TratamentoMedicamentoso.finalizar() cancela as
+  notificações AGENDADAS do tratamento (status CANCELADA).
+end note
+@enduml

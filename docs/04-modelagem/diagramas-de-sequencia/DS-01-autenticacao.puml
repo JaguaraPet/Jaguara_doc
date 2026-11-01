@@ -1,0 +1,44 @@
+@startuml DS-01-autenticacao
+!include _estilo.iuml
+title DS-01 · Autenticação (UC-02, RF02, RN03, RN04)
+
+actor Usuario as "Usuário"
+participant App as "App / Web"
+participant API as "API\nAuthController"
+participant Auth as "AuthService"
+participant Repo as "UsuarioRepository"
+database DB as "PostgreSQL"
+
+Usuario -> App : informa e-mail e senha
+App -> API : POST /auth/login {email, senha}
+API -> Auth : autenticar(email, senha)
+Auth -> Repo : buscarPorEmail(email)
+Repo -> DB : SELECT usuario
+DB --> Repo : usuario
+Repo --> Auth : Usuario
+alt conta bloqueada (bloqueadoAte > agora)
+  Auth --> API : ContaBloqueadaError
+  API --> App : 423 Locked {liberaEm}
+else senha inválida
+  Auth -> Auth : usuario.registrarFalhaLogin()
+  opt tentativasLoginFalhas = 5 (RN03)
+    Auth -> Auth : bloqueadoAte = agora + 5 min
+  end
+  Auth -> Repo : salvar(usuario)
+  Auth --> API : CredenciaisInvalidasError
+  API --> App : 401 Unauthorized
+else credenciais válidas e status = ATIVA
+  Auth -> Auth : zera tentativasLoginFalhas
+  Auth -> Repo : criar Sessao(token, inicio, ultimaAtividade)
+  Repo -> DB : INSERT sessao
+  Auth -> Auth : emite access token (15 min) e refresh token
+  Auth --> API : Sessao + tokens
+  API --> App : 200 OK {accessToken, refreshToken, perfil}
+  App --> Usuario : tela inicial do perfil
+end
+
+note over Auth, DB
+  RN04: a cada requisição a sessão atualiza ultimaAtividade;
+  estaExpirada() = agora - ultimaAtividade > 4 h
+end note
+@enduml

@@ -1,0 +1,147 @@
+@startuml DER-02-pet-e-saude
+!include _estilo.iuml
+title DER-02 · Pet e saúde
+
+entity "usuario" as Usuario #EFEFEF
+entity "tutor" as Tutor #EFEFEF
+entity "empresa_enterprise" as EmpresaEnterprise #EFEFEF
+entity "pet" as Pet {
+  * id : uuid <<PK>>
+  --
+  * nome : varchar(255)
+    data_nascimento : date
+  * sexo : sexo
+    peso_kg : numeric(10,2)
+    cor : varchar(255)
+    microchip : varchar(255) <<UK>>
+  * castrado : boolean
+    foto_url : varchar(2048)
+  * status : status_pet
+    data_falecimento : date
+  * raca_id : uuid <<FK>>
+}
+entity "especie" as Especie {
+  * id : uuid <<PK>>
+  --
+  * nome : varchar(255) <<UK>>
+}
+entity "raca" as Raca {
+  * id : uuid <<PK>>
+  --
+  * nome : varchar(255)
+  * especie_id : uuid <<FK>>
+}
+entity "responsavel_pet" as ResponsavelPet {
+  * id : uuid <<PK>>
+  --
+  * tipo : tipo_responsavel
+  * data_vinculo : timestamptz
+  * ativo : boolean
+  * pet_id : uuid <<FK>>
+  * tutor_id : uuid <<FK>>
+}
+entity "compartilhamento_pet" as CompartilhamentoPet {
+  * id : uuid <<PK>>
+  --
+    destinatario_email : varchar(255)
+  * escopos : escopo_acesso[]
+  * token : varchar(255) <<UK>>
+  * data_concessao : timestamptz
+    data_expiracao : timestamptz
+  * status : status_compartilhamento
+  * pet_id : uuid <<FK>>
+    empresa_id : uuid <<FK>>
+}
+entity "memorial" as Memorial {
+  * id : uuid <<PK>>
+  --
+  * mensagem : text
+  * data_criacao : timestamptz
+  * publico : boolean
+  * pet_id : uuid <<FK>>
+}
+entity "item_memorial" as ItemMemorial {
+  * id : uuid <<PK>>
+  --
+  * tipo : tipo_item_memorial
+    conteudo : text
+    arquivo_url : varchar(2048)
+  * data_registro : timestamptz
+  * memorial_id : uuid <<FK>>
+}
+entity "documento_pet" as DocumentoPet {
+  * id : uuid <<PK>>
+  --
+  * titulo : varchar(255)
+  * tipo : tipo_documento
+  * arquivo_url : varchar(2048)
+    data_emissao : date
+    data_validade : date
+  * data_upload : timestamptz
+  * pet_id : uuid <<FK>>
+}
+entity "alergia_restricao" as AlergiaRestricao {
+  * id : uuid <<PK>>
+  --
+  * tipo : tipo_alergia_restricao
+  * descricao : text
+  * gravidade : gravidade
+    data_identificacao : date
+    observacoes : text
+  * pet_id : uuid <<FK>>
+}
+entity "registro_clinico" as RegistroClinico {
+  * id : uuid <<PK>>
+  --
+  * data_registro : timestamptz
+    observacoes : text
+  * valido : boolean
+  * pet_id : uuid <<FK>>
+  * registrado_por_id : uuid <<FK>>
+}
+entity "vacinacao" as Vacinacao {
+  * id : uuid <<PK>>
+  --
+  * nome_vacina : varchar(255)
+    fabricante : varchar(255)
+    lote : varchar(255)
+  * data_aplicacao : date
+    data_proxima_dose : date
+  * responsavel_aplicacao : varchar(255)
+}
+entity "exame" as Exame {
+  * id : uuid <<PK>>
+  --
+  * tipo_exame : varchar(255)
+  * data_realizacao : date
+    laboratorio : varchar(255)
+    resultado : text
+    arquivo_resultado_url : varchar(2048)
+}
+entity "tratamento_medicamentoso" as TratamentoMedicamentoso {
+  * id : uuid <<PK>>
+  --
+  * medicamento : varchar(255)
+  * dosagem : varchar(255)
+  * via_administracao : varchar(255)
+  * intervalo_horas : integer
+  * data_inicio : date
+    data_fim : date
+  * status : status_tratamento
+}
+Especie ||--}o Raca
+Raca ||--}o Pet
+Pet ||--}o ResponsavelPet
+Tutor ||--}o ResponsavelPet
+Pet ||--}o CompartilhamentoPet
+EmpresaEnterprise |o--}o CompartilhamentoPet
+Pet ||--|o Memorial
+Memorial ||--}o ItemMemorial
+Pet ||--}o DocumentoPet
+Pet ||--}o AlergiaRestricao
+Pet ||--}o RegistroClinico
+Usuario ||--}o RegistroClinico
+RegistroClinico ||--o| Vacinacao
+RegistroClinico ||--o| Exame
+RegistroClinico ||--o| TratamentoMedicamentoso
+@enduml

@@ -1,0 +1,36 @@
+@startuml UCD-01-acesso-e-conta
+!include _estilo.iuml
+title UCD-01 · Acesso, conta e privacidade
+
+actor "Usuário" as Usuario <<abstrato>>
+actor "Tutor" as Tutor
+actor "Usuário Enterprise" as UsuEnt <<abstrato>>
+actor "Empresa Enterprise" as Empresa
+actor "Funcionário Enterprise" as Func
+actor "Administrador" as Admin
+actor "Serviço de e-mail" as Email <<sistema externo>>
+
+Usuario <|-- Tutor
+Usuario <|-- UsuEnt
+Usuario <|-- Admin
+UsuEnt <|-- Empresa
+UsuEnt <|-- Func
+
+rectangle Jaguara {
+  usecase "UC-01 Cadastrar usuário-tutor" as UC01
+  usecase "UC-32 Cadastrar usuário-empresa" as UC32
+  usecase "UC-02 Autenticar usuário" as UC02
+  usecase "UC-03 Recuperar senha" as UC03
+  usecase "UC-46 Gerenciar privacidade\ne consentimentos" as UC46
+}
+
+Tutor -- UC01
+Empresa -- UC32
+Usuario -- UC02
+Usuario -- UC03
+Tutor -- UC46
+Empresa -- UC46
+UC01 -- Email
+UC32 -- Email
+UC03 -- Email
+@enduml

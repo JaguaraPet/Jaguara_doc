@@ -1,0 +1,16 @@
+' Estilo comum dos diagramas de atividades do Jaguara (MOD-05)
+skinparam defaultFontName Arial
+skinparam defaultFontSize 11
+skinparam shadowing false
+skinparam backgroundColor white
+skinparam activity {
+  BackgroundColor white
+  BorderColor #333333
+  DiamondBackgroundColor white
+  DiamondBorderColor #333333
+}
+skinparam swimlane {
+  BorderColor #666666
+  TitleFontStyle bold
+}
+footer Jaguara · MOD-05 Diagramas de atividades v1.0 · UML 2.5.1

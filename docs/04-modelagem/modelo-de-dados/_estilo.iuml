@@ -1,0 +1,14 @@
+' Estilo comum dos diagramas ER do Jaguara (MOD-03)
+skinparam defaultFontName Arial
+skinparam defaultFontSize 11
+skinparam shadowing false
+skinparam backgroundColor white
+skinparam linetype ortho
+skinparam class {
+  BackgroundColor white
+  BorderColor #222222
+  ArrowColor #333333
+}
+hide circle
+hide empty members
+footer Jaguara · MOD-03 Modelo de dados v1.0 · notação pé de galinha (IE)

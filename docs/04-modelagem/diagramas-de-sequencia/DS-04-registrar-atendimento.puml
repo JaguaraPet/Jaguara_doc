@@ -1,0 +1,42 @@
+@startuml DS-04-registrar-atendimento
+!include _estilo.iuml
+title DS-04 · Registrar atendimento (UC-23, RF23, RN27, RN28, RN30)
+
+actor Func as "Funcionário Enterprise"
+participant Web as "Web Enterprise"
+participant API as "API\nAtendimentoController"
+participant Atend as "AtendimentoService"
+participant Audit as "AuditoriaService"
+database DB as "PostgreSQL"
+
+Func -> Web : abre agendamento ocorrido e registra o atendimento
+Web -> API : POST /agendamentos/{id}/atendimento {procedimentos, observacoes, itens}
+API -> Atend : registrar(agendamento, dados, autor)
+Atend -> Atend : verifica permissão clínica do perfil (RN20, RN30)
+Atend -> DB : BEGIN
+Atend -> DB : INSERT atendimento (status EM_ANDAMENTO)
+loop para cada item
+  Atend -> Atend : valorUnitario = agendamento.precoContratado (RN27)
+  Atend -> DB : INSERT item_atendimento
+end
+Atend -> Atend : atendimento.finalizar()
+Atend -> DB : UPDATE atendimento SET status FINALIZADO
+Atend -> DB : UPDATE agendamento SET status REALIZADO
+Atend -> DB : COMMIT
+Atend --> API : Atendimento
+API --> Web : 201 Created
+
+== Alteração posterior ==
+Func -> Web : edita observações de atendimento finalizado
+Web -> API : PATCH /atendimentos/{id} {observacoes, justificativa}
+API -> Atend : alterarComAuditoria(justificativa)
+alt sem justificativa (RN28)
+  Atend --> API : AuditoriaObrigatoriaError
+  API --> Web : 422 Unprocessable Entity
+else com justificativa
+  Atend -> DB : UPDATE atendimento
+  Atend -> Audit : registrar(alteração, antes, depois, autor)
+  Audit -> DB : INSERT log_auditoria (nivel CRITICO)
+  API --> Web : 200 OK
+end
+@enduml

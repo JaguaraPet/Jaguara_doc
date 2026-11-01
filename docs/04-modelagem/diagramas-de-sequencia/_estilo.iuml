@@ -1,0 +1,16 @@
+' Estilo comum dos diagramas de sequência do Jaguara (MOD-02)
+skinparam defaultFontName Arial
+skinparam defaultFontSize 11
+skinparam shadowing false
+skinparam backgroundColor white
+skinparam sequenceMessageAlign left
+skinparam responseMessageBelowArrow true
+skinparam sequence {
+  ParticipantBackgroundColor white
+  ParticipantBorderColor #333333
+  LifeLineBorderColor #888888
+  ArrowColor #333333
+  GroupBorderColor #666666
+}
+autonumber "<b>0."
+footer Jaguara · MOD-02 Diagramas de sequência v1.0 · UML 2.5.1

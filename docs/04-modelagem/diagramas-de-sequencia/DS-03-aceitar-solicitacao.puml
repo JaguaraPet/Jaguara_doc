@@ -1,0 +1,42 @@
+@startuml DS-03-aceitar-solicitacao
+!include _estilo.iuml
+title DS-03 · Aceitar solicitação (UC-41 inclui UC-39; RF40, RN27, RN29, RN38, RN40)
+
+actor Empresa as "Usuário Enterprise"
+participant Web as "Web Enterprise"
+participant API as "API\nSolicitacaoController"
+participant Solic as "SolicitacaoService"
+participant Agend as "AgendamentoService"
+participant Notif as "NotificacaoService"
+database DB as "PostgreSQL"
+
+Empresa -> Web : abre solicitações pendentes
+Web -> API : GET /solicitacoes?status=PENDENTE
+API --> Web : 200 OK [solicitações]
+Empresa -> Web : aceita a solicitação
+Web -> API : POST /solicitacoes/{id}/aceite {profissionalId, recursoId}
+API -> Solic : aceitar(solicitacao, responsavel)
+Solic -> Solic : verifica status PENDENTE e permissão (RN20)
+Solic -> DB : BEGIN
+Solic -> Agend : criar(solicitacao, profissional, recurso)
+Agend -> Agend : precoContratado = servico.preco (RN27)
+Agend -> DB : INSERT agendamento (status AGENDADO)
+alt sobreposição de pet, profissional ou recurso (RN29)
+  DB --> Agend : violação da restrição de exclusão
+  Agend --> Solic : ConflitoAgendaError
+  Solic -> DB : ROLLBACK
+  API --> Web : 409 Conflict
+else sem conflito
+  Agend -> DB : INSERT evento_calendario (origem AGENDAMENTO)
+  Solic -> DB : UPDATE solicitacao_servico SET status ACEITA
+  Solic -> DB : INSERT historico_solicitacao (PENDENTE para ACEITA)
+  Solic -> DB : COMMIT
+  Solic -> Notif : agendar(agendamento, destinatario tutor) (RN40)
+  API --> Web : 200 OK {agendamento}
+end
+
+note right of Solic
+  Recusa: recusar(motivo) exige o motivo,
+  grava RECUSADA no histórico e notifica o tutor.
+end note
+@enduml

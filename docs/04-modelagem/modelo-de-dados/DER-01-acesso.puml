@@ -1,0 +1,117 @@
+@startuml DER-01-acesso
+!include _estilo.iuml
+title DER-01 · Acesso
+
+entity "usuario" as Usuario {
+  * id : uuid <<PK>>
+  --
+  * email : varchar(255) <<UK>>
+  * senha_hash : varchar(255)
+    telefone : varchar(255)
+  * status : status_conta
+  * email_confirmado : boolean
+  * tentativas_login_falhas : integer
+    bloqueado_ate : timestamptz
+  * data_cadastro : timestamptz
+  * perfil_id : uuid <<FK>>
+}
+entity "tutor" as Tutor {
+  * id : uuid <<PK>>
+  --
+  * nome : varchar(255)
+  * cpf : char(11) <<UK>>
+    data_nascimento : date
+    endereco_cep : varchar(10)
+    endereco_logradouro : varchar(120)
+    endereco_numero : varchar(10)
+    endereco_complemento : varchar(120)
+    endereco_bairro : varchar(120)
+    endereco_cidade : varchar(120)
+    endereco_uf : char(2)
+}
+entity "administrador" as Administrador {
+  * id : uuid <<PK>>
+  --
+  * nome : varchar(255)
+}
+entity "empresa_enterprise" as EmpresaEnterprise {
+  * id : uuid <<PK>>
+  --
+  * cnpj : char(14) <<UK>>
+  * razao_social : varchar(255)
+  * nome_fantasia : varchar(255)
+  * tipo : tipo_empresa
+  * endereco_cep : varchar(10)
+  * endereco_logradouro : varchar(120)
+  * endereco_numero : varchar(10)
+    endereco_complemento : varchar(120)
+  * endereco_bairro : varchar(120)
+  * endereco_cidade : varchar(120)
+  * endereco_uf : char(2)
+}
+entity "funcionario_enterprise" as FuncionarioEnterprise {
+  * id : uuid <<PK>>
+  --
+  * nome : varchar(255)
+  * cpf : char(11) <<UK>>
+    cargo : varchar(255)
+  * ativo : boolean
+  * empresa_id : uuid <<FK>>
+}
+entity "sessao" as Sessao {
+  * id : uuid <<PK>>
+  --
+  * token : varchar(255) <<UK>>
+  * inicio : timestamptz
+  * ultima_atividade : timestamptz
+    dispositivo : varchar(255)
+  * usuario_id : uuid <<FK>>
+}
+entity "token_acesso" as TokenAcesso {
+  * id : uuid <<PK>>
+  --
+  * token : varchar(255) <<UK>>
+  * tipo : tipo_token
+  * expira_em : timestamptz
+  * utilizado : boolean
+  * usuario_id : uuid <<FK>>
+}
+entity "historico_senha" as HistoricoSenha {
+  * id : uuid <<PK>>
+  --
+  * senha_hash : varchar(255)
+  * criada_em : timestamptz
+  * usuario_id : uuid <<FK>>
+}
+entity "perfil_acesso" as PerfilAcesso {
+  * id : uuid <<PK>>
+  --
+  * nome : varchar(255)
+    descricao : text
+  * escopo : escopo_perfil
+    empresa_id : uuid <<FK>>
+}
+entity "permissao" as Permissao {
+  * id : uuid <<PK>>
+  --
+  * codigo : varchar(255) <<UK>>
+  * descricao : text
+  * modulo : varchar(255)
+}
+EmpresaEnterprise ||--}o FuncionarioEnterprise
+Usuario ||--}o Sessao
+Usuario ||--}o TokenAcesso
+Usuario ||--}o HistoricoSenha
+PerfilAcesso ||--}o Usuario
+EmpresaEnterprise |o--}o PerfilAcesso
+Usuario ||--o| Tutor
+Usuario ||--o| Administrador
+Usuario ||--o| EmpresaEnterprise
+Usuario ||--o| FuncionarioEnterprise
+entity "perfil_permissao" as PerfilPermissao {
+  * perfil_acesso_id : uuid <<PK, FK>>
+  * permissao_id : uuid <<PK, FK>>
+}
+PerfilAcesso ||--o{ PerfilPermissao
+Permissao ||--o{ PerfilPermissao
+@enduml

@@ -1,0 +1,17 @@
+' Estilo comum dos diagramas de casos de uso do Jaguara (REQ-03)
+skinparam defaultFontName Arial
+skinparam defaultFontSize 12
+skinparam shadowing false
+skinparam backgroundColor white
+skinparam actorStyle awesome
+skinparam usecase {
+  BackgroundColor white
+  BorderColor #333333
+}
+skinparam rectangle {
+  BackgroundColor #F8F8F8
+  BorderColor #555555
+}
+skinparam ArrowColor #333333
+left to right direction
+footer Jaguara · REQ-03 Diagrama de casos de uso v2.0 · UML 2.5.1
