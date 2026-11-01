@@ -1,0 +1,84 @@
+@startuml DC-07-administracao-e-relatorios
+!include _estilo.iuml
+title DC-07 · Pacotes administracao e relatorios
+
+abstract class "acesso::Usuario" as Usuario #EFEFEF
+class "acesso::Administrador" as Administrador #EFEFEF
+class "acesso::PerfilAcesso" as PerfilAcesso #EFEFEF
+
+package administracao {
+  class LogAuditoria {
+    - dataHora : DateTime {readOnly}
+    - acao : String
+    - entidade : String
+    - entidadeId : String
+    - detalhes : String [0..1]
+    - nivel : NivelLog
+    - ipOrigem : String [0..1]
+  }
+
+  class ChamadoSuporte {
+    - protocolo : String {unique}
+    - titulo : String
+    - descricao : String
+    - status : StatusChamado
+    - dataAbertura : DateTime
+    - dataFechamento : DateTime [0..1]
+    + solicitarComplemento(mensagem : String)
+    + encerrar()
+  }
+
+  class IntervencaoSuporte {
+    - dataHora : DateTime
+    - descricao : String
+    - acaoExecutada : String
+  }
+
+  class Integracao {
+    - nome : String
+    - tipo : TipoIntegracao
+    - endpointUrl : String
+    - credenciaisCifradas : String
+    - parametros : String [0..1]
+    - ativa : Boolean
+    + validar() : Boolean
+    + testarConexao() : Boolean
+  }
+
+  class Webhook {
+    - url : String
+    - eventos : String [1..*]
+    - segredoAssinatura : String
+    - metodoAutenticacao : String
+    - ativo : Boolean
+    + validarSeguranca() : Boolean
+    + disparar(evento : String, payload : String)
+  }
+}
+
+package relatorios {
+  class Relatorio {
+    - tipo : TipoRelatorio
+    - periodoInicio : Date
+    - periodoFim : Date
+    - filtros : String [0..1]
+    - formato : FormatoRelatorio
+    - geradoEm : DateTime
+    + exportarPdf() : Byte [0..*]
+  }
+}
+
+LogAuditoria "0..*" --> "autor 0..1" Usuario
+
+Usuario "solicitante 1" -- "chamados 0..*" ChamadoSuporte
+Administrador "atendente 0..1" -- "chamadosAtendidos 0..*" ChamadoSuporte
+ChamadoSuporte "1" *-- "intervencoes 0..* {ordered}" IntervencaoSuporte
+IntervencaoSuporte "0..*" --> "executadaPor 1" Administrador
+
+Administrador "configuradaPor 1" -- "integracoes 0..*" Integracao
+Administrador "configuradoPor 1" -- "webhooks 0..*" Webhook
+Webhook "0..*" --> "integracao 0..1" Integracao
+
+Administrador ..> PerfilAcesso : <<use>>
+Relatorio "0..*" --> "geradoPor 1" Usuario
+@enduml

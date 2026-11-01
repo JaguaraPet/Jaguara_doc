@@ -1,0 +1,82 @@
+@startuml DC-04b-solicitacao-e-atendimento
+!include _estilo.iuml
+title DC-04b · Pacote atendimento: solicitação, agendamento e atendimento
+
+abstract class "acesso::Usuario" as Usuario #EFEFEF
+class "acesso::Tutor" as Tutor #EFEFEF
+class "acesso::FuncionarioEnterprise" as FuncionarioEnterprise #EFEFEF
+
+class Servico
+class Recurso
+
+class SolicitacaoServico {
+  - dataSolicitacao : DateTime
+  - dataHoraDesejada : DateTime
+  - status : StatusSolicitacao
+  - motivoRecusa : String [0..1]
+  - observacoes : String [0..1]
+  + aceitar(responsavel : Usuario) : Agendamento
+  + recusar(motivo : String)
+  + cancelar(autor : Usuario)
+}
+
+class HistoricoSolicitacao {
+  - dataHora : DateTime
+  - statusAnterior : StatusSolicitacao [0..1]
+  - statusNovo : StatusSolicitacao
+  - descricao : String [0..1]
+}
+
+class Agendamento {
+  - dataHoraInicio : DateTime
+  - dataHoraFim : DateTime
+  - precoContratado : Decimal {readOnly}
+  - status : StatusAgendamento
+  - criadoEm : DateTime
+  + verificarConflitos() : Boolean
+  + remarcar(inicio : DateTime, fim : DateTime)
+  + cancelar(motivo : String)
+}
+
+class Atendimento {
+  - dataHoraInicio : DateTime
+  - dataHoraFim : DateTime [0..1]
+  - procedimentosRealizados : String
+  - observacoesClinicas : String [0..1]
+  - status : StatusAtendimento
+  - finalizadoEm : DateTime [0..1]
+  + finalizar()
+  + alterarComAuditoria(justificativa : String)
+}
+
+class ItemAtendimento {
+  - quantidade : Integer
+  - valorUnitario : Decimal
+  - observacao : String [0..1]
+  + subtotal() : Decimal
+}
+
+class "pet::Pet" as Pet #EFEFEF
+
+class "rotina::EventoCalendario" as EventoCalendario #EFEFEF
+
+Tutor "solicitante 1" -- "solicitacoes 0..*" SolicitacaoServico
+SolicitacaoServico "1" *-up- "historico 1..* {ordered}" HistoricoSolicitacao
+HistoricoSolicitacao "0..*" -up-> "autor 1" Usuario
+SolicitacaoServico "0..*" -right-> "servico 1" Servico
+SolicitacaoServico "0..*" --> "pet 1" Pet
+
+SolicitacaoServico "origem 0..1" -- "agendamento 0..1" Agendamento
+Agendamento "0..*" -up-> "servico 1" Servico
+Agendamento "0..*" -right-> "recurso 0..1" Recurso
+Agendamento "0..*" --> "profissional 0..1" FuncionarioEnterprise
+Agendamento "0..*" --> "pet 1" Pet
+Agendamento "1" --> "evento 0..1" EventoCalendario
+
+Agendamento "agendamento 0..1" -- "atendimento 0..1" Atendimento
+Atendimento "0..*" --> "pet 1" Pet
+Atendimento "0..*" --> "profissional 0..1" FuncionarioEnterprise
+Atendimento "0..*" -left-> "registradoPor 1" Usuario
+Atendimento "1" *-right- "itens 1..*" ItemAtendimento
+ItemAtendimento "0..*" -up-> "servico 1" Servico
+@enduml

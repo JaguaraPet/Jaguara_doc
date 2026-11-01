@@ -1,0 +1,49 @@
+@startuml DC-04a-catalogo-e-agenda
+!include _estilo.iuml
+title DC-04a · Pacote atendimento: clientes, catálogo e agenda
+
+class "acesso::Tutor" as Tutor #EFEFEF
+class "acesso::EmpresaEnterprise" as EmpresaEnterprise #EFEFEF
+class "acesso::FuncionarioEnterprise" as FuncionarioEnterprise #EFEFEF
+
+class Cliente {
+  - codigo : String
+  - dataVinculo : Date
+  - observacoes : String [0..1]
+  - consentimentoLGPD : Boolean
+  - dataConsentimento : DateTime [0..1]
+  - ativo : Boolean
+}
+
+class Servico {
+  - nome : String
+  - descricao : String
+  - categoria : CategoriaServico
+  - preco : Decimal
+  - duracaoMinutos : Integer
+  - ativo : Boolean
+  + alterarPreco(novoPreco : Decimal)
+}
+
+class Recurso {
+  - nome : String
+  - tipo : TipoRecurso
+  - ativo : Boolean
+}
+
+class HorarioAtuacao {
+  - diaSemana : DiaSemana
+  - horaInicio : Time
+  - horaFim : Time
+  + sobrepoe(outro : HorarioAtuacao) : Boolean
+}
+
+EmpresaEnterprise "empresas 0..*" -- "clientes 0..*" Tutor
+(EmpresaEnterprise, Tutor) .. Cliente
+
+EmpresaEnterprise "1" *-- "servicos 0..*" Servico
+EmpresaEnterprise "1" *-- "recursos 0..*" Recurso
+FuncionarioEnterprise "profissional 0..1" -- "horarios 0..*" HorarioAtuacao
+Recurso "recurso 0..1" -- "horarios 0..*" HorarioAtuacao
+note bottom of HorarioAtuacao : {xor}\nprofissional ou recurso
+@enduml

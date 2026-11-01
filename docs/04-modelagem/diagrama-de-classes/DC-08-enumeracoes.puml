@@ -1,0 +1,298 @@
+@startuml DC-08-enumeracoes
+!include _estilo.iuml
+title DC-08 · Enumerações por pacote
+
+package acesso {
+  enum StatusConta {
+    PENDENTE_CONFIRMACAO
+    ATIVA
+    BLOQUEADA
+    SUSPENSA
+    INATIVA
+  }
+  enum TipoToken {
+    CONFIRMACAO_EMAIL
+    RECUPERACAO_SENHA
+  }
+  enum TipoEmpresa {
+    CLINICA_VETERINARIA
+    PET_SHOP
+    HOTEL_PET
+    CRECHE
+    CASA_DE_CUIDADO
+  }
+  enum EscopoPerfil {
+    GLOBAL
+    EMPRESA
+  }
+}
+
+package pet {
+  enum StatusPet {
+    ATIVO
+    ARQUIVADO
+    FALECIDO
+  }
+  enum Sexo {
+    MACHO
+    FEMEA
+  }
+  enum TipoResponsavel {
+    PRINCIPAL
+    ADICIONAL
+  }
+  enum EscopoAcesso {
+    PERFIL_BASICO
+    VACINAS
+    EXAMES
+    MEDICAMENTOS
+    ALERGIAS
+    DOCUMENTOS
+    LINHA_DO_TEMPO
+    EDICAO_CLINICA
+  }
+  enum StatusCompartilhamento {
+    ATIVO
+    REVOGADO
+    EXPIRADO
+  }
+  enum TipoDocumento {
+    RG_ANIMAL
+    CARTEIRA_VACINACAO
+    ATESTADO
+    RECEITA
+    LAUDO
+    PEDIGREE
+    OUTRO
+  }
+  enum TipoAlergiaRestricao {
+    ALERGIA
+    RESTRICAO_ALIMENTAR
+    RESTRICAO_MEDICAMENTOSA
+    OUTRA
+  }
+  enum Gravidade {
+    LEVE
+    MODERADA
+    GRAVE
+  }
+  enum TipoItemMemorial {
+    FOTO
+    TEXTO
+    HOMENAGEM
+  }
+}
+
+package saude {
+  enum StatusTratamento {
+    ATIVO
+    FINALIZADO
+    SUSPENSO
+  }
+}
+
+package rotina {
+  enum TipoEvento {
+    CONSULTA
+    VACINA
+    MEDICAMENTO
+    EXAME
+    CIRURGIA
+    BANHO_TOSA
+    HOSPEDAGEM
+    COMPROMISSO
+    OUTRO
+  }
+  enum OrigemEvento {
+    MANUAL
+    AGENDAMENTO
+    CALENDARIO_EXTERNO
+  }
+  enum ProvedorCalendario {
+    GOOGLE
+    OUTLOOK
+    APPLE
+  }
+}
+
+package notificacao {
+  enum CanalNotificacao {
+    PUSH
+    EMAIL
+    SMS
+  }
+  enum StatusNotificacao {
+    AGENDADA
+    ENVIADA
+    FALHOU
+    CANCELADA
+  }
+}
+
+package atendimento {
+  enum CategoriaServico {
+    CONSULTA
+    EXAME
+    CIRURGIA
+    VACINACAO
+    BANHO_TOSA
+    HOSPEDAGEM
+    PET_SITTER
+    CRECHE
+    OUTRO
+  }
+  enum TipoRecurso {
+    SALA
+    EQUIPAMENTO
+    BAIA
+    VEICULO
+    OUTRO
+  }
+  enum DiaSemana {
+    SEGUNDA
+    TERCA
+    QUARTA
+    QUINTA
+    SEXTA
+    SABADO
+    DOMINGO
+  }
+  enum StatusSolicitacao {
+    PENDENTE
+    ACEITA
+    RECUSADA
+    CANCELADA
+    CONCLUIDA
+    ENCERRADA
+  }
+  enum StatusAgendamento {
+    AGENDADO
+    CANCELADO
+    REALIZADO
+    NAO_COMPARECEU
+  }
+  enum StatusAtendimento {
+    EM_ANDAMENTO
+    FINALIZADO
+  }
+}
+
+package financeiro {
+  enum MetodoPagamento {
+    CARTAO_CREDITO
+    CARTAO_DEBITO
+    PIX
+    BOLETO
+  }
+  enum StatusPagamento {
+    PENDENTE
+    ACEITO
+    CANCELADO
+    RECUSADO
+  }
+  enum StatusReembolso {
+    EM_ANALISE
+    APROVADO
+    NEGADO
+  }
+  enum TipoPlano {
+    GRATUITO
+    PANTERA
+  }
+  enum StatusAssinatura {
+    ATIVA
+    CANCELADA
+    EXPIRADA
+  }
+}
+
+package comunicacao {
+  enum TipoConversa {
+    EMPRESA
+    ASSISTENTE_VIRTUAL
+  }
+  enum StatusConversa {
+    ABERTA
+    ENCERRADA
+  }
+}
+
+package privacidade {
+  enum TipoSolicitacaoPrivacidade {
+    EXPORTACAO_DADOS
+    EXCLUSAO_DADOS
+    CORRECAO_DADOS
+  }
+  enum StatusSolicitacaoPrivacidade {
+    ABERTA
+    EM_PROCESSAMENTO
+    CONCLUIDA
+    NEGADA
+  }
+}
+
+package administracao {
+  enum NivelLog {
+    INFO
+    ALERTA
+    CRITICO
+  }
+  enum StatusChamado {
+    ABERTO
+    EM_ANALISE
+    AGUARDANDO_INFORMACAO
+    RESOLVIDO
+    FECHADO
+  }
+  enum TipoIntegracao {
+    CALENDARIO
+    PAGAMENTO
+    PLATAFORMA_VETERINARIA
+    NOTIFICACAO
+    OUTRA
+  }
+}
+
+package relatorios {
+  enum TipoRelatorio {
+    DESPESAS
+    OPERACIONAL
+    GERENCIAL
+  }
+  enum FormatoRelatorio {
+    TELA
+    PDF
+  }
+}
+
+StatusConta -[hidden]down- TipoToken
+TipoToken -[hidden]down- TipoEmpresa
+StatusPet -[hidden]down- Sexo
+Sexo -[hidden]down- TipoResponsavel
+EscopoAcesso -[hidden]down- StatusCompartilhamento
+StatusCompartilhamento -[hidden]down- TipoDocumento
+TipoAlergiaRestricao -[hidden]down- Gravidade
+Gravidade -[hidden]down- TipoItemMemorial
+TipoEvento -[hidden]down- OrigemEvento
+OrigemEvento -[hidden]down- ProvedorCalendario
+CanalNotificacao -[hidden]down- StatusNotificacao
+CategoriaServico -[hidden]down- TipoRecurso
+TipoRecurso -[hidden]down- DiaSemana
+StatusSolicitacao -[hidden]down- StatusAgendamento
+StatusAgendamento -[hidden]down- StatusAtendimento
+MetodoPagamento -[hidden]down- StatusPagamento
+StatusPagamento -[hidden]down- StatusReembolso
+TipoPlano -[hidden]down- StatusAssinatura
+TipoConversa -[hidden]down- StatusConversa
+TipoSolicitacaoPrivacidade -[hidden]down- StatusSolicitacaoPrivacidade
+NivelLog -[hidden]down- StatusChamado
+StatusChamado -[hidden]down- TipoIntegracao
+TipoRelatorio -[hidden]down- FormatoRelatorio
+' Duas linhas de pacotes para caber na largura de uma página
+TipoEmpresa -[hidden]down- StatusSolicitacao
+TipoResponsavel -[hidden]down- MetodoPagamento
+StatusTratamento -[hidden]down- TipoConversa
+ProvedorCalendario -[hidden]down- TipoSolicitacaoPrivacidade
+StatusNotificacao -[hidden]down- NivelLog
+StatusNotificacao -[hidden]down- TipoRelatorio
+@enduml

@@ -1,0 +1,64 @@
+@startuml DC-05-financeiro
+!include _estilo.iuml
+title DC-05 · Pacote financeiro
+
+class "acesso::Tutor" as Tutor #EFEFEF
+class "acesso::EmpresaEnterprise" as EmpresaEnterprise #EFEFEF
+class "pet::Pet" as Pet #EFEFEF
+class "atendimento::Agendamento" as Agendamento #EFEFEF
+
+class CategoriaDespesa {
+  - nome : String {unique}
+  - descricao : String [0..1]
+}
+
+class Despesa {
+  - descricao : String
+  - valor : Decimal
+  - data : Date
+  - comprovanteUrl : String [0..1]
+}
+
+class Pagamento {
+  - codigoTransacao : String {unique}
+  - valor : Decimal
+  - dataHora : DateTime
+  - metodo : MetodoPagamento
+  - status : StatusPagamento
+  - dataConfirmacao : DateTime [0..1]
+  - notaFiscalUrl : String [0..1]
+  + confirmar()
+  + recusar(motivo : String)
+  + cancelar()
+}
+
+class SolicitacaoReembolso {
+  - motivo : String
+  - valor : Decimal
+  - dataSolicitacao : DateTime
+  - status : StatusReembolso
+  - dataAnalise : DateTime [0..1]
+  + aprovar()
+  + negar(motivo : String)
+}
+
+class Assinatura {
+  - plano : TipoPlano
+  - dataInicio : Date
+  - dataFim : Date [0..1]
+  - status : StatusAssinatura
+  + estaAtiva() : Boolean
+}
+
+Pet "1" *-- "despesas 0..*" Despesa
+Despesa "0..*" --> "categoria 1" CategoriaDespesa
+Pagamento "pagamento 0..1" <-- "0..1" Despesa
+
+Tutor "pagador 1" -- "pagamentos 0..*" Pagamento
+Tutor "1" *-left- "assinaturas 0..*" Assinatura
+Pagamento "recebimentos 0..*" -right- "recebedor 0..1" EmpresaEnterprise
+Pagamento "0..*" --> "agendamento 0..1" Agendamento
+Pagamento "0..*" -left-> "assinatura 0..1" Assinatura
+note right of Pagamento : {xor}\nagendamento ou assinatura
+Pagamento "1" *-- "reembolsos 0..*" SolicitacaoReembolso
+@enduml

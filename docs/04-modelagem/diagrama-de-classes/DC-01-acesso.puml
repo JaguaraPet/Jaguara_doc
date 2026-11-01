@@ -1,0 +1,113 @@
+@startuml DC-01-acesso
+!include _estilo.iuml
+title DC-01 · Pacote acesso
+
+abstract class Usuario {
+  - email : String {unique}
+  - senhaHash : String
+  - telefone : String [0..1]
+  - status : StatusConta
+  - emailConfirmado : Boolean
+  - tentativasLoginFalhas : Integer
+  - bloqueadoAte : DateTime [0..1]
+  - dataCadastro : DateTime {readOnly}
+  + autenticar(email : String, senha : String) : Sessao
+  + confirmarEmail(token : String)
+  + solicitarRecuperacaoSenha() : TokenAcesso
+  + redefinirSenha(token : String, novaSenha : String)
+  + registrarFalhaLogin()
+}
+
+class Tutor {
+  - nome : String
+  - cpf : String {unique}
+  - dataNascimento : Date [0..1]
+  - endereco : Endereco [0..1]
+}
+
+class Administrador {
+  - nome : String
+  + alterarStatusConta(usuario : Usuario, status : StatusConta, motivo : String)
+}
+
+class EmpresaEnterprise {
+  - cnpj : String {unique}
+  - razaoSocial : String
+  - nomeFantasia : String
+  - tipo : TipoEmpresa
+  - endereco : Endereco
+  + cadastrarFuncionario(nome : String, cpf : String, email : String, perfil : PerfilAcesso) : FuncionarioEnterprise
+  + removerFuncionario(funcionario : FuncionarioEnterprise)
+}
+
+class FuncionarioEnterprise {
+  - nome : String
+  - cpf : String {unique}
+  - cargo : String [0..1]
+  - ativo : Boolean
+  + revogarAcessos()
+}
+
+class Endereco <<dataType>> {
+  - cep : String
+  - logradouro : String
+  - numero : String
+  - complemento : String [0..1]
+  - bairro : String
+  - cidade : String
+  - uf : String
+}
+
+class Sessao {
+  - token : String {unique}
+  - inicio : DateTime
+  - ultimaAtividade : DateTime
+  - dispositivo : String [0..1]
+  + estaExpirada() : Boolean
+  + encerrar()
+}
+
+class TokenAcesso {
+  - token : String {unique}
+  - tipo : TipoToken
+  - criadoEm : DateTime
+  - expiraEm : DateTime
+  - utilizado : Boolean
+  + estaValido() : Boolean
+}
+
+class HistoricoSenha {
+  - senhaHash : String
+  - criadaEm : DateTime
+}
+
+class PerfilAcesso {
+  - nome : String
+  - descricao : String [0..1]
+  - escopo : EscopoPerfil
+  + possuiPermissao(codigo : String) : Boolean
+}
+
+class Permissao {
+  - codigo : String {unique}
+  - descricao : String
+  - modulo : String
+}
+
+Usuario <|-- Tutor
+Usuario <|-- Administrador
+Usuario <|-- EmpresaEnterprise
+Usuario <|-- FuncionarioEnterprise
+
+EmpresaEnterprise "empregador 1" *-- "funcionarios 0..*" FuncionarioEnterprise
+
+Usuario "1" *-left- "sessoes 0..*" Sessao
+Usuario "1" *-left- "tokens 0..*" TokenAcesso
+Usuario "1" *-left- "senhasAnteriores 0..3 {ordered}" HistoricoSenha
+Sessao -[hidden]down- TokenAcesso
+TokenAcesso -[hidden]down- HistoricoSenha
+
+Usuario "0..*" -right-> "perfil 1" PerfilAcesso
+PerfilAcesso "0..*" --> "permissoes 1..*" Permissao
+EmpresaEnterprise "dona 0..1" *-- "perfis 0..*" PerfilAcesso
+@enduml

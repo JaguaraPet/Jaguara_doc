@@ -1,0 +1,61 @@
+@startuml DC-06-comunicacao-e-privacidade
+!include _estilo.iuml
+title DC-06 · Pacotes comunicacao e privacidade
+
+abstract class "acesso::Usuario" as Usuario #EFEFEF
+class "acesso::Tutor" as Tutor #EFEFEF
+class "acesso::EmpresaEnterprise" as EmpresaEnterprise #EFEFEF
+class "pet::Pet" as Pet #EFEFEF
+
+package comunicacao {
+  class Conversa {
+    - tipo : TipoConversa
+    - dataInicio : DateTime
+    - status : StatusConversa
+    + encerrar()
+  }
+
+  class Mensagem {
+    - conteudo : String
+    - dataHoraEnvio : DateTime
+    - lida : Boolean
+    - anexoUrl : String [0..1]
+  }
+}
+
+package privacidade {
+  class TermoUso {
+    - versao : String {unique}
+    - titulo : String
+    - conteudo : String
+    - dataVigencia : Date
+    - obrigatorio : Boolean
+  }
+
+  class Consentimento {
+    - aceito : Boolean
+    - dataAceite : DateTime
+    - dataRevogacao : DateTime [0..1]
+    - ipOrigem : String
+    + revogar()
+  }
+
+  class SolicitacaoPrivacidade {
+    - tipo : TipoSolicitacaoPrivacidade
+    - dataSolicitacao : DateTime
+    - status : StatusSolicitacaoPrivacidade
+    - dataConclusao : DateTime [0..1]
+    + executar()
+  }
+}
+
+Conversa "0..*" --> "tutor 1" Tutor
+Conversa "0..*" --> "empresa 0..1" EmpresaEnterprise
+Conversa "0..*" --> "pet 0..1" Pet
+Conversa "1" *-- "mensagens 0..* {ordered}" Mensagem
+Mensagem "0..*" --> "remetente 0..1" Usuario
+
+Usuario "1" *-- "consentimentos 0..*" Consentimento
+Consentimento "0..*" --> "termo 1" TermoUso
+Usuario "1" *-- "solicitacoesPrivacidade 0..*" SolicitacaoPrivacidade
+@enduml

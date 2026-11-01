@@ -1,0 +1,46 @@
+@startuml DC-03b-notificacao
+!include _estilo.iuml
+title DC-03b · Pacote notificacao
+
+abstract class "acesso::Usuario" as Usuario #EFEFEF
+class "rotina::EventoCalendario" as EventoCalendario #EFEFEF
+class "saude::Vacinacao" as Vacinacao #EFEFEF
+class "saude::TratamentoMedicamentoso" as TratamentoMedicamentoso #EFEFEF
+class "atendimento::Agendamento" as Agendamento #EFEFEF
+class "atendimento::SolicitacaoServico" as SolicitacaoServico #EFEFEF
+
+interface Notificavel {
+  + getDataReferencia() : DateTime
+  + getDestinatarios() : Usuario [1..*]
+  + getDescricao() : String
+}
+
+class Notificacao {
+  - titulo : String
+  - mensagem : String
+  - canal : CanalNotificacao
+  - dataProgramada : DateTime
+  - dataEnvio : DateTime [0..1]
+  - status : StatusNotificacao
+  - tentativas : Integer
+  + enviar() : Boolean
+  + reagendar()
+}
+
+class ConfiguracaoNotificacao {
+  - tipoEvento : TipoEvento
+  - canal : CanalNotificacao
+  - antecedenciaMinutos : Integer
+  - ativa : Boolean
+}
+
+Usuario "1" *-- "preferencias 0..*" ConfiguracaoNotificacao
+Notificacao "0..*" -up-> "destinatario 1" Usuario
+Notificacao "0..*" --> "origem 1" Notificavel
+
+Notificavel <|.. EventoCalendario
+Notificavel <|.. Vacinacao
+Notificavel <|.. TratamentoMedicamentoso
+Notificavel <|.. Agendamento
+Notificavel <|.. SolicitacaoServico
+@enduml

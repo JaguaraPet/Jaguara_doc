@@ -1,0 +1,27 @@
+' Estilo comum dos diagramas de classes do Jaguara (MOD-01)
+' Notação: UML 2.5.1 estrita. Incluído por todos os arquivos DC-*.puml.
+skinparam style strictuml
+skinparam classAttributeIconSize 0
+skinparam shadowing false
+skinparam defaultFontName Arial
+skinparam defaultFontSize 12
+skinparam backgroundColor white
+skinparam nodesep 45
+skinparam ranksep 55
+skinparam class {
+  BackgroundColor white
+  BorderColor #222222
+  ArrowColor #333333
+}
+skinparam package {
+  BackgroundColor #F6F6F6
+  BorderColor #666666
+}
+skinparam note {
+  BackgroundColor #FFFFF2
+  BorderColor #888888
+}
+skinparam stereotypeFontSize 10
+set separator none
+hide empty members
+footer Jaguara · MOD-01 Modelo de Classes v1.0 · UML 2.5.1

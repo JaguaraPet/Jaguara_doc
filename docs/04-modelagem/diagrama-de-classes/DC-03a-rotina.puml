@@ -1,0 +1,56 @@
+@startuml DC-03a-rotina
+!include _estilo.iuml
+title DC-03a · Pacote rotina
+
+abstract class "acesso::Usuario" as Usuario #EFEFEF
+class "pet::Pet" as Pet #EFEFEF
+
+class EventoCalendario {
+  - titulo : String
+  - descricao : String [0..1]
+  - tipo : TipoEvento
+  - dataHoraInicio : DateTime
+  - dataHoraFim : DateTime [0..1]
+  - local : String [0..1]
+  - origem : OrigemEvento
+  - idExterno : String [0..1]
+  + temConflito(outro : EventoCalendario) : Boolean
+}
+
+class CalendarioExterno {
+  - provedor : ProvedorCalendario
+  - contaExterna : String
+  - tokenAutorizacao : String
+  - autorizado : Boolean
+  - ultimaSincronizacao : DateTime [0..1]
+  + sincronizar()
+  + revogarAutorizacao()
+}
+
+class PlanoAlimentar {
+  - alimento : String
+  - metaDiariaGramas : Real
+  - limiteDiarioGramas : Real [0..1]
+  - refeicoesPorDia : Integer
+  - dataInicio : Date
+  - ativo : Boolean
+  + consumoDoDia(data : Date) : Real
+  + excedeuLimite(data : Date) : Boolean
+}
+
+class RegistroAlimentacao {
+  - dataHora : DateTime
+  - alimento : String
+  - quantidadeGramas : Real
+  - observacao : String [0..1]
+}
+
+Pet "1" *-- "eventos 0..*" EventoCalendario
+Pet "1" *-- "planosAlimentares 0..*" PlanoAlimentar
+Pet "1" *-- "refeicoes 0..*" RegistroAlimentacao
+RegistroAlimentacao "0..*" --> "plano 0..1" PlanoAlimentar
+
+EventoCalendario "0..*" --> "criadoPor 1" Usuario
+Usuario "1" *-- "calendariosExternos 0..*" CalendarioExterno
+EventoCalendario "0..*" -right-> "origemExterna 0..1" CalendarioExterno
+@enduml

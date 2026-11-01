@@ -1,0 +1,141 @@
+@startuml DC-02-pet-e-saude
+!include _estilo.iuml
+title DC-02 · Pacotes pet e saude
+
+abstract class "acesso::Usuario" as Usuario #EFEFEF
+class "acesso::Tutor" as Tutor #EFEFEF
+class "acesso::EmpresaEnterprise" as EmpresaEnterprise #EFEFEF
+
+package pet {
+  class Pet {
+    - nome : String
+    - dataNascimento : Date [0..1]
+    - /idade : Integer [0..1]
+    - sexo : Sexo
+    - pesoKg : Real [0..1]
+    - cor : String [0..1]
+    - microchip : String [0..1] {unique}
+    - castrado : Boolean
+    - fotoUrl : String [0..1]
+    - status : StatusPet
+    - dataFalecimento : Date [0..1]
+    + arquivar()
+    + excluir()
+    + marcarComoFalecido(data : Date)
+    + possuiHistorico() : Boolean
+    + responsavelPrincipal() : Tutor
+  }
+
+  class Especie {
+    - nome : String {unique}
+  }
+
+  class Raca {
+    - nome : String
+  }
+
+  class ResponsavelPet {
+    - tipo : TipoResponsavel
+    - dataVinculo : DateTime
+    - ativo : Boolean
+  }
+
+  class CompartilhamentoPet {
+    - destinatarioEmail : String [0..1]
+    - escopos : EscopoAcesso [1..*]
+    - token : String {unique}
+    - dataConcessao : DateTime
+    - dataExpiracao : DateTime [0..1]
+    - status : StatusCompartilhamento
+    + permite(escopo : EscopoAcesso) : Boolean
+    + revogar()
+  }
+
+  class Memorial {
+    - mensagem : String
+    - dataCriacao : DateTime
+    - publico : Boolean
+  }
+
+  class ItemMemorial {
+    - tipo : TipoItemMemorial
+    - conteudo : String [0..1]
+    - arquivoUrl : String [0..1]
+    - dataRegistro : DateTime
+  }
+
+  class DocumentoPet {
+    - titulo : String
+    - tipo : TipoDocumento
+    - arquivoUrl : String
+    - dataEmissao : Date [0..1]
+    - dataValidade : Date [0..1]
+    - dataUpload : DateTime
+  }
+
+  class AlergiaRestricao {
+    - tipo : TipoAlergiaRestricao
+    - descricao : String
+    - gravidade : Gravidade
+    - dataIdentificacao : Date [0..1]
+    - observacoes : String [0..1]
+  }
+}
+
+package saude {
+  abstract class RegistroClinico {
+    - dataRegistro : DateTime {readOnly}
+    - observacoes : String [0..1]
+    - valido : Boolean
+  }
+
+  class Vacinacao {
+    - nomeVacina : String
+    - fabricante : String [0..1]
+    - lote : String [0..1]
+    - dataAplicacao : Date
+    - dataProximaDose : Date [0..1]
+    - responsavelAplicacao : String
+  }
+
+  class Exame {
+    - tipoExame : String
+    - dataRealizacao : Date
+    - laboratorio : String [0..1]
+    - resultado : String [0..1]
+    - arquivoResultadoUrl : String [0..1]
+  }
+
+  class TratamentoMedicamentoso {
+    - medicamento : String
+    - dosagem : String
+    - viaAdministracao : String
+    - intervaloHoras : Integer
+    - dataInicio : Date
+    - dataFim : Date [0..1]
+    - status : StatusTratamento
+    + gerarLembretes()
+    + finalizar()
+  }
+}
+
+Especie "1" *-- "racas 1..*" Raca
+Pet "0..*" --> "raca 1" Raca
+
+Tutor "tutores 1..*" -- "pets 0..*" Pet
+(Tutor, Pet) .. ResponsavelPet
+
+Pet "1" *-- "compartilhamentos 0..*" CompartilhamentoPet
+CompartilhamentoPet "0..*" --> "empresa 0..1" EmpresaEnterprise
+
+Pet "1" *-- "memorial 0..1" Memorial
+Memorial "1" *-- "itens 0..*" ItemMemorial
+Pet "1" *-- "documentos 0..*" DocumentoPet
+Pet "1" *-- "alergias 0..*" AlergiaRestricao
+
+Pet "1" *-- "historicoClinico 0..* {ordered}" RegistroClinico
+RegistroClinico <|-- Vacinacao
+RegistroClinico <|-- Exame
+RegistroClinico <|-- TratamentoMedicamentoso
+RegistroClinico "0..*" --> "registradoPor 1" Usuario
+@enduml

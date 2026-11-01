@@ -1,0 +1,39 @@
+@startuml DC-00-pacotes
+!include _estilo.iuml
+title DC-00 · Diagrama de pacotes do domínio
+
+package acesso
+package pet
+package saude
+package rotina
+package notificacao
+package atendimento
+package financeiro
+package comunicacao
+package privacidade
+package administracao
+package relatorios
+
+pet ..> acesso
+saude ..> pet
+saude ..> acesso
+saude ..> notificacao
+rotina ..> pet
+rotina ..> acesso
+rotina ..> notificacao
+notificacao ..> acesso
+atendimento ..> acesso
+atendimento ..> pet
+atendimento ..> rotina
+atendimento ..> notificacao
+financeiro ..> acesso
+financeiro ..> pet
+financeiro ..> atendimento
+comunicacao ..> acesso
+comunicacao ..> pet
+privacidade ..> acesso
+administracao ..> acesso
+relatorios ..> acesso
+relatorios ..> financeiro
+relatorios ..> atendimento
+@enduml
