@@ -131,7 +131,6 @@ CREATE TABLE token_acesso (
   expira_em timestamptz NOT NULL,
   utilizado boolean NOT NULL,
   usuario_id uuid NOT NULL,
-  criado_em timestamptz NOT NULL DEFAULT now(),
   atualizado_em timestamptz NOT NULL DEFAULT now()
 );
 CREATE TABLE historico_senha (
@@ -443,7 +442,6 @@ CREATE TABLE agendamento (
   profissional_id uuid,
   recurso_id uuid,
   evento_id uuid,
-  criado_em timestamptz NOT NULL DEFAULT now(),
   atualizado_em timestamptz NOT NULL DEFAULT now()
 );
 CREATE TABLE atendimento (

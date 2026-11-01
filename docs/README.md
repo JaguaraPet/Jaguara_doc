@@ -14,7 +14,7 @@ Status: **Aprovado** (revisado e aceito pelo time), **Em revisão** (completo, a
 | [GES-04 · Matriz RACI](01-gestao/GES-04-RACI.md) | 2.0 | Aprovado | JAG-21 (elaboração), JAG-51 (migração) |
 | [GES-05 · Registro de riscos](01-gestao/GES-05-registro-de-riscos.md) | 1.0 | Em revisão | JAG-56 |
 | [GES-06 · Processo do time](01-gestao/GES-06-processo-do-time.md) | 1.0 | Em revisão | JAG-57 |
-| [Backlog de documentação do Jaguara](01-gestao/GES-07-backlog-documentacao.md) | 1.2 | Tarefas criadas no Jira | — |
+| [Backlog de documentação do Jaguara](01-gestao/GES-07-backlog-documentacao.md) | 1.3 | Documentação entregue | — |
 | [GES-08 · Pesquisa de mercado e análise estratégica](01-gestao/GES-08-pesquisa-de-mercado.md) | 2.0 | Aprovado | JAG-16, JAG-18, JAG-19, JAG-20 (elaboração), JAG-51 (migração) |
 
 ## Requisitos

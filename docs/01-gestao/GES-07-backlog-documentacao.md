@@ -3,9 +3,9 @@
 | Campo | Valor |
 |---|---|
 | Documento | GES-07 · Backlog de documentação |
-| Versão | 1.2 |
-| Status | Tarefas criadas no Jira |
-| Data | 28/10/2026 |
+| Versão | 1.3 |
+| Status | Documentação entregue |
+| Data | 01/11/2026 |
 
 ## Histórico de revisões
 
@@ -14,6 +14,7 @@
 | 1.0 | 28/10/2026 | Equipe Jaguara | Levantamento inicial da documentação faltante. |
 | 1.1 | 28/10/2026 | Equipe Jaguara | Cruzamento com o backlog do Jira (JAG-1 a JAG-49) e ajuste às convenções do projeto. |
 | 1.2 | 28/10/2026 | Equipe Jaguara | Tarefas novas criadas no Jira (JAG-50 a JAG-82) e padrão registrado nas descrições de JAG-26, 27, 28, 38, 41, 43, 44, 47 e 48. |
+| 1.3 | 01/11/2026 | Ricardo Guilhen | Situação de cada tarefa ao fim da documentação da Sprint 7 (seção 7). O padrão de documentação ficou registrado na ADR-003, e não na ADR-001. |
 
 ## 1. Objetivo
 
@@ -158,3 +159,56 @@ Estas tarefas estavam com a descrição vazia e receberam o texto abaixo em 28/1
 | JAG-43 | Desenvolvimento do documento de teste unitário | Passa a ser a seção de testes unitários do plano de testes (nova tarefa, ISO/IEC/IEEE 29119-3). |
 | JAG-28 | Definir paleta de cores do projeto | Registrar a paleta como tokens e verificar contraste WCAG AA; é a primeira parte do guia de estilo (docs/06-ux/UX-02-guia-de-estilo.md). |
 | JAG-35 | Melhoria da documentação de casos de uso | Sem mudança de escopo. A padronização dos campos (pós-condições, RF/RN, extensões numeradas) fica para a tarefa nova seguinte. |
+
+## 7. Situação em 01/11/2026
+
+A documentação foi produzida na Sprint 7 neste repositório. Os documentos ficam com status **Em revisão** até a leitura do time; os que dependem do sistema pronto seguem como **Rascunho**. O padrão de documentação foi registrado na [ADR-003](../03-arquitetura/adr/ADR-003-padrao-de-documentacao.md) (a ADR-001 ficou com a arquitetura cliente-servidor já aprovada).
+
+### 7.1 Entregues
+
+| Tarefa | Entregável |
+|---|---|
+| JAG-50 | [Modelo de documento](../_modelos/MODELO-documento.md) e [DoD da documentação](../_modelos/DoD-documentacao.md) |
+| JAG-51 | Documentos migrados; originais em `docs/anexos/originais` |
+| JAG-52 | Diagramas PlantUML com SVG em `img/` e compilação no CI (`.github/workflows/docs.yml`) |
+| JAG-53 | [REQ-00](../02-requisitos/REQ-00-identificadores.md) |
+| JAG-54 | [GES-02](GES-02-EAP.md) |
+| JAG-55 | [GES-03](GES-03-cronograma.md) |
+| JAG-56 | [GES-05](GES-05-registro-de-riscos.md) |
+| JAG-57 | [GES-06](GES-06-processo-do-time.md) |
+| JAG-58, JAG-59 | [REQ-01](../02-requisitos/REQ-01-ERS.md) |
+| JAG-60 | [REQ-02](../02-requisitos/REQ-02-glossario.md) |
+| JAG-61 | [REQ-03](../02-requisitos/REQ-03-diagrama-casos-de-uso.md) |
+| JAG-62 | [REQ-04](../02-requisitos/REQ-04-especificacao-casos-de-uso.md) |
+| JAG-63 | [REQ-05](../02-requisitos/REQ-05-historias-de-usuario.md) |
+| JAG-64 | [REQ-06](../02-requisitos/REQ-06-matriz-de-rastreabilidade.md) |
+| JAG-27 | [MOD-01](../04-modelagem/MOD-01-modelo-de-classes.md) |
+| JAG-26 | [MOD-02](../04-modelagem/MOD-02-diagramas-de-sequencia.md) |
+| JAG-47, JAG-48 | [MOD-03](../04-modelagem/MOD-03-modelo-de-dados.md) e DDL validada em PostgreSQL 16 |
+| JAG-66 | [MOD-04](../04-modelagem/MOD-04-diagramas-de-estado.md) |
+| JAG-67 | [MOD-05](../04-modelagem/MOD-05-diagramas-de-atividade.md) |
+| JAG-38 | [ADR-001 a ADR-011](../03-arquitetura/adr/README.md) |
+| JAG-41, JAG-44 | [ARQ-01](../03-arquitetura/ARQ-01-arquitetura.md) com C4 de contexto, contêineres e componentes |
+| JAG-68 | [OpenAPI 3.1](../03-arquitetura/api/openapi.yaml) |
+| JAG-69 | [ARQ-02](../03-arquitetura/ARQ-02-seguranca-e-lgpd.md) |
+| JAG-70 | [ARQ-03](../03-arquitetura/ARQ-03-integracoes.md) |
+| JAG-71 | [UX-01](../06-ux/UX-01-mapa-de-navegacao.md) |
+| JAG-43, JAG-72 | [TST-01](../05-testes/TST-01-plano-de-testes.md) |
+| JAG-73 | [TST-02](../05-testes/TST-02-casos-de-teste.md) |
+| JAG-76 | [Guia de contribuição](../../CONTRIBUTING.md) e [ADR-008](../03-arquitetura/adr/ADR-008-processo-de-desenvolvimento.md) |
+
+### 7.2 Pendentes
+
+| Tarefa | O que falta |
+|---|---|
+| JAG-39 | Reunião do time para aceitar ou ajustar as ADRs com status Proposta (004, 006, 007, 008, 009, 011) |
+| JAG-65 | Confirmar a questão em aberto restante da [ADR-010](../03-arquitetura/adr/ADR-010-decisoes-de-dominio.md) |
+| JAG-28 | Confirmar a paleta proposta no [UX-02](../06-ux/UX-02-guia-de-estilo.md) |
+| JAG-36, JAG-83 | Protótipo de alta fidelidade no Figma e exportação para o [UX-03](../06-ux/UX-03-prototipos.md) |
+| JAG-40 | Estatísticas de mercado (tamanho e crescimento do setor pet) para complementar o [GES-08](GES-08-pesquisa-de-mercado.md) |
+| JAG-75 | README técnico dos repositórios de código, depois da configuração do projeto |
+| JAG-77 | Validar o [ENT-01](../07-entrega/ENT-01-implantacao.md) na primeira implantação |
+| JAG-78, JAG-79 | Capturas de tela nos manuais ([ENT-02](../07-entrega/ENT-02-manual-tutor.md), [ENT-03](../07-entrega/ENT-03-manual-enterprise.md)) quando as telas existirem |
+| JAG-74, JAG-80 | Relatório de testes e notas de versão ao fechar a v1.0 |
+| JAG-81 | Aprovação do sumário ([TCC-01](../08-tcc/TCC-01-estrutura-monografia.md)) pelo orientador |
+| JAG-82 | Apêndices, depois da aprovação dos documentos |

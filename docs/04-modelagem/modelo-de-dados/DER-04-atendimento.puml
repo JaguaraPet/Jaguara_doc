@@ -107,27 +107,27 @@ entity "item_atendimento" as ItemAtendimento {
   * atendimento_id : uuid <<FK>>
   * servico_id : uuid <<FK>>
 }
-EmpresaEnterprise ||--}o Cliente
-Tutor ||--}o Cliente
-EmpresaEnterprise ||--}o Servico
-EmpresaEnterprise ||--}o Recurso
-FuncionarioEnterprise |o--}o HorarioAtuacao
-Recurso |o--}o HorarioAtuacao
-Tutor ||--}o SolicitacaoServico
-Pet ||--}o SolicitacaoServico
-Servico ||--}o SolicitacaoServico
-SolicitacaoServico ||--}o HistoricoSolicitacao
-Usuario ||--}o HistoricoSolicitacao
-SolicitacaoServico |o--|o Agendamento
-Servico ||--}o Agendamento
-Pet ||--}o Agendamento
-FuncionarioEnterprise |o--}o Agendamento
-Recurso |o--}o Agendamento
-EventoCalendario |o--}o Agendamento
-Agendamento |o--|o Atendimento
-Pet ||--}o Atendimento
-Usuario ||--}o Atendimento
-FuncionarioEnterprise |o--}o Atendimento
-Atendimento ||--}o ItemAtendimento
-Servico ||--}o ItemAtendimento
+EmpresaEnterprise ||--o{ Cliente
+Tutor ||--o{ Cliente
+EmpresaEnterprise ||--o{ Servico
+EmpresaEnterprise ||--o{ Recurso
+FuncionarioEnterprise |o--o{ HorarioAtuacao
+Recurso |o--o{ HorarioAtuacao
+Tutor ||--o{ SolicitacaoServico
+Pet ||--o{ SolicitacaoServico
+Servico ||--o{ SolicitacaoServico
+SolicitacaoServico ||--o{ HistoricoSolicitacao
+Usuario ||--o{ HistoricoSolicitacao
+SolicitacaoServico |o--o| Agendamento
+Servico ||--o{ Agendamento
+Pet ||--o{ Agendamento
+FuncionarioEnterprise |o--o{ Agendamento
+Recurso |o--o{ Agendamento
+EventoCalendario |o--o{ Agendamento
+Agendamento |o--o| Atendimento
+Pet ||--o{ Atendimento
+Usuario ||--o{ Atendimento
+FuncionarioEnterprise |o--o{ Atendimento
+Atendimento ||--o{ ItemAtendimento
+Servico ||--o{ ItemAtendimento
 @enduml

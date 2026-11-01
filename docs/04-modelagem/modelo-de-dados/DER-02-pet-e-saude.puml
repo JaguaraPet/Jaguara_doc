@@ -129,18 +129,18 @@ entity "tratamento_medicamentoso" as TratamentoMedicamentoso {
     data_fim : date
   * status : status_tratamento
 }
-Especie ||--}o Raca
-Raca ||--}o Pet
-Pet ||--}o ResponsavelPet
-Tutor ||--}o ResponsavelPet
-Pet ||--}o CompartilhamentoPet
-EmpresaEnterprise |o--}o CompartilhamentoPet
-Pet ||--|o Memorial
-Memorial ||--}o ItemMemorial
-Pet ||--}o DocumentoPet
-Pet ||--}o AlergiaRestricao
-Pet ||--}o RegistroClinico
-Usuario ||--}o RegistroClinico
+Especie ||--o{ Raca
+Raca ||--o{ Pet
+Pet ||--o{ ResponsavelPet
+Tutor ||--o{ ResponsavelPet
+Pet ||--o{ CompartilhamentoPet
+EmpresaEnterprise |o--o{ CompartilhamentoPet
+Pet ||--o| Memorial
+Memorial ||--o{ ItemMemorial
+Pet ||--o{ DocumentoPet
+Pet ||--o{ AlergiaRestricao
+Pet ||--o{ RegistroClinico
+Usuario ||--o{ RegistroClinico
 RegistroClinico ||--o| Vacinacao
 RegistroClinico ||--o| Exame
 RegistroClinico ||--o| TratamentoMedicamentoso

@@ -73,13 +73,13 @@ entity "configuracao_notificacao" as ConfiguracaoNotificacao {
   * ativa : boolean
   * usuario_id : uuid <<FK>>
 }
-Pet ||--}o EventoCalendario
-Usuario ||--}o EventoCalendario
-CalendarioExterno |o--}o EventoCalendario
-Usuario ||--}o CalendarioExterno
-Pet ||--}o PlanoAlimentar
-Pet ||--}o RegistroAlimentacao
-PlanoAlimentar |o--}o RegistroAlimentacao
-Usuario ||--}o ConfiguracaoNotificacao
-Usuario ||--}o Notificacao
+Pet ||--o{ EventoCalendario
+Usuario ||--o{ EventoCalendario
+CalendarioExterno |o--o{ EventoCalendario
+Usuario ||--o{ CalendarioExterno
+Pet ||--o{ PlanoAlimentar
+Pet ||--o{ RegistroAlimentacao
+PlanoAlimentar |o--o{ RegistroAlimentacao
+Usuario ||--o{ ConfiguracaoNotificacao
+Usuario ||--o{ Notificacao
 @enduml

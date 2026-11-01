@@ -106,21 +106,21 @@ entity "solicitacao_privacidade" as SolicitacaoPrivacidade {
     data_conclusao : timestamptz
   * usuario_id : uuid <<FK>>
 }
-Pet ||--}o Despesa
-CategoriaDespesa ||--}o Despesa
-Pagamento |o--}o Despesa
-Tutor ||--}o Pagamento
-EmpresaEnterprise |o--}o Pagamento
-Agendamento |o--}o Pagamento
-Assinatura |o--}o Pagamento
-Pagamento ||--}o SolicitacaoReembolso
-Tutor ||--}o Assinatura
-Tutor ||--}o Conversa
-EmpresaEnterprise |o--}o Conversa
-Pet |o--}o Conversa
-Conversa ||--}o Mensagem
-Usuario |o--}o Mensagem
-Usuario ||--}o Consentimento
-TermoUso ||--}o Consentimento
-Usuario ||--}o SolicitacaoPrivacidade
+Pet ||--o{ Despesa
+CategoriaDespesa ||--o{ Despesa
+Pagamento |o--o{ Despesa
+Tutor ||--o{ Pagamento
+EmpresaEnterprise |o--o{ Pagamento
+Agendamento |o--o{ Pagamento
+Assinatura |o--o{ Pagamento
+Pagamento ||--o{ SolicitacaoReembolso
+Tutor ||--o{ Assinatura
+Tutor ||--o{ Conversa
+EmpresaEnterprise |o--o{ Conversa
+Pet |o--o{ Conversa
+Conversa ||--o{ Mensagem
+Usuario |o--o{ Mensagem
+Usuario ||--o{ Consentimento
+TermoUso ||--o{ Consentimento
+Usuario ||--o{ SolicitacaoPrivacidade
 @enduml

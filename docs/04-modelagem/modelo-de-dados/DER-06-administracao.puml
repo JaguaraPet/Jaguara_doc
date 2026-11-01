@@ -70,13 +70,13 @@ entity "relatorio" as Relatorio {
   * gerado_em : timestamptz
   * gerado_por_id : uuid <<FK>>
 }
-Usuario |o--}o LogAuditoria
-Usuario ||--}o ChamadoSuporte
-Administrador |o--}o ChamadoSuporte
-ChamadoSuporte ||--}o IntervencaoSuporte
-Administrador ||--}o IntervencaoSuporte
-Administrador ||--}o Integracao
-Administrador ||--}o Webhook
-Integracao |o--}o Webhook
-Usuario ||--}o Relatorio
+Usuario |o--o{ LogAuditoria
+Usuario ||--o{ ChamadoSuporte
+Administrador |o--o{ ChamadoSuporte
+ChamadoSuporte ||--o{ IntervencaoSuporte
+Administrador ||--o{ IntervencaoSuporte
+Administrador ||--o{ Integracao
+Administrador ||--o{ Webhook
+Integracao |o--o{ Webhook
+Usuario ||--o{ Relatorio
 @enduml

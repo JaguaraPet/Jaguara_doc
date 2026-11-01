@@ -98,12 +98,12 @@ entity "permissao" as Permissao {
   * descricao : text
   * modulo : varchar(255)
 }
-EmpresaEnterprise ||--}o FuncionarioEnterprise
-Usuario ||--}o Sessao
-Usuario ||--}o TokenAcesso
-Usuario ||--}o HistoricoSenha
-PerfilAcesso ||--}o Usuario
-EmpresaEnterprise |o--}o PerfilAcesso
+EmpresaEnterprise ||--o{ FuncionarioEnterprise
+Usuario ||--o{ Sessao
+Usuario ||--o{ TokenAcesso
+Usuario ||--o{ HistoricoSenha
+PerfilAcesso ||--o{ Usuario
+EmpresaEnterprise |o--o{ PerfilAcesso
 Usuario ||--o| Tutor
 Usuario ||--o| Administrador
 Usuario ||--o| EmpresaEnterprise

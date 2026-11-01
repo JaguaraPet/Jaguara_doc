@@ -79,7 +79,7 @@ Fontes: [`modelo-de-dados/`](modelo-de-dados).
 
 ## 5. Modelo físico
 
-O script [`MOD-03-schema.sql`](modelo-de-dados/MOD-03-schema.sql) cria os tipos enumerados, as 54 tabelas, as chaves estrangeiras, as restrições de negócio e os índices. Ele é validado executando-o em um PostgreSQL 16 limpo.
+O script [`MOD-03-schema.sql`](modelo-de-dados/MOD-03-schema.sql) cria os 39 tipos enumerados, as 55 tabelas (54 entidades e a associativa `perfil_permissao`), as 85 chaves estrangeiras, as restrições de negócio e os índices. Ele é validado executando-o em um PostgreSQL 16 limpo.
 
 ## 6. Restrições de negócio no banco
 
@@ -218,7 +218,6 @@ Classe de origem: `TokenAcesso`.
 | `expira_em` | `timestamptz` | não |  |  |
 | `utilizado` | `boolean` | não |  |  |
 | `usuario_id` | `uuid` | não | FK → usuario.id |  |
-| `criado_em` | `timestamptz` | não | DEFAULT now() | Auditoria de criação |
 | `atualizado_em` | `timestamptz` | não | DEFAULT now() | Auditoria de alteração |
 
 #### `historico_senha`
@@ -690,7 +689,6 @@ Classe de origem: `Agendamento`.
 | `profissional_id` | `uuid` | sim | FK → funcionario_enterprise.id |  |
 | `recurso_id` | `uuid` | sim | FK → recurso.id |  |
 | `evento_id` | `uuid` | sim | FK → evento_calendario.id |  |
-| `criado_em` | `timestamptz` | não | DEFAULT now() | Auditoria de criação |
 | `atualizado_em` | `timestamptz` | não | DEFAULT now() | Auditoria de alteração |
 
 #### `atendimento`
@@ -992,3 +990,4 @@ Classe de origem: `Relatorio`.
 | `gerado_por_id` | `uuid` | não | FK → usuario.id |  |
 | `criado_em` | `timestamptz` | não | DEFAULT now() | Auditoria de criação |
 | `atualizado_em` | `timestamptz` | não | DEFAULT now() | Auditoria de alteração |
+

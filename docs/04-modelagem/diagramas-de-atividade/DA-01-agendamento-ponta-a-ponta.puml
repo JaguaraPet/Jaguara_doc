@@ -13,16 +13,12 @@ if (Há horário disponível?) then (não)
   stop
 else (sim)
 endif
-|Tutor|
-:Escolher horário e enviar solicitação (UC-40);
-|Sistema|
-if (Horário ainda livre e sem conflito para o pet? (RN14, RN29)) then (não)
-  :Informar conflito e atualizar horários;
+repeat
   |Tutor|
-  :Escolher outro horário;
+  :Escolher horário e enviar solicitação (UC-40);
   |Sistema|
-else (sim)
-endif
+  :Verificar se o horário segue livre e sem conflito para o pet (RN14, RN29);
+repeat while (Conflito?) is (sim: informar e atualizar horários) not (não)
 :Registrar solicitação PENDENTE\ne histórico (RN38);
 :Notificar a empresa;
 |Empresa|
