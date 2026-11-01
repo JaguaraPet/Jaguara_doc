@@ -4,12 +4,7 @@ Documentação oficial do **Jaguara**, plataforma web e mobile para gestão da r
 
 Projeto de conclusão do curso **Escola de TI** (turma B).
 
-| Integrante | Papel principal |
-|---|---|
-| Micaela Dorneles | Requisitos, UX e prototipação |
-| Miguel Drozino | Casos de uso e gestão do backlog |
-| Nathan Rodrigues | Infraestrutura e repositórios |
-| Ricardo Guilhen | Arquitetura e modelagem |
+**Equipe:** Micaela Dorneles, Miguel Drozino, Nathan Rodrigues e Ricardo Guilhen. Os papéis e responsabilidades estão na [matriz RACI](docs/01-gestao/GES-04-RACI.md).
 
 ## Como esta documentação é organizada
 
