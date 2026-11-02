@@ -2,7 +2,7 @@
 
 | Campo | Valor |
 |---|---|
-| Status | Proposta |
+| Status | Aceita |
 | Data | 01/11/2026 |
 | Autores | Ricardo Guilhen |
 | Tarefa Jira | JAG-38, JAG-39 |
@@ -28,3 +28,5 @@ A avaliação pede o processo de desenvolvimento da equipe justificado via ADR: 
 ## Notas
 
 Atende ao item "processo de desenvolvimento da equipe" da avaliação de artefatos.
+
+Aceita pelo time em 01/11/2026, na revisão das ADRs (JAG-39).

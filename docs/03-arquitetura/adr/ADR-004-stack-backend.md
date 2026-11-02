@@ -2,7 +2,7 @@
 
 | Campo | Valor |
 |---|---|
-| Status | Proposta |
+| Status | Aceita |
 | Data | 01/11/2026 |
 | Autores | Ricardo Guilhen |
 | Tarefa Jira | JAG-38, JAG-39 |
@@ -31,3 +31,5 @@ Backend em **TypeScript (Node.js 20 LTS)** com **NestJS**, organizado como **mon
 ## Notas
 
 Proposta pela padronização da documentação; confirmar na discussão de ADRs (JAG-39).
+
+Aceita pelo time em 01/11/2026, na revisão das ADRs (JAG-39).

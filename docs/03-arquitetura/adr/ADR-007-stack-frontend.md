@@ -2,7 +2,7 @@
 
 | Campo | Valor |
 |---|---|
-| Status | Proposta |
+| Status | Aceita |
 | Data | 01/11/2026 |
 | Autores | Ricardo Guilhen |
 | Tarefa Jira | JAG-38, JAG-39 |
@@ -29,3 +29,5 @@ O tutor usa principalmente o celular (TAP); empresas e administradores usam o co
 ## Notas
 
 Proposta pela padronização; confirmar na discussão de ADRs (JAG-39).
+
+Aceita pelo time em 01/11/2026, na revisão das ADRs (JAG-39).

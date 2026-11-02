@@ -2,7 +2,7 @@
 
 | Campo | Valor |
 |---|---|
-| Status | Proposta |
+| Status | Aceita |
 | Data | 01/11/2026 |
 | Autores | Ricardo Guilhen |
 | Tarefa Jira | JAG-38, JAG-39 |
@@ -28,3 +28,5 @@ Autenticação própria com **senha em hash Argon2id**, **access token JWT de 15
 ## Notas
 
 Proposta pela padronização.
+
+Aceita pelo time em 01/11/2026, na revisão das ADRs (JAG-39).

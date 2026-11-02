@@ -25,14 +25,14 @@ Status: **Aprovado** (revisado e aceito pelo time), **Em revisão** (completo, a
 | [ADR-001 · Arquitetura cliente-servidor baseada em API](03-arquitetura/adr/ADR-001-arquitetura-cliente-servidor.md) | Aceita | JAG-38, JAG-39 |
 | [ADR-002 · Separação dos contextos Tutor e Enterprise](03-arquitetura/adr/ADR-002-separacao-tutor-enterprise.md) | Aceita | JAG-38, JAG-39 |
 | [ADR-003 · Padrão de documentação](03-arquitetura/adr/ADR-003-padrao-de-documentacao.md) | Aceita | JAG-38, JAG-39 |
-| [ADR-004 · Linguagem e stack do backend](03-arquitetura/adr/ADR-004-stack-backend.md) | Proposta | JAG-38, JAG-39 |
+| [ADR-004 · Linguagem e stack do backend](03-arquitetura/adr/ADR-004-stack-backend.md) | Aceita | JAG-38, JAG-39 |
 | [ADR-005 · Banco de dados](03-arquitetura/adr/ADR-005-banco-de-dados.md) | Aceita | JAG-38, JAG-39 |
-| [ADR-006 · Hospedagem e implantação](03-arquitetura/adr/ADR-006-hospedagem-e-implantacao.md) | Proposta | JAG-38, JAG-39 |
-| [ADR-007 · Stack do frontend web e mobile](03-arquitetura/adr/ADR-007-stack-frontend.md) | Proposta | JAG-38, JAG-39 |
-| [ADR-008 · Processo de desenvolvimento](03-arquitetura/adr/ADR-008-processo-de-desenvolvimento.md) | Proposta | JAG-38, JAG-39 |
-| [ADR-009 · Autenticação e autorização](03-arquitetura/adr/ADR-009-autenticacao-e-autorizacao.md) | Proposta | JAG-38, JAG-39 |
+| [ADR-006 · Hospedagem e implantação](03-arquitetura/adr/ADR-006-hospedagem-e-implantacao.md) | Aceita | JAG-38, JAG-39 |
+| [ADR-007 · Stack do frontend web e mobile](03-arquitetura/adr/ADR-007-stack-frontend.md) | Aceita | JAG-38, JAG-39 |
+| [ADR-008 · Processo de desenvolvimento](03-arquitetura/adr/ADR-008-processo-de-desenvolvimento.md) | Aceita | JAG-38, JAG-39 |
+| [ADR-009 · Autenticação e autorização](03-arquitetura/adr/ADR-009-autenticacao-e-autorizacao.md) | Aceita | JAG-38, JAG-39 |
 | [ADR-010 · Decisões de domínio: chat, plano PANTERA e cliente](03-arquitetura/adr/ADR-010-decisoes-de-dominio.md) | Aceita | JAG-38, JAG-65 |
-| [ADR-011 · Tempo real e tarefas assíncronas](03-arquitetura/adr/ADR-011-tempo-real-e-tarefas-assincronas.md) | Proposta | JAG-38, JAG-39 |
+| [ADR-011 · Tempo real e tarefas assíncronas](03-arquitetura/adr/ADR-011-tempo-real-e-tarefas-assincronas.md) | Aceita | JAG-38, JAG-39 |
 
 ## Modelagem
 

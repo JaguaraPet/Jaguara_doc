@@ -2,7 +2,7 @@
 
 | Campo | Valor |
 |---|---|
-| Status | Proposta |
+| Status | Aceita |
 | Data | 01/11/2026 |
 | Autores | Ricardo Guilhen |
 | Tarefa Jira | JAG-38, JAG-39 |
@@ -29,3 +29,5 @@ Aplicações empacotadas em **contêineres Docker** e implantadas em uma **VPS g
 ## Notas
 
 Proposta pela padronização; conferir com a avaliação de custos do JAG-7.
+
+Aceita pelo time em 01/11/2026, na revisão das ADRs (JAG-39).
