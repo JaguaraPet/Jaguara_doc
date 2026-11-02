@@ -12,13 +12,21 @@ entity "cliente" as Cliente {
   * id : uuid <<PK>>
   --
   * codigo : varchar(255)
+  * nome : varchar(255)
+    cpf : varchar(14)
+    telefone : varchar(20)
+    email : varchar(255)
   * data_vinculo : date
     observacoes : text
   * consentimento_lgpd : boolean
     data_consentimento : timestamptz
   * ativo : boolean
   * empresa_id : uuid <<FK>>
-  * tutor_id : uuid <<FK>>
+    tutor_id : uuid <<FK>>
+}
+entity "cliente_pet" as ClientePet {
+  * cliente_id : uuid <<PK, FK>>
+  * pet_id : uuid <<PK, FK>>
 }
 entity "servico" as Servico {
   * id : uuid <<PK>>
@@ -108,7 +116,9 @@ entity "item_atendimento" as ItemAtendimento {
   * servico_id : uuid <<FK>>
 }
 EmpresaEnterprise ||--o{ Cliente
-Tutor ||--o{ Cliente
+Tutor |o--o{ Cliente
+Cliente ||--o{ ClientePet
+Pet ||--o{ ClientePet
 EmpresaEnterprise ||--o{ Servico
 EmpresaEnterprise ||--o{ Recurso
 FuncionarioEnterprise |o--o{ HorarioAtuacao

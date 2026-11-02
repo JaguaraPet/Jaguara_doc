@@ -364,15 +364,24 @@ CREATE TABLE configuracao_notificacao (
 CREATE TABLE cliente (
   id uuid PRIMARY KEY DEFAULT gen_random_uuid(),
   codigo varchar(255) NOT NULL,
+  nome varchar(255) NOT NULL,
+  cpf varchar(14),
+  telefone varchar(20),
+  email varchar(255),
   data_vinculo date NOT NULL,
   observacoes text,
   consentimento_lgpd boolean NOT NULL,
   data_consentimento timestamptz,
   ativo boolean NOT NULL,
   empresa_id uuid NOT NULL,
-  tutor_id uuid NOT NULL,
+  tutor_id uuid,
   criado_em timestamptz NOT NULL DEFAULT now(),
   atualizado_em timestamptz NOT NULL DEFAULT now()
+);
+CREATE TABLE cliente_pet (
+  cliente_id uuid NOT NULL,
+  pet_id uuid NOT NULL,
+  PRIMARY KEY (cliente_id, pet_id)
 );
 CREATE TABLE servico (
   id uuid PRIMARY KEY DEFAULT gen_random_uuid(),
@@ -680,6 +689,8 @@ ALTER TABLE configuracao_notificacao ADD CONSTRAINT fk_configuracao_notificacao_
 ALTER TABLE notificacao ADD CONSTRAINT fk_notificacao_destinatario_id FOREIGN KEY (destinatario_id) REFERENCES usuario(id) ON DELETE RESTRICT;
 ALTER TABLE cliente ADD CONSTRAINT fk_cliente_empresa_id FOREIGN KEY (empresa_id) REFERENCES empresa_enterprise(id) ON DELETE RESTRICT;
 ALTER TABLE cliente ADD CONSTRAINT fk_cliente_tutor_id FOREIGN KEY (tutor_id) REFERENCES tutor(id) ON DELETE RESTRICT;
+ALTER TABLE cliente_pet ADD CONSTRAINT fk_cliente_pet_cliente_id FOREIGN KEY (cliente_id) REFERENCES cliente(id) ON DELETE CASCADE;
+ALTER TABLE cliente_pet ADD CONSTRAINT fk_cliente_pet_pet_id FOREIGN KEY (pet_id) REFERENCES pet(id) ON DELETE RESTRICT;
 ALTER TABLE servico ADD CONSTRAINT fk_servico_empresa_id FOREIGN KEY (empresa_id) REFERENCES empresa_enterprise(id) ON DELETE RESTRICT;
 ALTER TABLE recurso ADD CONSTRAINT fk_recurso_empresa_id FOREIGN KEY (empresa_id) REFERENCES empresa_enterprise(id) ON DELETE RESTRICT;
 ALTER TABLE horario_atuacao ADD CONSTRAINT fk_horario_atuacao_funcionario_id FOREIGN KEY (funcionario_id) REFERENCES funcionario_enterprise(id) ON DELETE RESTRICT;
@@ -743,6 +754,7 @@ CREATE TABLE perfil_permissao (
 -- Restrições de negócio (MOD-01, seção 9)
 ALTER TABLE responsavel_pet ADD CONSTRAINT uq_responsavel_pet UNIQUE (pet_id, tutor_id);
 ALTER TABLE cliente ADD CONSTRAINT uq_cliente UNIQUE (empresa_id, tutor_id);
+ALTER TABLE cliente ADD CONSTRAINT uq_cliente_cpf UNIQUE (empresa_id, cpf);
 ALTER TABLE horario_atuacao ADD CONSTRAINT ck_horario_xor CHECK ((funcionario_id IS NULL) <> (recurso_id IS NULL));  -- RC-20
 ALTER TABLE horario_atuacao ADD CONSTRAINT ck_horario_intervalo CHECK (hora_inicio < hora_fim);
 ALTER TABLE pagamento ADD CONSTRAINT ck_pagamento_xor CHECK ((agendamento_id IS NULL) <> (assinatura_id IS NULL));  -- RC-27

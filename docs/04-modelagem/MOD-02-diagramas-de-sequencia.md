@@ -25,12 +25,12 @@ Mostrar a troca de mensagens entre usuário, aplicativos, API, serviços de dom�
 
 ## 2. Escopo
 
-- **Versão 2 (este documento):** os seis fluxos obrigatórios, em PlantUML, versionados e coerentes com o [MOD-01](MOD-01-modelo-de-classes.md), o [MOD-03](MOD-03-modelo-de-dados.md) e a [API](../03-arquitetura/api/openapi.yaml).
+- **Versão 2 (este documento):** os seis fluxos obrigatórios, em PlantUML, versionados e coerentes com o [MOD-01](MOD-01-modelo-de-classes.md), o [MOD-03](MOD-03-modelo-de-dados.md).
 - **Versão 1 (anexo):** os diagramas dos 46 casos de uso elaborados pela Micaela continuam válidos como visão de alto nível e estão no [PDF original](../anexos/originais/MOD-02-diagramas-de-sequencia-original.pdf).
 
 ## 3. Convenções
 
-- Participantes seguem as camadas do [ARQ-01](../03-arquitetura/ARQ-01-arquitetura.md): aplicação cliente → controlador da API → serviço de domínio → repositório ou adaptador → banco ou sistema externo.
+- Participantes seguem as camadas da arquitetura ([ADR-004](../03-arquitetura/adr/ADR-004-stack-backend.md)): aplicação cliente → controlador da API → serviço de domínio → repositório ou adaptador → banco ou sistema externo.
 - Mensagens síncronas com seta cheia; retornos com seta tracejada; blocos `alt`, `opt` e `loop` da UML.
 - Cada diagrama cita o caso de uso e as regras que exercita.
 

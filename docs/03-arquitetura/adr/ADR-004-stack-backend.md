@@ -13,7 +13,7 @@ O time já havia decidido construir as APIs em Node.js com TypeScript (Duplo Dia
 
 ## Decisão
 
-Backend em **TypeScript (Node.js 20 LTS)** com **NestJS**, organizado como **monólito modular**: um módulo por pacote do domínio (acesso, pet, saúde, rotina, notificação, atendimento, financeiro, comunicação, privacidade, administração, relatórios). Persistência com **Prisma ORM** sobre PostgreSQL; validação de entrada com **class-validator** e **Zod** para configuração; documentação OpenAPI gerada pelo `@nestjs/swagger` e conferida contra o [`openapi.yaml`](../api/openapi.yaml); tarefas assíncronas com **BullMQ** sobre **Redis**; testes com **Jest** e **Supertest**.
+Backend em **TypeScript (Node.js 20 LTS)** com **NestJS**, organizado como **monólito modular**: um módulo por pacote do domínio (acesso, pet, saúde, rotina, notificação, atendimento, financeiro, comunicação, privacidade, administração, relatórios). Persistência com **Prisma ORM** sobre PostgreSQL; validação de entrada com **class-validator** e **Zod** para configuração; documentação OpenAPI gerada pelo `@nestjs/swagger` e conferida contra o contrato OpenAPI do projeto; tarefas assíncronas com **BullMQ** sobre **Redis**; testes com **Jest** e **Supertest**.
 
 ## Alternativas consideradas
 

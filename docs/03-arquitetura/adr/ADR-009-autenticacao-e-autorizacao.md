@@ -23,7 +23,7 @@ Autenticação própria com **senha em hash Argon2id**, **access token JWT de 15
 ## Consequências
 
 - Positiva: controle total das regras de negócio de acesso e revogação imediata.
-- Negativa: o time implementa e testa fluxos sensíveis de segurança; mitigado pela checagem do OWASP ASVS no [ARQ-02](../ARQ-02-seguranca-e-lgpd.md).
+- Negativa: o time implementa e testa fluxos sensíveis de segurança; mitigado pela checagem do OWASP ASVS.
 
 ## Notas
 

@@ -13,7 +13,7 @@ Os artefatos estavam espalhados em Google Docs, planilhas e Miro, cada um com fo
 
 ## Decisão
 
-A documentação segue *docs as code* no repositório `Jaguara_doc`, com os padrões: PMBOK (gestão), ISO/IEC/IEEE 29148 (requisitos), modelo Bússola com campos de Cockburn (casos de uso), Gherkin (critérios de aceitação), UML 2.5.1 em PlantUML (modelagem), arc42 e C4 (arquitetura), ADR de Nygard (decisões), OpenAPI 3.1 (API), ISO/IEC/IEEE 29119-3 (testes), ISO/IEC/IEEE 26514 (manuais) e ABNT NBR 14724 (monografia). Todo documento usa o [modelo padrão](../../_modelos/MODELO-documento.md) e cumpre a [DoD da documentação](../../_modelos/DoD-documentacao.md).
+A documentação segue *docs as code* no repositório `Jaguara_doc`, com os padrões: PMBOK (gestão), ISO/IEC/IEEE 29148 (requisitos), modelo Bússola com campos de Cockburn (casos de uso), Gherkin (critérios de aceitação), UML 2.5.1 em PlantUML (modelagem), arc42 e C4 (arquitetura), ADR de Nygard (decisões), OpenAPI 3.1 (API), ISO/IEC/IEEE 29119-3 (testes) e ISO/IEC/IEEE 26514 (manuais). Todo documento tem cabeçalho com versão, status e tarefa do Jira e um histórico de revisões.
 
 ## Alternativas consideradas
 
@@ -26,7 +26,10 @@ A documentação segue *docs as code* no repositório `Jaguara_doc`, com os padr
 - Positiva: documentação revisável, versionada e rastreável.
 - Positiva: diagramas como texto permitem revisar mudanças linha a linha.
 - Negativa: a equipe precisa aprender PlantUML e Markdown; os originais ficam como anexos para consulta.
+- Negativa: cada documento publicado pode ser objeto de pergunta na avaliação; documentação além do necessário aumenta o que o time precisa dominar.
 
 ## Notas
 
 Aprovada pelo time em 28/10/2026, ao iniciar a padronização (JAG-27).
+
+Atualização de 01/11/2026: a entrega final do curso é o projeto e um pitch, sem monografia, e por isso a ABNT NBR 14724 saiu da lista. O repositório publicado reúne só os artefatos essenciais (requisitos, casos de uso, classes, sequência, DER, atividades, ADRs e UX). Os demais documentos (gestão, arquitetura arc42, testes e manuais) seguem os mesmos padrões e voltam ao repositório quando a etapa correspondente começar.

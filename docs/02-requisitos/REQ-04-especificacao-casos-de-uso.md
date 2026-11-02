@@ -4,7 +4,7 @@
 |---|---|
 | Projeto | Jaguara |
 | Documento | REQ-04 · Especificação de casos de uso |
-| Versão | 2.0 |
+| Versão | 2.1 |
 | Status | Em revisão |
 | Autores | Micaela Dorneles, Miguel Drozino, Nathan Rodrigues, Ricardo Guilhen |
 | Data | 01/11/2026 |
@@ -19,6 +19,7 @@
 | 1.0 | 30/09/2026 | Equipe Jaguara | Especificação dos casos de uso JGR001 a JGR047 na planilha do modelo Bússola (JAG-1, JAG-6). |
 | 1.1 | 30/10/2026 | Equipe Jaguara | Reescrita de JGR002 a JGR008 e demais ajustes; JGR024 incorporado ao JGR023 e renumeração para JGR001 a JGR046 (JAG-35). |
 | 2.0 | 01/11/2026 | Ricardo Guilhen | Migração para o repositório com campos padronizados: identificador UC, requisito, regras de negócio, prioridade, pós-condição e classes envolvidas (JAG-62). Fluxos mantidos como escritos pelo time. |
+| 2.1 | 01/11/2026 | Ricardo Guilhen | UC-21 atende clientes sem conta no Jaguara (ADR-010, item 3). Histórias de usuário retiradas desta versão do repositório. |
 
 ## 1. Objetivo
 
@@ -26,12 +27,12 @@ Especificar o comportamento de cada caso de uso do Jaguara, com os mesmos campos
 
 ## 2. Convenções
 
-- **Identificador:** `UC-nn`, igual ao número da planilha atual (`JGRnnn`). A correspondência com a numeração antiga está no [REQ-00](REQ-00-identificadores.md).
+- **Identificador:** `UC-nn`, igual ao número da planilha atual (`JGRnnn`). O número antigo da planilha aparece no campo Identificador de cada caso de uso.
 - **Prioridade:** MoSCoW (*Must*, *Should*, *Could*), a mesma do requisito no [REQ-01](REQ-01-ERS.md).
 - **Regras de negócio:** as citadas nos fluxos mais as do requisito de origem.
 - **Classes envolvidas:** nomes do [modelo de classes (MOD-01)](../04-modelagem/MOD-01-modelo-de-classes.md).
 - **Fluxos:** numerados pelo passo; fluxos alternativos (`FAnn`) indicam o passo do fluxo principal em que ramificam.
-- **Atores:** os perfis estão descritos no [glossário (REQ-02)](REQ-02-glossario.md); o diagrama está no [REQ-03](REQ-03-diagrama-casos-de-uso.md).
+- **Atores:** o diagrama está no [REQ-03](REQ-03-diagrama-casos-de-uso.md).
 
 ## 3. Índice
 
@@ -101,7 +102,6 @@ Especificar o comportamento de cada caso de uso do Jaguara, com os mesmos campos
 | Pré-condições | O usuário-tutor não deve possuir cadastro ativo na plataforma e deve estar na tela de cadastro. |
 | Pós-condições (garantia de sucesso) | Conta do tutor criada com status PENDENTE_CONFIRMACAO e ativada (ATIVA) após a confirmação do e-mail. |
 | Classes envolvidas | Usuario, Tutor, TokenAcesso |
-| História de usuário | [US-01](REQ-05-historias-de-usuario.md#us-01) |
 
 **Fluxo principal**
 
@@ -150,7 +150,6 @@ Especificar o comportamento de cada caso de uso do Jaguara, com os mesmos campos
 | Pré-condições | O usuário deve estar cadastrado e com a conta ativa, e se encontrar na tela de login. |
 | Pós-condições (garantia de sucesso) | Sessão autenticada criada e contador de falhas de login zerado. |
 | Classes envolvidas | Usuario, Sessao |
-| História de usuário | [US-02](REQ-05-historias-de-usuario.md#us-02) |
 
 **Fluxo principal**
 
@@ -192,7 +191,6 @@ Especificar o comportamento de cada caso de uso do Jaguara, com os mesmos campos
 | Pré-condições | O usuário deve estar cadastrado na plataforma e se encontrar na tela de login. |
 | Pós-condições (garantia de sucesso) | Senha redefinida, token marcado como utilizado e senha anterior registrada no histórico. |
 | Classes envolvidas | Usuario, TokenAcesso, HistoricoSenha |
-| História de usuário | [US-03](REQ-05-historias-de-usuario.md#us-03) |
 
 **Fluxo principal**
 
@@ -235,7 +233,6 @@ Especificar o comportamento de cada caso de uso do Jaguara, com os mesmos campos
 | Pré-condições | O usuário deve estar autenticado e possuir permissão sobre o pet. |
 | Pós-condições (garantia de sucesso) | Pet cadastrado, alterado ou arquivado, com o tutor criador como responsável principal. |
 | Classes envolvidas | Pet, Especie, Raca, ResponsavelPet |
-| História de usuário | [US-04](REQ-05-historias-de-usuario.md#us-04) |
 
 **Fluxo principal**
 
@@ -277,7 +274,6 @@ Especificar o comportamento de cada caso de uso do Jaguara, com os mesmos campos
 | Pré-condições | O tutor deve estar autenticado e possuir um pet cadastrado. |
 | Pós-condições (garantia de sucesso) | Vínculo de responsável criado ou removido, mantendo ao menos um responsável principal ativo. |
 | Classes envolvidas | Pet, Tutor, ResponsavelPet |
-| História de usuário | [US-05](REQ-05-historias-de-usuario.md#us-05) |
 
 **Fluxo principal**
 
@@ -313,7 +309,6 @@ Especificar o comportamento de cada caso de uso do Jaguara, com os mesmos campos
 | Pré-condições | O tutor deve estar autenticado e possuir um pet cadastrado. |
 | Pós-condições (garantia de sucesso) | Despesa registrada, vinculada ao pet e a uma categoria. |
 | Classes envolvidas | Despesa, CategoriaDespesa, Pet |
-| História de usuário | [US-06](REQ-05-historias-de-usuario.md#us-06) |
 
 **Fluxo principal**
 
@@ -348,7 +343,6 @@ Especificar o comportamento de cada caso de uso do Jaguara, com os mesmos campos
 | Pré-condições | O tutor deve estar autenticado e possuir despesas registradas. |
 | Pós-condições (garantia de sucesso) | Relatório do período gerado e, quando solicitado, exportado em PDF. |
 | Classes envolvidas | Relatorio, Despesa |
-| História de usuário | [US-07](REQ-05-historias-de-usuario.md#us-07) |
 
 **Fluxo principal**
 
@@ -383,7 +377,6 @@ Especificar o comportamento de cada caso de uso do Jaguara, com os mesmos campos
 | Pré-condições | O tutor deve estar autenticado e possuir um pet cadastrado. |
 | Pós-condições (garantia de sucesso) | Refeição ou plano alimentar registrado; alerta emitido quando o limite diário é excedido. |
 | Classes envolvidas | PlanoAlimentar, RegistroAlimentacao |
-| História de usuário | [US-08](REQ-05-historias-de-usuario.md#us-08) |
 
 **Fluxo principal**
 
@@ -417,7 +410,6 @@ Especificar o comportamento de cada caso de uso do Jaguara, com os mesmos campos
 | Pré-condições | O usuário deve estar autenticado ("logado") como usuário "Tutor", através do menu principal seleciona a opção de "Calendário" e encontra na tela a opção de "Sincronizar calendário". |
 | Pós-condições (garantia de sucesso) | Calendário externo autorizado e eventos sincronizados com o calendário do aplicativo. |
 | Classes envolvidas | CalendarioExterno, EventoCalendario |
-| História de usuário | [US-09](REQ-05-historias-de-usuario.md#us-09) |
 
 **Fluxo principal**
 
@@ -454,7 +446,6 @@ Especificar o comportamento de cada caso de uso do Jaguara, com os mesmos campos
 | Pré-condições | O usuário deve estar autenticado ("logado") como usuário "Tutor", através do menu principal seleciona a opção de "Calendário" e seleciona a opção "Gerenciar calendário". |
 | Pós-condições (garantia de sucesso) | Evento registrado no calendário do pet e notificações agendadas. |
 | Classes envolvidas | EventoCalendario, Notificacao |
-| História de usuário | [US-10](REQ-05-historias-de-usuario.md#us-10) |
 
 **Fluxo principal**
 
@@ -490,7 +481,6 @@ Especificar o comportamento de cada caso de uso do Jaguara, com os mesmos campos
 | Pré-condições | O usuário deve estar autenticado ("logado") com o perfil de "tutor", através do menu principal seleciona a opção de "Perfil do pet" e se encontrar na tela de "Compartilhar perfil" |
 | Pós-condições (garantia de sucesso) | Compartilhamento ativo, com escopos definidos pelo tutor. |
 | Classes envolvidas | CompartilhamentoPet |
-| História de usuário | [US-11](REQ-05-historias-de-usuario.md#us-11) |
 
 **Fluxo principal**
 
@@ -524,7 +514,6 @@ Especificar o comportamento de cada caso de uso do Jaguara, com os mesmos campos
 | Pré-condições | O usuário deve estar autenticado ("logado") com o perfil de "tutor", se encontra no menu principal e na opção de "Vacinação" e se encontra na tela de "Histórico de vacinas" |
 | Pós-condições (garantia de sucesso) | Nenhum dado alterado; histórico vacinal exibido. |
 | Classes envolvidas | Vacinacao |
-| História de usuário | [US-12](REQ-05-historias-de-usuario.md#us-12) |
 
 **Fluxo principal**
 
@@ -557,7 +546,6 @@ Especificar o comportamento de cada caso de uso do Jaguara, com os mesmos campos
 | Pré-condições | O usuário deve estar autenticado ("logado") com o perfil de "tutor", através do menu principal seleciona a opção de "Vacinação" e se encontrar na tela de "Cadastrar vacinação" |
 | Pós-condições (garantia de sucesso) | Vacinação registrada e lembrete da próxima dose agendado, quando informada. |
 | Classes envolvidas | Vacinacao, Notificacao |
-| História de usuário | [US-13](REQ-05-historias-de-usuario.md#us-13) |
 
 **Fluxo principal**
 
@@ -591,7 +579,6 @@ Especificar o comportamento de cada caso de uso do Jaguara, com os mesmos campos
 | Pré-condições | O usuário deve estar autenticado ("logado") com o perfil de "tutor", através do menu principal seleciona a opção de "Medicamentos" e se encontrar na tela de "Gerenciar medicamentos" |
 | Pós-condições (garantia de sucesso) | Tratamento ativo com lembretes agendados; ao finalizar, lembretes pendentes cancelados. |
 | Classes envolvidas | TratamentoMedicamentoso, Notificacao |
-| História de usuário | [US-14](REQ-05-historias-de-usuario.md#us-14) |
 
 **Fluxo principal**
 
@@ -625,7 +612,6 @@ Especificar o comportamento de cada caso de uso do Jaguara, com os mesmos campos
 | Pré-condições | O usuário deve estar autenticado ("logado") com o perfil de "tutor", através do menu principal seleciona a opção de "Memorial do pet" e se encontrar na tela de "Gerenciar memorial" |
 | Pós-condições (garantia de sucesso) | Memorial criado com fotos, textos e homenagens. |
 | Classes envolvidas | Memorial, ItemMemorial, Pet |
-| História de usuário | [US-15](REQ-05-historias-de-usuario.md#us-15) |
 
 **Fluxo principal**
 
@@ -658,7 +644,6 @@ Especificar o comportamento de cada caso de uso do Jaguara, com os mesmos campos
 | Pré-condições | A empresa está autenticada com perfil de Empresa Enterprise. A empresa possui ao menos um funcionário cadastrado (JGR019). Existem perfis de acesso definidos pela organização (RN20). |
 | Pós-condições (garantia de sucesso) | Perfil de acesso do funcionário alterado, com as novas permissões valendo imediatamente. |
 | Classes envolvidas | PerfilAcesso, Permissao, FuncionarioEnterprise |
-| História de usuário | [US-16](REQ-05-historias-de-usuario.md#us-16) |
 
 **Fluxo principal**
 
@@ -713,7 +698,6 @@ Especificar o comportamento de cada caso de uso do Jaguara, com os mesmos campos
 | Pré-condições | O usuário deve estar autenticado no sistema com perfil de Empresa Enterprise e possuir acesso ao módulo de BI. |
 | Pós-condições (garantia de sucesso) | Nenhum dado alterado; indicadores calculados apenas com dados da própria empresa. |
 | Classes envolvidas | Agendamento, Atendimento, Pagamento |
-| História de usuário | [US-17](REQ-05-historias-de-usuario.md#us-17) |
 
 **Fluxo principal**
 
@@ -751,7 +735,6 @@ Especificar o comportamento de cada caso de uso do Jaguara, com os mesmos campos
 | Pré-condições | O usuário deve estar autenticado no sistema com perfil de Empresa Enterprise e possuir permissão para emissão de relatórios. |
 | Pós-condições (garantia de sucesso) | Relatório operacional ou gerencial gerado conforme as permissões do usuário. |
 | Classes envolvidas | Relatorio |
-| História de usuário | [US-18](REQ-05-historias-de-usuario.md#us-18) |
 
 **Fluxo principal**
 
@@ -785,7 +768,6 @@ Especificar o comportamento de cada caso de uso do Jaguara, com os mesmos campos
 | Pré-condições | Existem perfis de acesso definidos pela organização (RN20). |
 | Pós-condições (garantia de sucesso) | Funcionário cadastrado e ativo após confirmar o e-mail; funcionário removido sem nenhum acesso ativo. |
 | Classes envolvidas | FuncionarioEnterprise, PerfilAcesso, Sessao |
-| História de usuário | [US-19](REQ-05-historias-de-usuario.md#us-19) |
 
 **Fluxo principal 1 - Cadastrar funcionário**
 
@@ -875,7 +857,6 @@ Especificar o comportamento de cada caso de uso do Jaguara, com os mesmos campos
 | Pré-condições | O usuário deve estar autenticado no sistema |
 | Pós-condições (garantia de sucesso) | Nenhum dado alterado; somente pets vinculados exibidos. |
 | Classes envolvidas | Pet, CompartilhamentoPet, Agendamento |
-| História de usuário | [US-20](REQ-05-historias-de-usuario.md#us-20) |
 
 **Fluxo principal**
 
@@ -903,12 +884,11 @@ Especificar o comportamento de cada caso de uso do Jaguara, com os mesmos campos
 | Requisito | RF21 |
 | Regras de negócio | RN25 |
 | Prioridade | Should |
-| Objetivo | Permitir cadastrar e atualizar dados de clientes. |
+| Objetivo | Permitir cadastrar e atualizar dados de clientes, com ou sem conta no Jaguara. |
 | Atores | Usuário-empresa, Usuário-funcionário |
 | Pré-condições | O usuário deve estar autenticado no sistema |
-| Pós-condições (garantia de sucesso) | Cliente vinculado à empresa com consentimento LGPD registrado. |
-| Classes envolvidas | Cliente, Tutor |
-| História de usuário | [US-21](REQ-05-historias-de-usuario.md#us-21) |
+| Pós-condições (garantia de sucesso) | Cliente vinculado à empresa com consentimento LGPD registrado; se o cliente tem conta, o cadastro fica ligado ao tutor. |
+| Classes envolvidas | Cliente, Tutor, Pet |
 
 **Fluxo principal**
 
@@ -916,8 +896,8 @@ Especificar o comportamento de cada caso de uso do Jaguara, com os mesmos campos
 |---|---|---|
 | 1 | O usuário acessa o módulo de clientes. |  |
 | 2 | O usuário seleciona cadastrar, visualizar, editar ou excluir e informa os dados. |  |
-| 3 |  | O sistema valida as informações e os consentimentos. |
-| 4 |  | O sistema salva as alterações. |
+| 3 |  | O sistema valida as informações e os consentimentos e procura uma conta de tutor com o CPF ou o e-mail informado. |
+| 4 |  | O sistema salva o cadastro, ligado à conta do tutor quando ela existe. |
 
 **Fluxos alternativos**
 
@@ -926,6 +906,14 @@ Especificar o comportamento de cada caso de uso do Jaguara, com os mesmos campos
 | 1 | O usuário insere e envia os dados do cliente. |  |
 | 2 |  | O sistema identifica dados inválidos ou sem o devido consentimento. |
 | 3 |  | O sistema bloqueia a gravação do cadastro (RN25 – Proteção de Dados de Clientes). |
+
+**Fluxo alternativo: cliente sem conta no Jaguara**
+
+| Passo | Ator | Sistema |
+|---|---|---|
+| 3a |  | O sistema não encontra conta de tutor e salva o cliente com os dados de contato informados. |
+| 3b | O usuário cadastra os pets atendidos desse cliente. |  |
+| 3c |  | Se houver e-mail, o sistema envia convite para o cliente criar conta; ao criar, o tutor assume os pets como responsável principal (ADR-010). |
 
 <a id="uc-22"></a>
 
@@ -942,7 +930,6 @@ Especificar o comportamento de cada caso de uso do Jaguara, com os mesmos campos
 | Pré-condições | O usuário deve estar autenticado no sistema |
 | Pós-condições (garantia de sucesso) | Nenhum dado alterado; acesso ao perfil registrado em auditoria. |
 | Classes envolvidas | Pet, CompartilhamentoPet |
-| História de usuário | [US-22](REQ-05-historias-de-usuario.md#us-22) |
 
 **Fluxo principal**
 
@@ -975,7 +962,6 @@ Especificar o comportamento de cada caso de uso do Jaguara, com os mesmos campos
 | Pré-condições | O usuário deve estar autenticado com perfil de empresa ou funcionário enterprise e possuir permissão ativa para registrar serviços e atendimentos (RN20, RN26, RN30). |
 | Pós-condições (garantia de sucesso) | Atendimento registrado com itens cobrados pelo preço contratado; atendimento finalizado só muda com auditoria. |
 | Classes envolvidas | Atendimento, ItemAtendimento, Agendamento, Servico |
-| História de usuário | [US-23](REQ-05-historias-de-usuario.md#us-23) |
 
 **Fluxo principal**
 
@@ -1030,7 +1016,6 @@ Especificar o comportamento de cada caso de uso do Jaguara, com os mesmos campos
 | Pré-condições | O usuário está autenticado como empresa ou funcionário enterprise, com permissão para acessar a agenda (RN20). |
 | Pós-condições (garantia de sucesso) | Agenda e horários de atuação atualizados sem sobreposição. |
 | Classes envolvidas | Agendamento, HorarioAtuacao, Recurso, FuncionarioEnterprise |
-| História de usuário | [US-24](REQ-05-historias-de-usuario.md#us-24) |
 
 **Fluxo principal (visualizar agenda)**
 
@@ -1202,7 +1187,6 @@ Especificar o comportamento de cada caso de uso do Jaguara, com os mesmos campos
 | Pré-condições | O administrador deve estar autenticado e posicionado na tela de monitoramento de desempenho. |
 | Pós-condições (garantia de sucesso) | Nenhum dado alterado; métricas e logs exibidos. |
 | Classes envolvidas | LogAuditoria |
-| História de usuário | [US-25](REQ-05-historias-de-usuario.md#us-25) |
 
 **Fluxo principal**
 
@@ -1244,7 +1228,6 @@ Especificar o comportamento de cada caso de uso do Jaguara, com os mesmos campos
 | Pré-condições | O administrador deve estar autenticado e na tela de suporte operacional. |
 | Pós-condições (garantia de sucesso) | Intervenção registrada no chamado e na auditoria. |
 | Classes envolvidas | ChamadoSuporte, IntervencaoSuporte, LogAuditoria |
-| História de usuário | [US-26](REQ-05-historias-de-usuario.md#us-26) |
 
 **Fluxo principal**
 
@@ -1293,7 +1276,6 @@ Especificar o comportamento de cada caso de uso do Jaguara, com os mesmos campos
 | Pré-condições | O administrador deve estar autenticado e na tela de integrações. |
 | Pós-condições (garantia de sucesso) | Integração criada, alterada ou excluída e validada. |
 | Classes envolvidas | Integracao |
-| História de usuário | [US-27](REQ-05-historias-de-usuario.md#us-27) |
 
 **Fluxo principal (Criar Integração)**
 
@@ -1362,7 +1344,6 @@ Especificar o comportamento de cada caso de uso do Jaguara, com os mesmos campos
 | Pré-condições | O administrador deve estar autenticado e na tela de gestão de contas. |
 | Pós-condições (garantia de sucesso) | Status da conta alterado e registrado em auditoria. |
 | Classes envolvidas | Usuario, LogAuditoria |
-| História de usuário | [US-28](REQ-05-historias-de-usuario.md#us-28) |
 
 **Fluxo principal**
 
@@ -1405,7 +1386,6 @@ Especificar o comportamento de cada caso de uso do Jaguara, com os mesmos campos
 | Pré-condições | O administrador deve estar autenticado e na tela de permissões globais. |
 | Pós-condições (garantia de sucesso) | Perfil global alterado, com efeito imediato. |
 | Classes envolvidas | PerfilAcesso, Permissao |
-| História de usuário | [US-29](REQ-05-historias-de-usuario.md#us-29) |
 
 **Fluxo principal**
 
@@ -1441,7 +1421,6 @@ Especificar o comportamento de cada caso de uso do Jaguara, com os mesmos campos
 | Pré-condições | O administrador deve estar autenticado e na tela de gerenciamento de webhooks. |
 | Pós-condições (garantia de sucesso) | Webhook salvo com URL segura e autenticação. |
 | Classes envolvidas | Webhook, Integracao |
-| História de usuário | [US-30](REQ-05-historias-de-usuario.md#us-30) |
 
 **Fluxo principal (Visualizar)**
 
@@ -1510,7 +1489,6 @@ Especificar o comportamento de cada caso de uso do Jaguara, com os mesmos campos
 | Pré-condições | O usuário deve ter autorizado que o sistema envie notificações |
 | Pós-condições (garantia de sucesso) | Notificação enviada ou, em caso de falha, registrada e reagendada. |
 | Classes envolvidas | Notificacao, ConfiguracaoNotificacao, Notificavel |
-| História de usuário | [US-31](REQ-05-historias-de-usuario.md#us-31) |
 
 **Fluxo principal**
 
@@ -1547,7 +1525,6 @@ Especificar o comportamento de cada caso de uso do Jaguara, com os mesmos campos
 | Pré-condições | A empresa não possui cadastro ativo na plataforma e está na tela de cadastro enterprise. |
 | Pós-condições (garantia de sucesso) | Conta da empresa criada e ativada após a confirmação do e-mail. |
 | Classes envolvidas | EmpresaEnterprise, Endereco, TokenAcesso |
-| História de usuário | [US-32](REQ-05-historias-de-usuario.md#us-32) |
 
 **Fluxo principal**
 
@@ -1596,7 +1573,6 @@ Especificar o comportamento de cada caso de uso do Jaguara, com os mesmos campos
 | Pré-condições | Usuário autenticado, o usuário-tutor está visualizando o perfil da empresa. |
 | Pós-condições (garantia de sucesso) | Nenhum dado alterado; catálogo exibido. |
 | Classes envolvidas | Servico, EmpresaEnterprise |
-| História de usuário | [US-33](REQ-05-historias-de-usuario.md#us-33) |
 
 **Fluxo principal**
 
@@ -1659,7 +1635,6 @@ Especificar o comportamento de cada caso de uso do Jaguara, com os mesmos campos
 | Pré-condições | O pet precisa estar cadastrado e válido no sistema. |
 | Pós-condições (garantia de sucesso) | Documento armazenado e vinculado ao pet. |
 | Classes envolvidas | DocumentoPet |
-| História de usuário | [US-34](REQ-05-historias-de-usuario.md#us-34) |
 
 **Fluxo principal**
 
@@ -1708,7 +1683,6 @@ Especificar o comportamento de cada caso de uso do Jaguara, com os mesmos campos
 | Pré-condições | O pet deve estar cadastrado no sistema. |
 | Pós-condições (garantia de sucesso) | Nenhum dado alterado; linha do tempo exibida. |
 | Classes envolvidas | RegistroClinico, EventoCalendario, Atendimento |
-| História de usuário | [US-35](REQ-05-historias-de-usuario.md#us-35) |
 
 **Fluxo principal**
 
@@ -1750,7 +1724,6 @@ Especificar o comportamento de cada caso de uso do Jaguara, com os mesmos campos
 | Pré-condições | O pet deve estar cadastrado no sistema e ter um perfil ativo. |
 | Pós-condições (garantia de sucesso) | Exame registrado no histórico clínico do pet. |
 | Classes envolvidas | Exame |
-| História de usuário | [US-36](REQ-05-historias-de-usuario.md#us-36) |
 
 **Fluxo principal**
 
@@ -1802,7 +1775,6 @@ Especificar o comportamento de cada caso de uso do Jaguara, com os mesmos campos
 | Pré-condições | Pet deve estar cadastrado previamente |
 | Pós-condições (garantia de sucesso) | Alergia ou restrição registrada e visível para os autorizados. |
 | Classes envolvidas | AlergiaRestricao |
-| História de usuário | [US-37](REQ-05-historias-de-usuario.md#us-37) |
 
 **Fluxo principal**
 
@@ -1842,7 +1814,6 @@ Especificar o comportamento de cada caso de uso do Jaguara, com os mesmos campos
 | Pré-condições | O usuário deve estar autenticado com perfil de empresa ou funcionário enterprise e possuir permissão ativa (RN20). |
 | Pós-condições (garantia de sucesso) | Serviço salvo no catálogo; mudança de preço não altera agendamentos existentes. |
 | Classes envolvidas | Servico |
-| História de usuário | [US-38](REQ-05-historias-de-usuario.md#us-38) |
 
 **Fluxo principal**
 
@@ -1920,7 +1891,6 @@ Especificar o comportamento de cada caso de uso do Jaguara, com os mesmos campos
 | Pré-condições | O usuário-empresa ou funcionário deve estar autenticado e com permissão ativa (RN20); o serviço deve estar ativo no catálogo (JGR038); e os horários de atuação e recursos devem estar cadastrados na agenda. |
 | Pós-condições (garantia de sucesso) | Agendamento criado sem conflitos e tutor notificado. |
 | Classes envolvidas | Agendamento, EventoCalendario, Notificacao |
-| História de usuário | [US-39](REQ-05-historias-de-usuario.md#us-39) |
 
 **Fluxo principal (Entrada 1: Agendamento Direto pela Agenda)**
 
@@ -2024,7 +1994,6 @@ Especificar o comportamento de cada caso de uso do Jaguara, com os mesmos campos
 | Pré-condições | O tutor deve ser autorizado e o pet deve estar cadastrado na plataforma. A empresa deve estar ativa, possuir ao menos um serviço ativo no catálogo (JGR038) e horários disponíveis na agenda (JGR024). A empresa deve estar ativa, com serviço ativo (JGR038) e horários de atuação cadastrados (JGR024). |
 | Pós-condições (garantia de sucesso) | Solicitação registrada como PENDENTE, com histórico, e empresa notificada. |
 | Classes envolvidas | SolicitacaoServico, HistoricoSolicitacao, Servico, Pet |
-| História de usuário | [US-40](REQ-05-historias-de-usuario.md#us-40) |
 
 **Fluxo principal**
 
@@ -2119,7 +2088,6 @@ Especificar o comportamento de cada caso de uso do Jaguara, com os mesmos campos
 | Pré-condições | A empresa deve estar autenticada com perfil ativo e permissão válida (RN20). |
 | Pós-condições (garantia de sucesso) | Solicitação ACEITA com agendamento criado ou RECUSADA com motivo; tutor notificado. |
 | Classes envolvidas | SolicitacaoServico, Agendamento, HistoricoSolicitacao |
-| História de usuário | [US-41](REQ-05-historias-de-usuario.md#us-41) |
 
 **Fluxo principal**
 
@@ -2185,7 +2153,6 @@ Especificar o comportamento de cada caso de uso do Jaguara, com os mesmos campos
 | Pré-condições | O tutor precisa estar autenticado. |
 | Pós-condições (garantia de sucesso) | Nenhum dado alterado na consulta; no cancelamento, status CANCELADA com histórico e horário liberado. |
 | Classes envolvidas | SolicitacaoServico, HistoricoSolicitacao |
-| História de usuário | [US-42](REQ-05-historias-de-usuario.md#us-42) |
 
 **Fluxo principal**
 
@@ -2270,7 +2237,6 @@ Especificar o comportamento de cada caso de uso do Jaguara, com os mesmos campos
 | Pré-condições | O usuário deve estar autenticado e possuir o plano PANTERA ativo com acesso ao chat integrado. |
 | Pós-condições (garantia de sucesso) | Mensagens registradas na conversa. |
 | Classes envolvidas | Conversa, Mensagem, Assinatura |
-| História de usuário | [US-43](REQ-05-historias-de-usuario.md#us-43) |
 
 **Fluxo principal**
 
@@ -2311,7 +2277,6 @@ Especificar o comportamento de cada caso de uso do Jaguara, com os mesmos campos
 | Pré-condições | O usuário-empresa deve ter ofertas de serviços cadastradas e o usuário-tutor deve ter iniciado uma contratação válida de serviço. |
 | Pós-condições (garantia de sucesso) | Pagamento ACEITO somente após a confirmação do gateway; nota fiscal disponibilizada. |
 | Classes envolvidas | Pagamento |
-| História de usuário | [US-44](REQ-05-historias-de-usuario.md#us-44) |
 
 **Fluxo principal**
 
@@ -2355,7 +2320,6 @@ Especificar o comportamento de cada caso de uso do Jaguara, com os mesmos campos
 | Pré-condições | O usuário deve possuir pelo menos uma contratação de serviço registrada no sistema. |
 | Pós-condições (garantia de sucesso) | Na consulta, nenhum dado alterado; no reembolso, solicitação EM_ANALISE vinculada ao pagamento. |
 | Classes envolvidas | Pagamento, SolicitacaoReembolso |
-| História de usuário | [US-45](REQ-05-historias-de-usuario.md#us-45) |
 
 **Fluxo principal**
 
@@ -2401,7 +2365,6 @@ Especificar o comportamento de cada caso de uso do Jaguara, com os mesmos campos
 | Pré-condições | O usuário deve estar devidamente autenticado na plataforma. |
 | Pós-condições (garantia de sucesso) | Preferências de consentimento atualizadas e registradas em auditoria. |
 | Classes envolvidas | Consentimento, TermoUso, SolicitacaoPrivacidade |
-| História de usuário | [US-46](REQ-05-historias-de-usuario.md#us-46) |
 
 **Fluxo principal**
 

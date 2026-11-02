@@ -47,17 +47,16 @@ O projeto contempla:
 
 | # | Entrega | Detalhamento |
 |---|---|---|
-| 1 | Definição da solução do projeto | [GES-08](GES-08-pesquisa-de-mercado.md) |
-| 2 | Levantamento e documentação de requisitos | [REQ-01](../02-requisitos/REQ-01-ERS.md) a [REQ-06](../02-requisitos/REQ-06-matriz-de-rastreabilidade.md) |
-| 3 | Modelagem da solução | [MOD-01](../04-modelagem/MOD-01-modelo-de-classes.md) a [MOD-05](../04-modelagem/MOD-05-diagramas-de-atividade.md), [ARQ-01](../03-arquitetura/ARQ-01-arquitetura.md) |
+| 1 | Definição da solução do projeto | Pesquisa de mercado, SWOT, Duplo Diamante e GUT ([original](../anexos/originais/GES-08-pesquisa-de-mercado-original.pdf)) |
+| 2 | Levantamento e documentação de requisitos | [REQ-01](../02-requisitos/REQ-01-ERS.md), [REQ-03](../02-requisitos/REQ-03-diagrama-casos-de-uso.md) e [REQ-04](../02-requisitos/REQ-04-especificacao-casos-de-uso.md) |
+| 3 | Modelagem da solução | [MOD-01](../04-modelagem/MOD-01-modelo-de-classes.md), [MOD-02](../04-modelagem/MOD-02-diagramas-de-sequencia.md), [MOD-03](../04-modelagem/MOD-03-modelo-de-dados.md), [MOD-05](../04-modelagem/MOD-05-diagramas-de-atividade.md) e [ADRs](../03-arquitetura/adr/README.md) |
 | 4 | Desenvolvimento de funcionalidades do aplicativo mobile | Repositório de frontend |
 | 5 | Desenvolvimento de funcionalidades da plataforma web | Repositório de frontend |
 | 6 | Documentação do sistema | Este repositório |
 | 7 | Implementação das funções previstas | Repositório de backend |
-| 8 | Testes e validação da solução | [TST-01](../05-testes/TST-01-plano-de-testes.md) a [TST-03](../05-testes/TST-03-relatorio-de-testes.md) |
-| 9 | Entrega da versão 1.0 | [ENT-04](../07-entrega/ENT-04-notas-de-versao.md) |
+| 8 | Testes e validação da solução | Testes automatizados no repositório de código |
+| 9 | Entrega da versão 1.0 | Aplicação publicada e pitch final |
 
-A decomposição das entregas está na [EAP (GES-02)](GES-02-EAP.md).
 
 ## 5. Stakeholders
 
@@ -67,7 +66,6 @@ A decomposição das entregas está na [EAP (GES-02)](GES-02-EAP.md).
 - equipe responsável pelo desenvolvimento do projeto;
 - patrocinadores e responsáveis pelo produto.
 
-Os papéis de cada parte interessada estão na [matriz RACI (GES-04)](GES-04-RACI.md).
 
 ## 6. Premissas
 
@@ -94,7 +92,6 @@ Os papéis de cada parte interessada estão na [matriz RACI (GES-04)](GES-04-RAC
 - problemas de segurança ou privacidade relacionados às informações armazenadas;
 - dificuldades de adoção da solução pelos usuários.
 
-O tratamento desses riscos está no [registro de riscos (GES-05)](GES-05-registro-de-riscos.md).
 
 ## 9. Critérios de sucesso
 

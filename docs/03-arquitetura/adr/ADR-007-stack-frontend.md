@@ -13,7 +13,7 @@ O tutor usa principalmente o celular (TAP); empresas e administradores usam o co
 
 ## Decisão
 
-**App mobile do tutor em React Native com Expo** (TypeScript, Expo Router, TanStack Query, notificações pelo Expo Notifications). **Aplicação web Enterprise e de administração em React com Vite** (TypeScript, React Router, TanStack Query, biblioteca de componentes acessível). Cliente da API gerado a partir do [`openapi.yaml`](../api/openapi.yaml), compartilhado pelos dois *frontends*.
+**App mobile do tutor em React Native com Expo** (TypeScript, Expo Router, TanStack Query, notificações pelo Expo Notifications). **Aplicação web Enterprise e de administração em React com Vite** (TypeScript, React Router, TanStack Query, biblioteca de componentes acessível). Cliente da API gerado a partir do contrato OpenAPI da API, compartilhado pelos dois *frontends*.
 
 ## Alternativas consideradas
 

@@ -4,7 +4,7 @@
 |---|---|
 | Projeto | Jaguara |
 | Documento | MOD-01 · Modelo de Classes |
-| Versão | 1.0 |
+| Versão | 1.1 |
 | Status | Em revisão |
 | Autores | Micaela Dorneles, Miguel Drozino, Nathan Rodrigues, Ricardo Guilhen |
 | Data | 28/10/2026 |
@@ -15,6 +15,7 @@
 | Versão | Data | Autor | Descrição |
 |---|---|---|---|
 | 1.0 | 28/10/2026 | Equipe Jaguara | Versão inicial em UML 2.5.1. Substitui o rascunho em Mermaid. Pacotes rotina/notificacao e atendimento mostrados em duas visões cada. |
+| 1.1 | 01/11/2026 | Ricardo Guilhen | Questões QA-02 a QA-04 decididas (ADR-010): `Cliente` passa a ser classe própria da empresa, com conta opcional no Jaguara e pets vinculados. |
 
 ## 1. Objetivo
 
@@ -25,7 +26,7 @@ Descrever a estrutura estática do domínio do Jaguara: classes, atributos, oper
 Este documento é o **diagrama de classes de projeto** da camada de domínio, para o app mobile do tutor e a plataforma web Enterprise. Ficam fora dele:
 
 - identificadores técnicos e chaves estrangeiras, que pertencem ao modelo de dados (MOD-03 · Modelo ER);
-- classes de interface, controladores e infraestrutura, que pertencem à documentação de arquitetura (ARQ-01);
+- classes de interface, controladores e infraestrutura, que pertencem à decisões de arquitetura (ADR-004 e ADR-007);
 - métricas de desempenho do RF26, que vêm da ferramenta de monitoramento.
 
 ## 3. Referências
@@ -126,7 +127,7 @@ Fonte: [`DC-03b-notificacao.puml`](diagrama-de-classes/DC-03b-notificacao.puml)
 
 ### 6.5 DC-04a · Catalogo e agenda
 
-Primeira visão do pacote atendimento: clientes (classe de associação entre empresa e tutor), catálogo de serviços, recursos e horários de atuação.
+Primeira visão do pacote atendimento: clientes (cadastro da empresa, com conta opcional de tutor), catálogo de serviços, recursos e horários de atuação.
 
 ![DC-04a](diagrama-de-classes/img/DC-04a-catalogo-e-agenda.svg)
 
@@ -612,11 +613,15 @@ Preferência do usuário de canal e antecedência por tipo de evento.
 
 #### Cliente (classe)
 
-Classe de associação entre EmpresaEnterprise e Tutor: o cadastro do tutor como cliente da empresa.
+Cliente cadastrado por uma EmpresaEnterprise. Pode ou não ter conta no Jaguara: quando tem, fica ligado ao `Tutor` (`conta`); quando não tem, a empresa registra os dados de contato e os pets atendidos (`pets`).
 
 | Atributo | Tipo | Mult. | Restrição | Descrição |
 |---|---|---|---|---|
 | `codigo` | `String` | 1 |  | Código identificador |
+| `nome` | `String` | 1 |  | Nome do cliente |
+| `cpf` | `String` | 0..1 | Único por empresa | CPF do cliente |
+| `telefone` | `String` | 0..1 |  | Telefone de contato |
+| `email` | `String` | 0..1 |  | E-mail de contato; usado para convidar o cliente a criar conta |
 | `dataVinculo` | `Date` | 1 |  | Início do vínculo |
 | `observacoes` | `String` | 0..1 |  | Observações livres |
 | `consentimentoLGPD` | `Boolean` | 1 |  | Cliente autorizou o tratamento dos dados |
@@ -1046,7 +1051,7 @@ Restrições que a notação gráfica não expressa. Escritas em OCL quando poss
 | RC-06 | `Tutor, EmpresaEnterprise` | cpf e cnpj são {unique} em todo o sistema | RN01 |
 | RC-07 | `FuncionarioEnterprise` | not ativo implies sessoes->forAll(s | s.estaExpirada()) | RN23 |
 | RC-08 | `FuncionarioEnterprise` | perfil.escopo = EscopoPerfil::EMPRESA and perfil.dona = empregador | RN20 |
-| RC-09 | `Pet` | ResponsavelPet->select(r | r.ativo and r.tipo = TipoResponsavel::PRINCIPAL)->size() >= 1 | RN09 |
+| RC-09 | `Pet` | ResponsavelPet->select(r | r.ativo and r.tipo = TipoResponsavel::PRINCIPAL)->size() >= 1 or donos->exists(c | c.conta->isEmpty()) | RN09 |
 | RC-10 | `Pet` | possuiHistorico() implies excluir() não é permitido; usa-se arquivar() | RN08 |
 | RC-11 | `Pet` | memorial->notEmpty() implies status = StatusPet::FALECIDO | RN19 |
 | RC-12 | `Pet` | raca é escolhida da lista de Raca da Especie cadastrada | RN07 |
@@ -1070,6 +1075,7 @@ Restrições que a notação gráfica não expressa. Escritas em OCL quando poss
 | RC-30 | `Integracao` | criar ou alterar exige Administrador com a permissão de integrações | RN33 |
 | RC-31 | `IntervencaoSuporte, Usuario` | toda intervenção e toda mudança de status de conta gera LogAuditoria | RN32, RN34 |
 | RC-32 | `Relatorio` | o conteúdo respeita o perfil de quem gera; empresa vê só a própria operação | RN21, RN22 |
+| RC-33 | `Cliente` | vincularConta(t) torna t responsável principal dos pets do cliente que ainda não têm responsável; um tutor é cliente no máximo uma vez por empresa | RN09, RN25 |
 
 ## 10. Rastreabilidade
 
@@ -1123,9 +1129,9 @@ O RF24 foi descontinuado e incorporado ao RF23.
 | ID | Questão | Encaminhamento |
 |---|---|---|
 | QA-01 | As abas JGR002 a JGR008 da planilha de casos de uso ainda têm o texto do modelo. As classes desses casos foram derivadas do RF e das RN. | Completar as especificações (tarefa no backlog). |
-| QA-02 | RF42 descreve chat entre tutor e empresa; JGR044 descreve assistente com plano PANTERA. O modelo aceita os dois (TipoConversa). | Grupo decide o escopo da v1.0. |
-| QA-03 | Cliente pressupõe que todo cliente da empresa é um Tutor cadastrado. | Confirmar com o grupo. Se não for, Cliente ganha nome, CPF e contato. |
-| QA-04 | Assinatura e plano PANTERA aparecem só no JGR044. | Confirmar se planos pagos entram na v1.0. |
+| QA-02 | RF42 descreve chat entre tutor e empresa; JGR044 descreve assistente com plano PANTERA. O modelo aceita os dois (TipoConversa). | Decidido em 01/11/2026: os dois modos na v1.0 ([ADR-010](../03-arquitetura/adr/ADR-010-decisoes-de-dominio.md)). |
+| QA-03 | Cliente pressupõe que todo cliente da empresa é um Tutor cadastrado. | Decidido em 01/11/2026: não é; `Cliente` ganhou nome, CPF, contato, conta opcional e pets ([ADR-010](../03-arquitetura/adr/ADR-010-decisoes-de-dominio.md)). |
+| QA-04 | Assinatura e plano PANTERA aparecem só no JGR044. | Decidido em 01/11/2026: entram na v1.0, para o assistente virtual ([ADR-010](../03-arquitetura/adr/ADR-010-decisoes-de-dominio.md)). |
 
 ## 12. Manutenção dos diagramas
 

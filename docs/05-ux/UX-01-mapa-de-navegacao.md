@@ -19,7 +19,7 @@
 
 ## 1. Objetivo
 
-Listar todas as telas da versão 1.0, como se navega entre elas e qual caso de uso cada uma atende. É a base para os protótipos do Figma ([UX-03](UX-03-prototipos.md)) e para os manuais ([ENT-02](../07-entrega/ENT-02-manual-tutor.md), [ENT-03](../07-entrega/ENT-03-manual-enterprise.md)).
+Listar todas as telas da versão 1.0, como se navega entre elas e qual caso de uso cada uma atende. É a base para os protótipos do Figma ([UX-03](UX-03-prototipos.md)).
 
 ## 2. Princípios
 

@@ -31,7 +31,7 @@ Mostrar quem interage com o Jaguara e para quê: os atores, os 46 casos de uso e
 | Linhas repetidas de Empresa e Funcionário para os mesmos casos | Ator abstrato **Usuário Enterprise**, especializado por Empresa e Funcionário | Generalização de atores evita duplicação e deixa explícito o que é exclusivo da empresa |
 | Linhas de todos os atores para Autenticar e Recuperar senha | Ator abstrato **Usuário**, especializado por Tutor, Usuário Enterprise e Administrador | Idem |
 | Sem relações entre casos de uso | `<<include>>` e `<<extend>>` onde a especificação descreve reaproveitamento | Fluxos alternativos que levam a outro caso de uso viram extensões |
-| Sem sistemas externos | Atores secundários (calendário, gateway, IA, e-mail, notificação, parceiro) | Torna visíveis as dependências externas do [ARQ-03](../03-arquitetura/ARQ-03-integracoes.md) |
+| Sem sistemas externos | Atores secundários (calendário, gateway, IA, e-mail, notificação, parceiro) | Torna visíveis as dependências externas do sistema |
 | Um diagrama com 46 casos | Quatro visões por contexto | Legibilidade; cada visão cabe em uma página |
 
 ## 3. Atores
@@ -45,7 +45,7 @@ Mostrar quem interage com o Jaguara e para quê: os atores, os 46 casos de uso e
 | Funcionário Enterprise | Primário | Usuário vinculado à empresa, com acesso conforme perfil (RN20) |
 | Administrador | Primário | Operador da plataforma |
 | Sistema (agendador) | Temporal | Dispara as notificações programadas |
-| Calendário externo, Gateway de pagamento, Provedor de IA, Serviço de e-mail, Serviço de notificação, Sistema parceiro | Secundários | Sistemas externos ([ARQ-03](../03-arquitetura/ARQ-03-integracoes.md)) |
+| Calendário externo, Gateway de pagamento, Provedor de IA, Serviço de e-mail, Serviço de notificação, Sistema parceiro | Secundários | Sistemas externos |
 
 ## 4. Diagramas
 

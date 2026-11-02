@@ -49,7 +49,7 @@ Prioridade de prototipação, pelos casos de uso *Must* do [REQ-01](../02-requis
 
 1. No Figma, selecione os *frames* finais de cada fluxo.
 2. Exporte em **PNG 2x** (telas) e o arquivo completo em **PDF** (*File → Export frames to PDF*).
-3. Salve em `docs/06-ux/prototipos/` com o nome `UX-03-<numero>-<tela>.png` (exemplo: `UX-03-01-login.png`) e o PDF como `UX-03-prototipos.pdf`.
+3. Salve em `docs/05-ux/prototipos/` com o nome `UX-03-<numero>-<tela>.png` (exemplo: `UX-03-01-login.png`) e o PDF como `UX-03-prototipos.pdf`.
 4. Atualize a tabela da seção 3 com o link de cada imagem e faça o commit (`docs(ux): exporta protótipos de ...`).
 
 ## Questões em aberto
