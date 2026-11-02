@@ -41,8 +41,8 @@ Definir como as classes persistentes do [modelo de classes (MOD-01)](MOD-01-mode
 | `«dataType» Endereco` | Colunas embutidas com prefixo | `tutor.endereco_cep` |
 | Associação 1 para N | Chave estrangeira no lado N | `pet.raca_id` |
 | Composição | Chave estrangeira com `ON DELETE CASCADE` | `item_memorial.memorial_id` |
-| Associação N para N sem atributos | Tabela de junção | `perfil_permissao` |
-| Classe de associação | Tabela com as duas chaves estrangeiras e restrição de unicidade | `responsavel_pet`, `cliente` |
+| Associação N para N sem atributos | Tabela de junção | `perfil_permissao`, `cliente_pet` |
+| Classe de associação | Tabela com as duas chaves estrangeiras e restrição de unicidade | `responsavel_pet` |
 | Interface `Notificavel` | Referência polimórfica (`origem_tipo`, `origem_id`) | `notificacao` |
 | `{unique}` | `UNIQUE` | `usuario.email` |
 | Atributo derivado (`/idade`) | Não é armazenado; calculado na consulta | — |

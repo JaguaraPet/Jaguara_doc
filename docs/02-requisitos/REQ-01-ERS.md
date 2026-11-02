@@ -198,7 +198,7 @@ Os RNF originais (RNF01 a RNF10) foram mantidos e cada um recebeu métricas veri
 | RNF07 | Confiabilidade (recuperabilidade) | Backup automático e recuperação em caso de falha | Backup completo diário com retenção de 30 dias; RPO ≤ 24 h; RTO ≤ 4 h; teste de restauração mensal | Registro dos backups e dos testes de restauração |
 | RNF08 | Eficiência (comportamento no tempo) | Informações sincronizadas entre dispositivos em tempo real | Alterações refletidas nos outros dispositivos conectados em ≤ 2 s (p95); mensagens de chat entregues em ≤ 1 s | Teste automatizado com dois clientes conectados |
 | RNF09 | Manutenibilidade | Arquitetura que facilite manutenção e evolução | Cobertura de testes ≥ 70% nas regras de negócio; lint e build sem erros na CI; complexidade ciclomática ≤ 10 por função; todo código revisado por pull request | Relatório de cobertura e análise estática na CI |
-| RNF10 | Compatibilidade (interoperabilidade) | Integração com serviços externos | API documentada em OpenAPI 3.1; cada integração atrás de um adaptador próprio; webhooks assinados com HMAC-SHA256 e até 5 tentativas com espera exponencial | Validação do `openapi.yaml` na CI; testes de contrato dos adaptadores |
+| RNF10 | Compatibilidade (interoperabilidade) | Integração com serviços externos | API documentada em OpenAPI 3.1; cada integração atrás de um adaptador próprio; webhooks assinados com HMAC-SHA256 e até 5 tentativas com espera exponencial | Validação do contrato OpenAPI na CI do backend; testes de contrato dos adaptadores |
 
 As decisões de arquitetura que atendem aos RNF estão nas [ADRs](../03-arquitetura/adr/README.md).
 
