@@ -1,6 +1,6 @@
 # Como contribuir
 
-Guia de contribuição dos repositórios do Jaguara. A justificativa do processo está na [ADR-008](docs/03-arquitetura/adr/ADR-008-processo-de-desenvolvimento.md).
+Guia de contribuição dos repositórios do Jaguara. A justificativa do processo está na [ADR-008](docs/03-arquitetura/adr/ADR-008-processo-de-desenvolvimento.md) e as cerimônias no [GES-06](docs/01-gestao/GES-06-processo-do-time.md).
 
 ## Fluxo de trabalho (GitHub Flow)
 
@@ -48,9 +48,10 @@ fix(auth): expira sessão após 4 horas de inatividade
 
 ## Documentação
 
+- Use o [modelo de documento](docs/_modelos/MODELO-documento.md) e cumpra a [DoD da documentação](docs/_modelos/DoD-documentacao.md).
 - Diagramas em PlantUML: edite o `.puml` e gere o SVG em `img/` (veja o [README](README.md)).
 - Ao mudar um documento, atualize a versão, o histórico de revisões e o [índice](docs/README.md).
 
 ## Versões
 
-Versionamento Semântico com *tags* `vX.Y.Z`. As mudanças de cada versão vão nas notas do *release* no GitHub.
+Versionamento Semântico com *tags* `vX.Y.Z`. As mudanças de cada versão vão nas [notas de versão](docs/07-entrega/ENT-04-notas-de-versao.md) e nas notas do *release* no GitHub.

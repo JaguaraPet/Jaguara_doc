@@ -34,13 +34,14 @@ Fora do escopo da versão 1.0: venda de produtos (marketplace), integração com
 
 ### 1.3 Definições
 
+Os termos do domínio estão no [glossário (REQ-02)](REQ-02-glossario.md).
 
 ### 1.4 Referências
 
 | ID | Documento |
 |---|---|
 | REF-01 | [GES-01 · Termo de Abertura](../01-gestao/GES-01-TAP.md) |
-| REF-02 | Pesquisa de mercado ([original](../anexos/originais/GES-08-pesquisa-de-mercado-original.pdf)) (LGPD e CDC) |
+| REF-02 | [GES-08 · Pesquisa de mercado](../01-gestao/GES-08-pesquisa-de-mercado.md) (LGPD e CDC) |
 | REF-03 | [REQ-04 · Especificação de casos de uso](REQ-04-especificacao-casos-de-uso.md) |
 | REF-04 | ISO/IEC/IEEE 29148:2018, *Systems and software engineering: Life cycle processes, Requirements engineering* |
 | REF-05 | ISO/IEC 25010:2023, *Product quality model* |
@@ -50,7 +51,7 @@ Fora do escopo da versão 1.0: venda de produtos (marketplace), integração com
 
 ### 2.1 Perspectiva do produto
 
-O Jaguara é um produto novo, composto por um aplicativo mobile (tutor), uma aplicação web (Enterprise e administração) e uma API compartilhada. Ele se integra a calendários externos, gateway de pagamento, serviços de e-mail e notificação *push* e a um provedor de inteligência artificial para o assistente virtual. As decisões de arquitetura estão nas [ADRs](../03-arquitetura/adr/README.md).
+O Jaguara é um produto novo, composto por um aplicativo mobile (tutor), uma aplicação web (Enterprise e administração) e uma API compartilhada. Ele se integra a calendários externos, gateway de pagamento, serviços de e-mail e notificação *push* e a um provedor de inteligência artificial para o assistente virtual. A arquitetura está no [ARQ-01](../03-arquitetura/ARQ-01-arquitetura.md) e as decisões nas [ADRs](../03-arquitetura/adr/README.md).
 
 ### 2.2 Classes de usuários
 
@@ -73,7 +74,7 @@ O Jaguara é um produto novo, composto por um aplicativo mobile (tutor), uma apl
 - Linguagem principal TypeScript em todas as camadas ([ADR-004](../03-arquitetura/adr/ADR-004-stack-backend.md)).
 - Banco de dados relacional PostgreSQL ([ADR-005](../03-arquitetura/adr/ADR-005-banco-de-dados.md)).
 - Conformidade com a LGPD e o CDC.
-- Orçamento de infraestrutura reduzido.
+- Orçamento de infraestrutura reduzido (risco R07 do [GES-05](../01-gestao/GES-05-registro-de-riscos.md)).
 
 ### 2.5 Premissas e dependências
 
@@ -200,7 +201,7 @@ Os RNF originais (RNF01 a RNF10) foram mantidos e cada um recebeu métricas veri
 | RNF09 | Manutenibilidade | Arquitetura que facilite manutenção e evolução | Cobertura de testes ≥ 70% nas regras de negócio; lint e build sem erros na CI; complexidade ciclomática ≤ 10 por função; todo código revisado por pull request | Relatório de cobertura e análise estática na CI |
 | RNF10 | Compatibilidade (interoperabilidade) | Integração com serviços externos | API documentada em OpenAPI 3.1; cada integração atrás de um adaptador próprio; webhooks assinados com HMAC-SHA256 e até 5 tentativas com espera exponencial | Validação do contrato OpenAPI na CI do backend; testes de contrato dos adaptadores |
 
-As decisões de arquitetura que atendem aos RNF estão nas [ADRs](../03-arquitetura/adr/README.md).
+A forma como a arquitetura atende a cada RNF está no [ARQ-01](../03-arquitetura/ARQ-01-arquitetura.md), seção 10, e as decisões nas [ADRs](../03-arquitetura/adr/README.md).
 
 ## 6. Interfaces externas
 
@@ -213,10 +214,11 @@ As decisões de arquitetura que atendem aos RNF estão nas [ADRs](../03-arquitet
 | Provedor de inteligência artificial | Assistente virtual do chat | RF42 |
 | Webhooks de saída | Eventos para sistemas parceiros | RF31 |
 
+Detalhes no [ARQ-03](../03-arquitetura/ARQ-03-integracoes.md).
 
 ## 7. Verificação
 
-Cada RF é verificado pelos testes automatizados dos casos de uso correspondentes ([REQ-04](REQ-04-especificacao-casos-de-uso.md)); cada RNF, pelo método da tabela da seção 5.
+Cada RF é verificado pelos casos de teste das histórias correspondentes ([TST-02](../06-testes/TST-02-casos-de-teste.md)) e pelos testes automatizados dos casos de uso ([REQ-04](REQ-04-especificacao-casos-de-uso.md)); cada RNF, pelo método da tabela da seção 5. A matriz completa está no [REQ-06](REQ-06-matriz-de-rastreabilidade.md).
 
 ## Questões em aberto
 
