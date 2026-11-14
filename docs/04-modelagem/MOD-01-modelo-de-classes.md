@@ -26,7 +26,7 @@ Descrever a estrutura estática do domínio do Jaguara: classes, atributos, oper
 Este documento é o **diagrama de classes de projeto** da camada de domínio, para o app mobile do tutor e a plataforma web Enterprise. Ficam fora dele:
 
 - identificadores técnicos e chaves estrangeiras, que pertencem ao modelo de dados (MOD-03 · Modelo ER);
-- classes de interface, controladores e infraestrutura, que pertencem à decisões de arquitetura (ADR-004 e ADR-007);
+- classes de interface, controladores e infraestrutura, que pertencem à documentação de arquitetura ([ARQ-01](../03-arquitetura/ARQ-01-arquitetura.md));
 - métricas de desempenho do RF26, que vêm da ferramenta de monitoramento.
 
 ## 3. Referências

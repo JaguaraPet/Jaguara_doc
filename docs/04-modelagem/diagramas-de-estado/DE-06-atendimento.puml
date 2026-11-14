@@ -1,0 +1,12 @@
+@startuml DE-06-atendimento
+!include _estilo.iuml
+title DE-06 · Atendimento (Atendimento.status: StatusAtendimento)
+
+[*] --> EM_ANDAMENTO : registrar() (UC-23)
+EM_ANDAMENTO --> EM_ANDAMENTO : editar itens e observações
+EM_ANDAMENTO --> FINALIZADO : finalizar() / finalizadoEm = agora
+FINALIZADO --> FINALIZADO : alterarComAuditoria(justificativa)\n[justificativa informada]\n/ registra LogAuditoria CRITICO (RN28)
+FINALIZADO --> [*]
+
+FINALIZADO : edição simples bloqueada
+@enduml

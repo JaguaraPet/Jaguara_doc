@@ -1,0 +1,47 @@
+@startuml IMP-01-implantacao
+skinparam defaultFontName Arial
+skinparam defaultFontSize 11
+skinparam shadowing false
+title IMP-01 · Diagrama de implantação (UML 2.5.1)
+
+node "Celular do tutor\n(Android 10+ / iOS 15+)" as cel {
+  artifact "App Jaguara\n(Expo)" as appArt
+}
+node "Navegador\n(Chrome, Edge, Firefox, Safari)" as nav {
+  artifact "Web Jaguara\n(SPA)" as webArt
+}
+cloud "GitHub" {
+  node "GitHub Actions" as ci
+}
+node "VPS de produção (Linux)" as vps {
+  node "CapRover / Docker" as cap {
+    node "Nginx (TLS)" as nginx
+    artifact "api:vX.Y.Z" as apiC
+    artifact "worker:vX.Y.Z" as workerC
+    artifact "web:vX.Y.Z" as webC
+    database "Redis" as redis
+  }
+  database "PostgreSQL 16" as pg
+}
+storage "Armazenamento S3\n(arquivos e backups)" as s3
+cloud "Serviços externos" as ext
+
+appArt --> nginx : HTTPS / WSS
+webArt --> nginx : HTTPS / WSS
+nginx --> apiC
+nginx --> webC
+apiC --> pg
+workerC --> pg
+apiC --> redis
+workerC --> redis
+apiC --> s3
+pg ..> s3 : backup diário
+apiC --> ext : HTTPS
+workerC --> ext : HTTPS
+ci ..> cap : deploy de imagens
+
+note bottom of vps
+  Ambientes: homologação (deploy a cada merge na main)
+  e produção (deploy por tag de versão) (ADR-006)
+end note
+@enduml

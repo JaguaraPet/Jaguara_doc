@@ -9,7 +9,7 @@
 
 ## Contexto
 
-A avaliação pede o processo de desenvolvimento da equipe justificado via ADR: fluxo de trabalho, estratégia de branches, integração contínua e *definition of done*. O time trabalha em sprints de duas semanas no Jira.
+A avaliação pede o processo de desenvolvimento da equipe justificado via ADR: fluxo de trabalho, estratégia de branches, integração contínua e *definition of done*. O time trabalha em sprints de duas semanas no Jira ([GES-06](../../01-gestao/GES-06-processo-do-time.md)).
 
 ## Decisão
 

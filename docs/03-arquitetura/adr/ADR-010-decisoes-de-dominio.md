@@ -25,7 +25,7 @@ O modelo de classes deixou três questões em aberto (QA-02 a QA-04 do MOD-01): 
 ## Consequências
 
 - Positiva: o MOD-01 já suporta os dois modos de chat e a assinatura, sem mudança de modelo.
-- Negativa: o assistente virtual depende de um provedor de IA externo e precisa de aviso de que não substitui o veterinário (risco R08).
+- Negativa: o assistente virtual depende de um provedor de IA externo ([ARQ-03](../ARQ-03-integracoes.md)) e precisa de aviso de que não substitui o veterinário (risco R08).
 - Positiva: a empresa registra qualquer cliente; o e-mail do cadastro serve para convidar o cliente a criar conta.
 - Negativa: pets de clientes sem conta existem sem responsável tutor até o vínculo, o que exige a regra RC-09 com exceção e a tabela `cliente_pet` ([MOD-01](../../04-modelagem/MOD-01-modelo-de-classes.md), [MOD-03](../../04-modelagem/MOD-03-modelo-de-dados.md)).
 
