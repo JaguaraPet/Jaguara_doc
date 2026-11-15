@@ -12,10 +12,11 @@ Status: **Aprovado** (revisado e aceito pelo time), **Em revisão** (completo, a
 | [GES-02 · Estrutura Analítica do Projeto (EAP)](01-gestao/GES-02-EAP.md) | 1.1 | Em revisão | JAG-54 |
 | [GES-03 · Cronograma](01-gestao/GES-03-cronograma.md) | 1.1 | Em revisão | JAG-55 |
 | [GES-04 · Matriz RACI](01-gestao/GES-04-RACI.md) | 2.0 | Aprovado | JAG-21 (elaboração), JAG-51 (migração) |
-| [GES-05 · Registro de riscos](01-gestao/GES-05-registro-de-riscos.md) | 1.3 | Em revisão | JAG-56, JAG-215, JAG-216 |
+| [GES-05 · Registro de riscos](01-gestao/GES-05-registro-de-riscos.md) | 1.4 | Em revisão | JAG-56, JAG-215, JAG-216, JAG-40 |
 | [GES-06 · Processo do time](01-gestao/GES-06-processo-do-time.md) | 1.0 | Em revisão | JAG-57 |
 | [GES-07 · Backlog de documentação](01-gestao/GES-07-backlog-documentacao.md) | 1.4 | Documentação entregue | — |
 | [GES-08 · Pesquisa de mercado e análise estratégica](01-gestao/GES-08-pesquisa-de-mercado.md) | 2.0 | Aprovado | JAG-16, JAG-18, JAG-19, JAG-20 (elaboração), JAG-51 (migração) |
+| [GES-09 · Análise de mercado e concorrência](01-gestao/GES-09-mercado-e-concorrencia.md) | 0.1 | Em revisão | JAG-40 |
 
 ## Requisitos
 

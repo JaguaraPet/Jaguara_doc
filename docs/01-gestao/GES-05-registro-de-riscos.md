@@ -4,11 +4,11 @@
 |---|---|
 | Projeto | Jaguara |
 | Documento | GES-05 · Registro de riscos |
-| Versão | 1.3 |
+| Versão | 1.4 |
 | Status | Em revisão |
 | Autores | Ricardo Guilhen |
 | Data | 14/11/2026 |
-| Tarefa Jira | JAG-56, JAG-215, JAG-216 |
+| Tarefa Jira | JAG-56, JAG-215, JAG-216, JAG-40 |
 | Padrão de referência | PMBOK, gerenciamento de riscos; Matriz GUT para priorização |
 
 ## Histórico de revisões
@@ -19,6 +19,7 @@
 | 1.1 | 14/11/2026 | Ricardo Guilhen | R12 encerrado: decisões de domínio registradas na ADR-010. |
 | 1.2 | 14/11/2026 | Ricardo Guilhen | R15 e R16 (dados dos pets, backups e transferência internacional) e ação de R03 alinhada ao ARQ-02 2.0. |
 | 1.3 | 14/11/2026 | Ricardo Guilhen | R17: cliente da empresa sem consentimento válido (RN41, JUR-04). |
+| 1.4 | 14/11/2026 | Ricardo Guilhen | Ação do R06 ligada ao roteiro de pesquisa e às faixas de preço do GES-09. |
 
 ## 1. Objetivo
 
@@ -46,7 +47,7 @@ Manter em um só lugar os riscos do projeto, com probabilidade, impacto, respost
 | R03 | Incidente de segurança com dados pessoais de tutores e pets | Mapeamento LGPD | 75 | 3 | 5 | 15 | Mitigar | Classificação dos dados, criptografia em trânsito, em repouso e nos backups, CPF cifrado e mascarado, RBAC, auditoria e minimização ([ARQ-02](../03-arquitetura/ARQ-02-seguranca-e-lgpd.md), seções 3 a 6) | Ricardo Guilhen | Em tratamento |
 | R04 | Conflito ou indeferimento do registro da marca "Jaguara Pet" (NCL 42) | Pesquisa INPI | 64 | 2 | 4 | 8 | Evitar | Depositar o pedido de marca e registrar os domínios antes da divulgação | Miguel Drozino | Aberto |
 | R05 | Mudanças na legislação (LGPD, CDC, CFMV) | SWOT, ameaça | 60 | 2 | 4 | 8 | Aceitar e monitorar | Revisar termos de uso e política de privacidade a cada semestre | Miguel Drozino | Aberto |
-| R06 | Baixa conversão para versões pagas (plano PANTERA) | SWOT, ameaça | 48 | 4 | 3 | 12 | Mitigar | Testar percepção de valor e preço com tutores antes de fechar a monetização | Micaela Dorneles | Aberto |
+| R06 | Baixa conversão para versões pagas (plano PANTERA) | SWOT, ameaça | 48 | 4 | 3 | 12 | Mitigar | Testar percepção de valor e preço com tutores antes de fechar a monetização, com o roteiro e as faixas de preço do [GES-09](GES-09-mercado-e-concorrencia.md) | Micaela Dorneles | Aberto |
 | R07 | Falta de capital inicial para infraestrutura e marketing | SWOT, ponto fraco e ameaça | 36 | 4 | 3 | 12 | Mitigar | MVP enxuto, hospedagem de baixo custo ([ADR-006](../03-arquitetura/adr/ADR-006-hospedagem-e-implantacao.md)) | Miguel Drozino | Em tratamento |
 | R08 | Responsabilização por indisponibilidade ou por conteúdo tomado como orientação veterinária | CDC, art. 8 e 14 | 30 | 2 | 4 | 8 | Mitigar | Aviso de que a plataforma não substitui o veterinário; metas de disponibilidade no [REQ-01](../02-requisitos/REQ-01-ERS.md) | Miguel Drozino | Aberto |
 | R09 | Escopo de 45 requisitos funcionais maior que a capacidade de quatro pessoas até a v1.0 | Análise da EAP | – | 4 | 4 | 16 | Mitigar | Priorizar por MoSCoW no [REQ-01](../02-requisitos/REQ-01-ERS.md) e implementar primeiro os "Must" | Miguel Drozino | Aberto |

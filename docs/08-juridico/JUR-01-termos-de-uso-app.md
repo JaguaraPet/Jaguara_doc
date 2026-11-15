@@ -132,4 +132,4 @@ Dúvidas e reclamações: canal de suporte no app. Assuntos de privacidade: cana
 |---|---|---|
 | QA-01 | Validação jurídica do texto | Orientador ou assessoria jurídica, antes do lançamento público |
 | QA-02 | Razão social, CNPJ e endereço do Jaguara no texto | Depois da formalização da empresa |
-| QA-03 | Preço e período do plano PANTERA | Modelo de negócio da análise de mercado (GES-09, JAG-40) |
+| QA-03 | Preço e período do plano PANTERA | Faixas de preço do [GES-09](../01-gestao/GES-09-mercado-e-concorrencia.md), seção 7.2, depois da pesquisa com usuários |

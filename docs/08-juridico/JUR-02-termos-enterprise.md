@@ -119,5 +119,5 @@ Lei brasileira. Fica eleito o foro da comarca da sede da empresa contratante.
 | ID | Questão | Encaminhamento |
 |---|---|---|
 | QA-01 | Validação jurídica do texto, em especial do limite de responsabilidade (A.8) | Orientador ou assessoria jurídica |
-| QA-02 | Planos e preços da Enterprise | Modelo de negócio da análise de mercado (GES-09, JAG-40) |
+| QA-02 | Planos e preços da Enterprise | Faixas de preço do [GES-09](../01-gestao/GES-09-mercado-e-concorrencia.md), seção 7.2, depois da pesquisa com usuários |
 | QA-03 | Razão social, CNPJ e endereço do Jaguara | Depois da formalização da empresa |
