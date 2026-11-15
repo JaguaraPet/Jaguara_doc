@@ -19,7 +19,8 @@ entity "tutor" as Tutor {
   * id : uuid <<PK>>
   --
   * nome : varchar(255)
-  * cpf : char(11) <<UK>>
+  * cpf_cifrado : bytea
+  * cpf_hash : char(64) <<UK>>
     data_nascimento : date
     endereco_cep : varchar(10)
     endereco_logradouro : varchar(120)
@@ -53,7 +54,8 @@ entity "funcionario_enterprise" as FuncionarioEnterprise {
   * id : uuid <<PK>>
   --
   * nome : varchar(255)
-  * cpf : char(11) <<UK>>
+  * cpf_cifrado : bytea
+  * cpf_hash : char(64) <<UK>>
     cargo : varchar(255)
   * ativo : boolean
   * empresa_id : uuid <<FK>>

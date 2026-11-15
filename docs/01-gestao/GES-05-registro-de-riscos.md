@@ -4,11 +4,11 @@
 |---|---|
 | Projeto | Jaguara |
 | Documento | GES-05 · Registro de riscos |
-| Versão | 1.1 |
+| Versão | 1.2 |
 | Status | Em revisão |
 | Autores | Ricardo Guilhen |
 | Data | 14/11/2026 |
-| Tarefa Jira | JAG-56 |
+| Tarefa Jira | JAG-56, JAG-215 |
 | Padrão de referência | PMBOK, gerenciamento de riscos; Matriz GUT para priorização |
 
 ## Histórico de revisões
@@ -17,6 +17,7 @@
 |---|---|---|---|
 | 1.0 | 01/11/2026 | Ricardo Guilhen | Consolidação dos riscos do TAP, da SWOT e da Matriz GUT, com acréscimo dos riscos de execução da Sprint 7. |
 | 1.1 | 14/11/2026 | Ricardo Guilhen | R12 encerrado: decisões de domínio registradas na ADR-010. |
+| 1.2 | 14/11/2026 | Ricardo Guilhen | R15 e R16 (dados dos pets, backups e transferência internacional) e ação de R03 alinhada ao ARQ-02 2.0. |
 
 ## 1. Objetivo
 
@@ -27,6 +28,7 @@ Manter em um só lugar os riscos do projeto, com probabilidade, impacto, respost
 - Riscos iniciais do [TAP (GES-01)](GES-01-TAP.md), seção 8.
 - SWOT e Matriz GUT da [pesquisa de mercado (GES-08)](GES-08-pesquisa-de-mercado.md), com a mesma numeração (R01 a R08 = IDs 1 a 8 da GUT).
 - Riscos de execução identificados na padronização da documentação (R09 a R14).
+- Riscos de proteção de dados apontados na avaliação de 10/11/2026 (R15 e R16).
 
 ## 3. Escalas
 
@@ -40,7 +42,7 @@ Manter em um só lugar os riscos do projeto, com probabilidade, impacto, respost
 |---|---|---|---|---|---|---|---|---|---|---|
 | R01 | Conhecimento limitado da área veterinária | SWOT, ponto fraco | 100 | 4 | 5 | 20 | Mitigar | Validar campos de saúde, terminologia e regras com veterinário parceiro; nenhuma recomendação clínica automatizada | Miguel Drozino | Aberto |
 | R02 | Baixa adesão das clínicas à integração | SWOT, oportunidades | 80 | 3 | 5 | 15 | Mitigar | Validar o módulo Enterprise com clínicas antes do desenvolvimento; piloto gratuito para as primeiras parceiras | Miguel Drozino | Aberto |
-| R03 | Incidente de segurança com dados pessoais de tutores e pets | Mapeamento LGPD | 75 | 3 | 5 | 15 | Mitigar | Criptografia em trânsito e em repouso, RBAC, auditoria e minimização de dados ([ARQ-02](../03-arquitetura/ARQ-02-seguranca-e-lgpd.md)) | Ricardo Guilhen | Em tratamento |
+| R03 | Incidente de segurança com dados pessoais de tutores e pets | Mapeamento LGPD | 75 | 3 | 5 | 15 | Mitigar | Classificação dos dados, criptografia em trânsito, em repouso e nos backups, CPF cifrado e mascarado, RBAC, auditoria e minimização ([ARQ-02](../03-arquitetura/ARQ-02-seguranca-e-lgpd.md), seções 3 a 6) | Ricardo Guilhen | Em tratamento |
 | R04 | Conflito ou indeferimento do registro da marca "Jaguara Pet" (NCL 42) | Pesquisa INPI | 64 | 2 | 4 | 8 | Evitar | Depositar o pedido de marca e registrar os domínios antes da divulgação | Miguel Drozino | Aberto |
 | R05 | Mudanças na legislação (LGPD, CDC, CFMV) | SWOT, ameaça | 60 | 2 | 4 | 8 | Aceitar e monitorar | Revisar termos de uso e política de privacidade a cada semestre | Miguel Drozino | Aberto |
 | R06 | Baixa conversão para versões pagas (plano PANTERA) | SWOT, ameaça | 48 | 4 | 3 | 12 | Mitigar | Testar percepção de valor e preço com tutores antes de fechar a monetização | Micaela Dorneles | Aberto |
@@ -52,6 +54,8 @@ Manter em um só lugar os riscos do projeto, com probabilidade, impacto, respost
 | R12 | Decisões de domínio ainda não confirmadas (modelo de cliente, plano PANTERA) | MOD-01, questões em aberto | – | 3 | 3 | 9 | Mitigar | Decididas pelo time na [ADR-010](../03-arquitetura/adr/ADR-010-decisoes-de-dominio.md) em 01/11/2026 (JAG-65) | Ricardo Guilhen | Encerrado |
 | R13 | Alterações nos requisitos durante o desenvolvimento | TAP, risco 1 | – | 3 | 3 | 9 | Aceitar | Mudanças passam pelo backlog e atualizam a matriz de rastreabilidade | Miguel Drozino | Aberto |
 | R14 | Atrasos por concorrência com outras disciplinas | TAP, risco 2 | – | 3 | 3 | 9 | Mitigar | Sprints de duas semanas com meta única e revisão do cronograma a cada sprint | Miguel Drozino | Aberto |
+| R15 | Exposição de dados ligados aos pets (documentos, fotos com localização, microchip) ou de um backup | ARQ-02 2.0, avaliação de 10/11 | – | 2 | 5 | 10 | Mitigar | Documentos de nível Restrito com URL assinada, remoção de metadados das fotos, backups cifrados e teste de restauração mensal ([ARQ-02](../03-arquitetura/ARQ-02-seguranca-e-lgpd.md), seções 5 e 6) | Ricardo Guilhen | Em tratamento |
+| R16 | Envio de dados a suboperador no exterior sem salvaguarda (IA, e-mail, *push*) | ARQ-02 2.0, art. 33 da LGPD | – | 3 | 4 | 12 | Mitigar | Só contratar provedor que aceite as cláusulas-padrão da ANPD e não retenha os dados; enviar o mínimo ([ARQ-02](../03-arquitetura/ARQ-02-seguranca-e-lgpd.md), seção 8) | Ricardo Guilhen | Aberto |
 
 ## 5. Revisão
 
