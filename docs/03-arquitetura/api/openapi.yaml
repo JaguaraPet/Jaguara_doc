@@ -1,7 +1,7 @@
 openapi: 3.1.0
 info:
   title: Jaguara API
-  version: 1.2.0
+  version: 1.3.0
   summary: API REST da plataforma Jaguara (tutores e empresas Enterprise).
   description: |
     Contrato da API do Jaguara (tarefa JAG-68). Os recursos seguem o modelo de classes
@@ -116,10 +116,74 @@ paths:
           content:
             application/problem+json:
               schema: { $ref: '#/components/schemas/Problema' }
+  /auth/login/social:
+    post:
+      tags: [Autenticação]
+      summary: Entrar com Google ou Apple (UC-02, RF46, ADR-012)
+      security: []
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              required: [provedor, idToken, nonce]
+              properties:
+                provedor: { type: string, enum: [GOOGLE, APPLE] }
+                idToken: { type: string, description: "id_token OpenID Connect emitido pelo provedor." }
+                nonce: { type: string }
+      responses:
+        '200':
+          description: Identidade já ligada a uma conta; sessão criada com os tokens do Jaguara.
+          content:
+            application/json:
+              schema: { $ref: '#/components/schemas/Tokens' }
+        '401': { $ref: '#/components/responses/NaoAutenticado' }
+        '409':
+          description: Já existe conta com o mesmo e-mail; o usuário confirma a senha dela para ligar a identidade.
+          content:
+            application/problem+json:
+              schema: { $ref: '#/components/schemas/Problema' }
+        '428':
+          description: Primeiro acesso; conclua o cadastro em /auth/cadastro/social com o cadastroToken devolvido.
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  cadastroToken: { type: string }
+                  nome: { type: string }
+                  email: { type: string, format: email }
+  /auth/cadastro/social:
+    post:
+      tags: [Autenticação]
+      summary: Concluir o cadastro de tutor iniciado pelo login social (UC-01, RF46)
+      security: []
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              required: [cadastroToken, nome, cpf, aceiteTermos]
+              properties:
+                cadastroToken: { type: string }
+                nome: { type: string }
+                cpf: { type: string, pattern: '^[0-9]{11}$' }
+                aceiteTermos: { type: boolean, const: true }
+      responses:
+        '201':
+          description: Conta criada com o e-mail já confirmado pelo provedor e sessão aberta.
+          content:
+            application/json:
+              schema: { $ref: '#/components/schemas/Tokens' }
+        '409': { $ref: '#/components/responses/Conflito' }
+        '422': { $ref: '#/components/responses/Validacao' }
   /auth/renovacao:
     post:
       tags: [Autenticação]
       summary: Renovar o access token
+      description: Lê a sessão no banco, aplica a inatividade de 4 h (RN04), atualiza a última atividade e relê as permissões do perfil (ADR-012).
       security: []
       requestBody:
         required: true

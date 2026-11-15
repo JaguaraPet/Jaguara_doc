@@ -18,7 +18,7 @@ Projeto da **Escola de TI** (turma B). **Equipe:** Micaela Dorneles, Miguel Droz
 | Histórias de usuário com critérios em Gherkin | [REQ-05](docs/02-requisitos/REQ-05-historias-de-usuario.md) |
 | Matriz de rastreabilidade | [REQ-06](docs/02-requisitos/REQ-06-matriz-de-rastreabilidade.md) |
 | Arquitetura (arc42 e C4) | [ARQ-01](docs/03-arquitetura/ARQ-01-arquitetura.md) |
-| Decisões de arquitetura (ADRs) | [ADR-001 a ADR-011](docs/03-arquitetura/adr/README.md) |
+| Decisões de arquitetura (ADRs) | [ADR-001 a ADR-012](docs/03-arquitetura/adr/README.md) |
 | Segurança, LGPD e integrações | [ARQ-02](docs/03-arquitetura/ARQ-02-seguranca-e-lgpd.md), [ARQ-03](docs/03-arquitetura/ARQ-03-integracoes.md) |
 | Contrato da API | [OpenAPI 3.1](docs/03-arquitetura/api/openapi.yaml) |
 | Diagrama de classes | [MOD-01](docs/04-modelagem/MOD-01-modelo-de-classes.md) |

@@ -25,6 +25,10 @@ package acesso {
     GLOBAL
     EMPRESA
   }
+  enum ProvedorIdentidade {
+    GOOGLE
+    APPLE
+  }
 }
 
 package pet {
@@ -279,6 +283,7 @@ package relatorios {
 
 StatusConta -[hidden]down- TipoToken
 TipoToken -[hidden]down- TipoEmpresa
+EscopoPerfil -[hidden]down- ProvedorIdentidade
 StatusPet -[hidden]down- Sexo
 Sexo -[hidden]down- TipoResponsavel
 EscopoAcesso -[hidden]down- StatusCompartilhamento

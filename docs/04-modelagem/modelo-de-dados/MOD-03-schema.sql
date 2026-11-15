@@ -15,6 +15,7 @@ CREATE TYPE metodo_pagamento AS ENUM ('CARTAO_CREDITO', 'CARTAO_DEBITO', 'PIX', 
 CREATE TYPE nivel_log AS ENUM ('INFO', 'ALERTA', 'CRITICO');
 CREATE TYPE origem_evento AS ENUM ('MANUAL', 'AGENDAMENTO', 'CALENDARIO_EXTERNO');
 CREATE TYPE provedor_calendario AS ENUM ('GOOGLE', 'OUTLOOK', 'APPLE');
+CREATE TYPE provedor_identidade AS ENUM ('GOOGLE', 'APPLE');
 CREATE TYPE sexo AS ENUM ('MACHO', 'FEMEA');
 CREATE TYPE status_agendamento AS ENUM ('AGENDADO', 'CANCELADO', 'REALIZADO', 'NAO_COMPARECEU');
 CREATE TYPE status_assinatura AS ENUM ('ATIVA', 'CANCELADA', 'EXPIRADA');
@@ -57,7 +58,7 @@ CREATE TABLE perfil_acesso (
 CREATE TABLE usuario (
   id uuid PRIMARY KEY DEFAULT gen_random_uuid(),
   email varchar(255) NOT NULL UNIQUE,
-  senha_hash varchar(255) NOT NULL,
+  senha_hash varchar(255),
   telefone varchar(255),
   status status_conta NOT NULL,
   email_confirmado boolean NOT NULL,
@@ -123,6 +124,16 @@ CREATE TABLE sessao (
   inicio timestamptz NOT NULL,
   ultima_atividade timestamptz NOT NULL,
   dispositivo varchar(255),
+  usuario_id uuid NOT NULL,
+  criado_em timestamptz NOT NULL DEFAULT now(),
+  atualizado_em timestamptz NOT NULL DEFAULT now()
+);
+CREATE TABLE identidade_externa (
+  id uuid PRIMARY KEY DEFAULT gen_random_uuid(),
+  provedor provedor_identidade NOT NULL,
+  id_externo varchar(255) NOT NULL,
+  email_provedor varchar(255),
+  data_vinculo timestamptz NOT NULL,
   usuario_id uuid NOT NULL,
   criado_em timestamptz NOT NULL DEFAULT now(),
   atualizado_em timestamptz NOT NULL DEFAULT now()
@@ -671,6 +682,7 @@ CREATE TABLE relatorio (
 
 ALTER TABLE funcionario_enterprise ADD CONSTRAINT fk_funcionario_enterprise_empresa_id FOREIGN KEY (empresa_id) REFERENCES empresa_enterprise(id) ON DELETE RESTRICT;
 ALTER TABLE sessao ADD CONSTRAINT fk_sessao_usuario_id FOREIGN KEY (usuario_id) REFERENCES usuario(id) ON DELETE RESTRICT;
+ALTER TABLE identidade_externa ADD CONSTRAINT fk_identidade_externa_usuario_id FOREIGN KEY (usuario_id) REFERENCES usuario(id) ON DELETE CASCADE;
 ALTER TABLE token_acesso ADD CONSTRAINT fk_token_acesso_usuario_id FOREIGN KEY (usuario_id) REFERENCES usuario(id) ON DELETE RESTRICT;
 ALTER TABLE historico_senha ADD CONSTRAINT fk_historico_senha_usuario_id FOREIGN KEY (usuario_id) REFERENCES usuario(id) ON DELETE RESTRICT;
 ALTER TABLE usuario ADD CONSTRAINT fk_usuario_perfil_id FOREIGN KEY (perfil_id) REFERENCES perfil_acesso(id) ON DELETE RESTRICT;
@@ -767,6 +779,7 @@ ALTER TABLE responsavel_pet ADD CONSTRAINT uq_responsavel_pet UNIQUE (pet_id, tu
 ALTER TABLE cliente ADD CONSTRAINT uq_cliente UNIQUE (empresa_id, tutor_id);
 ALTER TABLE cliente ADD CONSTRAINT uq_cliente_cpf UNIQUE (empresa_id, cpf_hash);
 ALTER TABLE termo_uso ADD CONSTRAINT uq_termo_uso_versao UNIQUE (tipo, versao);
+ALTER TABLE identidade_externa ADD CONSTRAINT uq_identidade_externa UNIQUE (provedor, id_externo);  -- RC-32
 ALTER TABLE consentimento ADD CONSTRAINT ck_consentimento_titular CHECK ((usuario_id IS NULL) <> (cliente_id IS NULL));  -- RC-31
 ALTER TABLE consentimento ADD CONSTRAINT ck_consentimento_evidencia CHECK (meio_coleta <> 'ASSINATURA_PRESENCIAL' OR evidencia_url IS NOT NULL);  -- RC-31 / RN41
 ALTER TABLE consentimento ADD CONSTRAINT ck_consentimento_ip CHECK (meio_coleta = 'ASSINATURA_PRESENCIAL' OR ip_origem IS NOT NULL);  -- RC-31

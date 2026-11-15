@@ -4,7 +4,7 @@
 |---|---|
 | Projeto | Jaguara |
 | Documento | MOD-01 · Modelo de Classes |
-| Versão | 1.2 |
+| Versão | 1.3 |
 | Status | Em revisão |
 | Autores | Micaela Dorneles, Miguel Drozino, Nathan Rodrigues, Ricardo Guilhen |
 | Data | 14/11/2026 |
@@ -17,6 +17,7 @@
 | 1.0 | 28/10/2026 | Equipe Jaguara | Versão inicial em UML 2.5.1. Substitui o rascunho em Mermaid. Pacotes rotina/notificacao e atendimento mostrados em duas visões cada. |
 | 1.1 | 01/11/2026 | Ricardo Guilhen | Questões QA-02 a QA-04 decididas (ADR-010): `Cliente` passa a ser classe própria da empresa, com conta opcional no Jaguara e pets vinculados. |
 | 1.2 | 14/11/2026 | Ricardo Guilhen | Consentimento do cliente da empresa sem conta (meio de coleta, evidência e link de revogação), `TermoUso.tipo`, enumerações `TipoTermo` e `MeioColeta` e restrição RC-31 (RN41, RN42). Tarefa JAG-216. |
+| 1.3 | 14/11/2026 | Ricardo Guilhen | Classe `IdentidadeExterna`, enumeração `ProvedorIdentidade`, `senhaHash` opcional e restrição RC-32 para o login social (RF46, ADR-012). Tarefa JAG-217. |
 
 ## 1. Objetivo
 
@@ -177,7 +178,7 @@ Conta de acesso à plataforma. Abstrata: toda conta é de um dos quatro tipos de
 | Atributo | Tipo | Mult. | Restrição | Descrição |
 |---|---|---|---|---|
 | `email` | `String` | 1 | `{unique}` | E-mail de login e contato |
-| `senhaHash` | `String` | 1 |  | Hash da senha (nunca a senha em texto) |
+| `senhaHash` | `String` | 0..1 |  | Hash da senha (nunca a senha em texto); vazio só em conta de tutor que entra por login social (RC-32) |
 | `telefone` | `String` | 0..1 |  | Telefone de contato |
 | `status` | `StatusConta` | 1 |  | Situação atual |
 | `emailConfirmado` | `Boolean` | 1 |  | Indica se o e-mail foi confirmado |
@@ -277,6 +278,17 @@ Operações:
 
 - `estaExpirada() : Boolean`
 - `encerrar()`
+
+#### IdentidadeExterna (classe)
+
+Conta de um provedor de login social (Google ou Apple) ligada ao usuário, usada no login por OpenID Connect ([ADR-012](../03-arquitetura/adr/ADR-012-camada-de-acesso-e-login-social.md), RF46).
+
+| Atributo | Tipo | Mult. | Restrição | Descrição |
+|---|---|---|---|---|
+| `provedor` | `ProvedorIdentidade` | 1 | Único com idExterno | Provedor de identidade |
+| `idExterno` | `String` | 1 | Único com provedor | Identificador do usuário no provedor |
+| `emailProvedor` | `String` | 0..1 |  | E-mail informado pelo provedor |
+| `dataVinculo` | `DateTime` | 1 |  | Quando a identidade foi ligada à conta |
 
 #### TokenAcesso (classe)
 
@@ -1021,6 +1033,7 @@ Operações:
 | `rotina` | `TipoEvento` | CONSULTA, VACINA, MEDICAMENTO, EXAME, CIRURGIA, BANHO_TOSA, HOSPEDAGEM, COMPROMISSO, OUTRO |
 | `rotina` | `OrigemEvento` | MANUAL, AGENDAMENTO, CALENDARIO_EXTERNO |
 | `rotina` | `ProvedorCalendario` | GOOGLE, OUTLOOK, APPLE |
+| `acesso` | `ProvedorIdentidade` | GOOGLE, APPLE |
 | `notificacao` | `CanalNotificacao` | PUSH, EMAIL, SMS |
 | `notificacao` | `StatusNotificacao` | AGENDADA, ENVIADA, FALHOU, CANCELADA |
 | `atendimento` | `CategoriaServico` | CONSULTA, EXAME, CIRURGIA, VACINACAO, BANHO_TOSA, HOSPEDAGEM, PET_SITTER, CRECHE, OUTRO |
@@ -1083,6 +1096,7 @@ Restrições que a notação gráfica não expressa. Escritas em OCL quando poss
 | RC-29 | `Webhook` | url começa com https:// e metodoAutenticacao não é vazio | RN36 |
 | RC-30 | `Integracao` | criar ou alterar exige Administrador com a permissão de integrações | RN33 |
 | RC-31 | `Consentimento` | {xor} usuario ou cliente; meioColeta = ASSINATURA_PRESENCIAL implies evidenciaUrl->notEmpty(), senão ipOrigem->notEmpty(); cliente->notEmpty() implies termo.tipo = CONSENTIMENTO_CLIENTE | RN41, RN42 |
+| RC-32 | `Usuario, IdentidadeExterna` | (provedor, idExterno) é único; senhaHash->isEmpty() implies self.oclIsKindOf(Tutor) and identidadesExternas->notEmpty() | RF46 |
 | RC-31 | `IntervencaoSuporte, Usuario` | toda intervenção e toda mudança de status de conta gera LogAuditoria | RN32, RN34 |
 | RC-32 | `Relatorio` | o conteúdo respeita o perfil de quem gera; empresa vê só a própria operação | RN21, RN22 |
 | RC-33 | `Cliente` | vincularConta(t) torna t responsável principal dos pets do cliente que ainda não têm responsável; um tutor é cliente no máximo uma vez por empresa | RN09, RN25 |

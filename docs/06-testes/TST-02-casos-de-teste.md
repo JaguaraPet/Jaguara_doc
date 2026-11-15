@@ -4,11 +4,11 @@
 |---|---|
 | Projeto | Jaguara |
 | Documento | TST-02 · Casos de teste |
-| Versão | 1.2 |
+| Versão | 1.3 |
 | Status | Em revisão |
 | Autores | Micaela Dorneles, Miguel Drozino, Nathan Rodrigues, Ricardo Guilhen |
 | Data | 14/11/2026 |
-| Tarefa Jira | JAG-73, JAG-216 |
+| Tarefa Jira | JAG-73, JAG-216, JAG-217 |
 | Padrão de referência | ISO/IEC/IEEE 29119-3, especificação de casos de teste |
 
 ## Histórico de revisões
@@ -18,6 +18,7 @@
 | 1.0 | 01/11/2026 | Ricardo Guilhen | Casos de teste derivados dos cenários Gherkin do REQ-05. |
 | 1.1 | 14/11/2026 | Ricardo Guilhen | Casos de UC-21 ajustados ao cliente sem conta e CT-21-03 (ADR-010, item 3). |
 | 1.2 | 14/11/2026 | Ricardo Guilhen | CT-21 refeitos para o consentimento do cliente (RN41) e CT-01-03 e CT-46-03 para o aceite dos termos (RN42). |
+| 1.3 | 14/11/2026 | Ricardo Guilhen | CT-02-03 e CT-02-04 para o login social (RF46). |
 
 ## 1. Objetivo
 
@@ -39,6 +40,8 @@ Especificar os casos de teste de sistema e de aceitação do Jaguara. Cada caso 
 | CT-01-03 | US-01 | RN42 | Must | Negativo | O visitante preencheu os dados obrigatórios | Tenta concluir o cadastro sem marcar o aceite dos termos de uso e da política de privacidade | O sistema não conclui o cadastro |
 | CT-02-01 | US-02 | RN03 | Must | Positivo | O usuário possui conta ativa | Informa e-mail e senha corretos | O sistema cria a sessão e exibe a tela inicial do perfil do usuário |
 | CT-02-02 | US-02 | RN03 | Must | Negativo | O usuário errou a senha quatro vezes seguidas | Informa a senha errada pela quinta vez | A conta fica bloqueada por 5 minutos |
+| CT-02-03 | US-02 | RN42 | Could | Positivo | O tutor já ligou a conta Google à conta do Jaguara | Escolhe "Continuar com Google" e se autentica no provedor | O sistema cria a sessão e exibe a tela inicial do tutor |
+| CT-02-04 | US-02 | RN01 | Could | Negativo | Existe conta do Jaguara com o e-mail da conta Google e sem identidade ligada | O tutor entra com Google pela primeira vez | O sistema pede a senha da conta do Jaguara antes de ligar a identidade |
 | CT-03-01 | US-03 | RN05 | Must | Positivo | O usuário recebeu o link de recuperação há menos de 2 horas | Define uma senha diferente das três últimas | A nova senha passa a valer e o link deixa de funcionar |
 | CT-03-02 | US-03 | RN05 | Must | Negativo | O link de recuperação foi emitido há mais de 2 horas | O usuário tenta redefinir a senha | O sistema recusa e orienta a solicitar um novo link |
 | CT-04-01 | US-04 | RN07 | Must | Positivo | O tutor está autenticado | Cadastra um pet escolhendo espécie e raça da lista | O pet é criado com o tutor como responsável principal |

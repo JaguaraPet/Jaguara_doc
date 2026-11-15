@@ -38,7 +38,8 @@ else credenciais válidas e status = ATIVA
 end
 
 note over Auth, DB
-  RN04: a cada requisição a sessão atualiza ultimaAtividade;
+  RN04: a sessão atualiza ultimaAtividade a cada renovação
+  do access token (no máximo a cada 15 min de uso, ADR-012);
   estaExpirada() = agora - ultimaAtividade > 4 h
 end note
 @enduml

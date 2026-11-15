@@ -4,7 +4,7 @@ title DC-01 · Pacote acesso
 
 abstract class Usuario {
   - email : String {unique}
-  - senhaHash : String
+  - senhaHash : String [0..1]
   - telefone : String [0..1]
   - status : StatusConta
   - emailConfirmado : Boolean
@@ -67,6 +67,13 @@ class Sessao {
   + encerrar()
 }
 
+class IdentidadeExterna {
+  - provedor : ProvedorIdentidade
+  - idExterno : String
+  - emailProvedor : String [0..1]
+  - dataVinculo : DateTime
+}
+
 class TokenAcesso {
   - token : String {unique}
   - tipo : TipoToken
@@ -102,6 +109,7 @@ Usuario <|-- FuncionarioEnterprise
 EmpresaEnterprise "empregador 1" *-- "funcionarios 0..*" FuncionarioEnterprise
 
 Usuario "1" *-left- "sessoes 0..*" Sessao
+Usuario "1" *-- "identidadesExternas 0..*" IdentidadeExterna
 Usuario "1" *-left- "tokens 0..*" TokenAcesso
 Usuario "1" *-left- "senhasAnteriores 0..3 {ordered}" HistoricoSenha
 Sessao -[hidden]down- TokenAcesso

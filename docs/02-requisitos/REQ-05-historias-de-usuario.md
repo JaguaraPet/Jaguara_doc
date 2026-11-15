@@ -4,11 +4,11 @@
 |---|---|
 | Projeto | Jaguara |
 | Documento | REQ-05 · Histórias de usuário e critérios de aceitação |
-| Versão | 1.2 |
+| Versão | 1.3 |
 | Status | Em revisão |
 | Autores | Micaela Dorneles, Miguel Drozino, Nathan Rodrigues, Ricardo Guilhen |
 | Data | 14/11/2026 |
-| Tarefa Jira | JAG-63, JAG-216 |
+| Tarefa Jira | JAG-63, JAG-216, JAG-217 |
 | Padrão de referência | User stories (Connextra) com critérios em Gherkin |
 
 ## Histórico de revisões
@@ -19,6 +19,7 @@
 | 1.0 | 01/11/2026 | Ricardo Guilhen | Critérios de aceitação em Gherkin (um cenário de sucesso e um de exceção por história) e ligação com casos de uso e regras de negócio. |
 | 1.1 | 14/11/2026 | Ricardo Guilhen | US-21 atende clientes sem conta no Jaguara (ADR-010, item 3). |
 | 1.2 | 14/11/2026 | Ricardo Guilhen | US-21 com consentimento presencial e por link, pré-cadastro pendente e revogação (RN41); cenários de aceite dos termos em US-01 e US-46 (RN42). |
+| 1.3 | 14/11/2026 | Ricardo Guilhen | Cenários de login social em US-02 (RF46). |
 
 ## 1. Objetivo
 
@@ -82,6 +83,16 @@ Funcionalidade: US-02 Autenticar usuário
     Dado que o usuário errou a senha quatro vezes seguidas
     Quando informa a senha errada pela quinta vez
     Então a conta fica bloqueada por 5 minutos
+
+  Cenário: Login com conta Google ou Apple (RF46)
+    Dado que o tutor já ligou a conta Google à conta do Jaguara
+    Quando escolhe "Continuar com Google" e se autentica no provedor
+    Então o sistema cria a sessão e exibe a tela inicial do tutor
+
+  Cenário: Conta existente com o mesmo e-mail (RF46)
+    Dado que existe conta do Jaguara com o e-mail da conta Google e sem identidade ligada
+    Quando o tutor entra com Google pela primeira vez
+    Então o sistema pede a senha da conta do Jaguara antes de ligar a identidade
 ```
 
 <a id="us-03"></a>

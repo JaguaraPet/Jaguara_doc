@@ -4,11 +4,11 @@
 |---|---|
 | Projeto | Jaguara |
 | Documento | REQ-01 · Especificação de Requisitos de Software |
-| Versão | 3.1 |
+| Versão | 3.2 |
 | Status | Em revisão |
 | Autores | Micaela Dorneles, Miguel Drozino, Nathan Rodrigues, Ricardo Guilhen |
 | Data | 14/11/2026 |
-| Tarefa Jira | JAG-5, JAG-17 (elaboração), JAG-58, JAG-59 (reestruturação), JAG-216 |
+| Tarefa Jira | JAG-5, JAG-17 (elaboração), JAG-58, JAG-59 (reestruturação), JAG-216, JAG-217 |
 | Padrão de referência | ISO/IEC/IEEE 29148:2018; ISO/IEC 25010 para os requisitos não funcionais |
 | Original | [REQ-01-documento-de-requisitos-original.pdf](../anexos/originais/REQ-01-documento-de-requisitos-original.pdf) |
 
@@ -20,6 +20,7 @@
 | 2.0 | 09/09/2026 | Equipe Jaguara | Requisitos adicionais RF33 a RF45 e RN37 a RN40 (JAG-5, JAG-17). |
 | 3.0 | 01/11/2026 | Ricardo Guilhen | Reestruturação no modelo ISO/IEC/IEEE 29148: prioridades MoSCoW, ligação com casos de uso e RNF mensuráveis classificados pela ISO/IEC 25010. Texto dos RF e das RN mantido. |
 | 3.1 | 14/11/2026 | Ricardo Guilhen | RN41 (consentimento do cliente da empresa) e RN42 (aceite dos termos), a partir dos gaps da avaliação de 10/11/2026; RF01, RF21 e RF45 ligados a elas. |
+| 3.2 | 14/11/2026 | Ricardo Guilhen | RF46, login social para tutores (ADR-012), a partir dos gaps da avaliação de 10/11/2026. |
 
 ## 1. Introdução
 
@@ -135,6 +136,7 @@ Prioridade MoSCoW: **Must** (indispensável na v1.0), **Should** (importante, en
 | RF43 | Realizar pagamento | Permite ao tutor pagar os serviços contratados | Tutor | RN25, RN31, RN39 | UC-44 | Should |
 | RF44 | Gerenciar pagamentos | Permite consultar e gerenciar pagamentos realizados e recebidos | Tutor, Empresa | RN22, RN25, RN31, RN39 | UC-45 | Should |
 | RF45 | Gerenciar privacidade e consentimentos | Permite gerenciar consentimentos, compartilhamentos e solicitações de privacidade, incluindo exclusão | Tutor, Empresa | RN15, RN25, RN26, RN31, RN41, RN42 | UC-46 | Must |
+| RF46 | Login social | Permite ao tutor criar a conta e entrar com uma conta Google ou Apple ([ADR-012](../03-arquitetura/adr/ADR-012-camada-de-acesso-e-login-social.md)) | Tutor | RN01, RN42 | UC-01, UC-02 | Could |
 
 A especificação detalhada de cada requisito está no caso de uso correspondente do [REQ-04](REQ-04-especificacao-casos-de-uso.md). As prioridades são uma proposta da padronização e devem ser confirmadas pelo *Product Owner* no planejamento.
 

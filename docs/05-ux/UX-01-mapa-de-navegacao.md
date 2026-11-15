@@ -4,11 +4,11 @@
 |---|---|
 | Projeto | Jaguara |
 | Documento | UX-01 · Mapa de navegação e fluxos de tela |
-| Versão | 1.1 |
+| Versão | 1.2 |
 | Status | Em revisão |
 | Autores | Ricardo Guilhen |
 | Data | 14/11/2026 |
-| Tarefa Jira | JAG-71, JAG-216 |
+| Tarefa Jira | JAG-71, JAG-216, JAG-217 |
 | Padrão de referência | Mapa de navegação (sitemap) e fluxos de usuário; WCAG 2.2 |
 
 ## Histórico de revisões
@@ -17,6 +17,7 @@
 |---|---|---|---|
 | 1.0 | 01/11/2026 | Ricardo Guilhen | Telas do app do tutor e da web Enterprise e administração, ligadas aos casos de uso. |
 | 1.1 | 14/11/2026 | Ricardo Guilhen | Aceite dos termos no cadastro e em nova versão (RN42), termo de consentimento e clientes pendentes na web Enterprise e página pública do termo do cliente (RN41). |
+| 1.2 | 14/11/2026 | Ricardo Guilhen | Entrada por login social no app do tutor (RF46). |
 
 ## 1. Objetivo
 
@@ -38,6 +39,9 @@ flowchart LR
   C --> NT[Aceite de nova versão dos termos UC-46]
   NT --> H
   A --> C[Login UC-02]
+  A --> SO[Continuar com Google ou Apple RF46]
+  SO --> B
+  SO --> H
   C --> C1[Recuperar senha UC-03]
   C --> H((Início))
   H --> P[Pets]
