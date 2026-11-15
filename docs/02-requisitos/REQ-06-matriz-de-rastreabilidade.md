@@ -4,11 +4,11 @@
 |---|---|
 | Projeto | Jaguara |
 | Documento | REQ-06 · Matriz de rastreabilidade |
-| Versão | 1.1 |
+| Versão | 1.2 |
 | Status | Em revisão |
 | Autores | Micaela Dorneles, Miguel Drozino, Nathan Rodrigues, Ricardo Guilhen |
 | Data | 14/11/2026 |
-| Tarefa Jira | JAG-64 |
+| Tarefa Jira | JAG-64, JAG-216 |
 | Padrão de referência | ISO/IEC/IEEE 29148, rastreabilidade bidirecional |
 
 ## Histórico de revisões
@@ -17,6 +17,7 @@
 |---|---|---|---|
 | 1.0 | 01/11/2026 | Ricardo Guilhen | Matriz inicial ligando RF, RN, UC, US, classes e casos de teste. |
 | 1.1 | 14/11/2026 | Ricardo Guilhen | RF21 com a classe Pet e o caso de teste CT-21-03 (cliente sem conta, ADR-010). |
+| 1.2 | 14/11/2026 | Ricardo Guilhen | RN41 e RN42 ligadas a RF01, RF21 e RF45, com os casos de teste CT-01-03, CT-21-04 a CT-21-06 e CT-46-03. |
 
 ## 1. Objetivo
 
@@ -26,7 +27,7 @@ Garantir que todo requisito tenha caso de uso, história, classes e testes, e qu
 
 | RF | Requisito | Regras | Casos de uso | Histórias | Classes (MOD-01) | Casos de teste |
 |---|---|---|---|---|---|---|
-| RF01 | Cadastro de usuário | RN01, RN02 | UC-01, UC-32 | US-01, US-32 | EmpresaEnterprise, Endereco, TokenAcesso; Usuario, Tutor, TokenAcesso | CT-01-01, CT-01-02, CT-32-01, CT-32-02 |
+| RF01 | Cadastro de usuário | RN01, RN02, RN42 | UC-01, UC-32 | US-01, US-32 | EmpresaEnterprise, Endereco, TokenAcesso; Usuario, Tutor, TokenAcesso; TermoUso, Consentimento | CT-01-01, CT-01-02, CT-01-03, CT-32-01, CT-32-02 |
 | RF02 | Autenticação de usuário | RN03, RN04 | UC-02 | US-02 | Usuario, Sessao | CT-02-01, CT-02-02 |
 | RF03 | Recuperação de senha | RN05, RN06 | UC-03 | US-03 | Usuario, TokenAcesso, HistoricoSenha | CT-03-01, CT-03-02 |
 | RF04 | Gerenciar pet | RN07, RN08, RN30 | UC-04 | US-04 | Pet, Especie, Raca, ResponsavelPet | CT-04-01, CT-04-02 |
@@ -46,7 +47,7 @@ Garantir que todo requisito tenha caso de uso, história, classes e testes, e qu
 | RF18 | Emitir relatórios | RN22 | UC-18 | US-18 | Relatorio | CT-18-01, CT-18-02 |
 | RF19 | Gerenciar funcionários | RN23 | UC-19 | US-19 | FuncionarioEnterprise, PerfilAcesso, Sessao | CT-19-01, CT-19-02 |
 | RF20 | Consultar pets vinculados | RN24 | UC-20 | US-20 | Pet, CompartilhamentoPet, Agendamento | CT-20-01, CT-20-02 |
-| RF21 | Gerenciar clientes | RN25 | UC-21 | US-21 | Cliente, Tutor, Pet | CT-21-01, CT-21-02, CT-21-03 |
+| RF21 | Gerenciar clientes | RN25, RN41 | UC-21 | US-21 | Cliente, Tutor, Pet, Consentimento, TermoUso | CT-21-01, CT-21-02, CT-21-03, CT-21-04, CT-21-05, CT-21-06 |
 | RF22 | Visualizar perfil do pet | RN26 | UC-22 | US-22 | Pet, CompartilhamentoPet | CT-22-01, CT-22-02 |
 | RF23 | Registrar serviços e atendimentos | RN27, RN28 | UC-23 | US-23 | Atendimento, ItemAtendimento, Agendamento, Servico | CT-23-01, CT-23-02 |
 | RF24 | Registrar atendimentos (descontinuado, incorporado ao RF23) | – | UC-23 | US-23 | – | – |
@@ -70,7 +71,7 @@ Garantir que todo requisito tenha caso de uso, história, classes e testes, e qu
 | RF42 | Conversar em chat na plataforma | RN25, RN31 | UC-43 | US-43 | Conversa, Mensagem, Assinatura | CT-43-01, CT-43-02 |
 | RF43 | Realizar pagamento | RN25, RN31, RN39 | UC-44 | US-44 | Pagamento | CT-44-01, CT-44-02 |
 | RF44 | Gerenciar pagamentos | RN22, RN25, RN31, RN39 | UC-45 | US-45 | Pagamento, SolicitacaoReembolso | CT-45-01, CT-45-02 |
-| RF45 | Gerenciar privacidade e consentimentos | RN15, RN25, RN26, RN31 | UC-46 | US-46 | Consentimento, TermoUso, SolicitacaoPrivacidade | CT-46-01, CT-46-02 |
+| RF45 | Gerenciar privacidade e consentimentos | RN15, RN25, RN26, RN31, RN41, RN42 | UC-46 | US-46 | Consentimento, TermoUso, SolicitacaoPrivacidade | CT-46-01, CT-46-02, CT-46-03 |
 
 ## 3. Regra de negócio → casos de uso
 
@@ -116,6 +117,8 @@ Garantir que todo requisito tenha caso de uso, história, classes e testes, e qu
 | RN38 | UC-24, UC-40, UC-41, UC-42 |
 | RN39 | UC-44, UC-45 |
 | RN40 | UC-33, UC-40, UC-41 |
+| RN41 | UC-21, UC-46 |
+| RN42 | UC-01, UC-32, UC-46 |
 
 ## 4. Verificações
 

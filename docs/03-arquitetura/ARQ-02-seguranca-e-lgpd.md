@@ -4,11 +4,11 @@
 |---|---|
 | Projeto | Jaguara |
 | Documento | ARQ-02 · Segurança da informação e proteção de dados pessoais |
-| Versão | 2.0 |
+| Versão | 2.1 |
 | Status | Em revisão |
 | Autores | Ricardo Guilhen |
 | Data | 14/11/2026 |
-| Tarefa Jira | JAG-69, JAG-215 |
+| Tarefa Jira | JAG-69, JAG-215, JAG-216 |
 | Padrão de referência | LGPD (Lei nº 13.709/2018); Resoluções CD/ANPD nº 2/2022 (agentes de pequeno porte), nº 15/2024 (incidentes) e nº 19/2024 (transferência internacional); OWASP ASVS 4.0 nível 2; modelo de RIPD da ANPD (simplificado) |
 
 ## Histórico de revisões
@@ -18,6 +18,7 @@
 | 1.0 | 01/11/2026 | Ricardo Guilhen | Bases legais, controles de segurança, RIPD simplificado e direitos do titular. |
 | 1.1 | 14/11/2026 | Ricardo Guilhen | Dados de clientes sem conta no Jaguara (ADR-010, item 3). |
 | 2.0 | 14/11/2026 | Ricardo Guilhen | Gaps da avaliação de 10/11: classificação dos dados, dados dos pets, criptografia em repouso e de backups, CPF cifrado e mascarado, suboperadores e transferência internacional, registro das operações de tratamento, RIPD revisado e prazos de incidente. |
+| 2.1 | 14/11/2026 | Ricardo Guilhen | Ligação com os textos jurídicos (JUR-02, JUR-03 e JUR-04) e a regra RN41. |
 
 ## 1. Objetivo
 
@@ -39,7 +40,9 @@ A Resolução CD/ANPD nº 2/2022 dispensa o agente de tratamento de pequeno port
 
 - **Fase acadêmica:** o líder técnico responde pelos pedidos de titulares, registrados em `SolicitacaoPrivacidade`.
 - **Antes do lançamento público:** indicar formalmente o encarregado (art. 41) e publicar nome e contato na política de privacidade. Isso fica em aberto (QA-01) porque o enquadramento como pequeno porte depende da forma jurídica e do faturamento da empresa que vier a operar o Jaguara.
-- **Canal:** formulário "Privacidade" no app e na web (UC-46) e um e-mail exclusivo de privacidade, os dois indicados na política de privacidade.
+- **Canal:** formulário "Privacidade" no app e na web (UC-46) e um e-mail exclusivo de privacidade, os dois indicados na [política de privacidade (JUR-03)](../08-juridico/JUR-03-politica-de-privacidade.md).
+
+Os papéis desta seção são formalizados nos textos da pasta `08-juridico`: os [termos da Enterprise (JUR-02)](../08-juridico/JUR-02-termos-enterprise.md) trazem o acordo de tratamento de dados entre a empresa (controladora) e o Jaguara (operador), e o [termo de consentimento (JUR-04)](../08-juridico/JUR-04-termo-consentimento-cliente.md) é o que a empresa usa com clientes sem conta (RN41).
 
 ## 3. Classificação dos dados
 
@@ -67,7 +70,7 @@ Na dúvida, vale o nível mais alto. Um dado novo só entra no modelo com o nív
 | Financeiro | Despesas e pagamentos | Confidencial | Controle de gastos e cobrança | Execução de contrato (V); obrigação legal (II) para dados fiscais | 5 anos (fiscal) |
 | Empresa | CNPJ, razão social, endereço, representante | Confidencial | Conta Enterprise | Execução de contrato (V) | Enquanto a conta existir |
 | Funcionários | Nome, CPF, e-mail, perfil | Restrito (CPF) e Confidencial | Acesso à operação da empresa | Execução de contrato (V), pela empresa | Até o desligamento (RN23) e 6 meses de auditoria |
-| Clientes da empresa | Nome, CPF, contato, pets e vínculo opcional com a conta do tutor | Restrito (CPF) e Confidencial | Operação da empresa | Consentimento (I) (RN25), coletado pela empresa | Até revogação ou fim do vínculo com a empresa |
+| Clientes da empresa | Nome, CPF, contato, pets e vínculo opcional com a conta do tutor | Restrito (CPF) e Confidencial | Operação da empresa | Consentimento (I) (RN25, RN41), coletado pela empresa com o termo JUR-04 | Até revogação ou fim do vínculo com a empresa |
 | Registros de consentimento | Termo e versão aceitos, data, meio e prova da coleta | Confidencial | Provar o consentimento (art. 8º, § 2º) | Obrigação legal (II) | Enquanto o tratamento durar e 5 anos depois |
 | Dispositivos | Token de *push* e plataforma | Confidencial | Enviar notificações | Execução de contrato (V) | Até o logout ou token inválido |
 | Chat | Mensagens com a empresa | Confidencial | Comunicação e suporte | Execução de contrato (V) | 1 ano |

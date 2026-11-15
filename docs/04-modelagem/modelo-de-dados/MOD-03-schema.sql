@@ -10,6 +10,7 @@ CREATE TYPE escopo_acesso AS ENUM ('PERFIL_BASICO', 'VACINAS', 'EXAMES', 'MEDICA
 CREATE TYPE escopo_perfil AS ENUM ('GLOBAL', 'EMPRESA');
 CREATE TYPE formato_relatorio AS ENUM ('TELA', 'PDF');
 CREATE TYPE gravidade AS ENUM ('LEVE', 'MODERADA', 'GRAVE');
+CREATE TYPE meio_coleta AS ENUM ('ACEITE_NO_APP', 'ASSINATURA_PRESENCIAL', 'LINK_DIGITAL');
 CREATE TYPE metodo_pagamento AS ENUM ('CARTAO_CREDITO', 'CARTAO_DEBITO', 'PIX', 'BOLETO');
 CREATE TYPE nivel_log AS ENUM ('INFO', 'ALERTA', 'CRITICO');
 CREATE TYPE origem_evento AS ENUM ('MANUAL', 'AGENDAMENTO', 'CALENDARIO_EXTERNO');
@@ -41,6 +42,7 @@ CREATE TYPE tipo_recurso AS ENUM ('SALA', 'EQUIPAMENTO', 'BAIA', 'VEICULO', 'OUT
 CREATE TYPE tipo_relatorio AS ENUM ('DESPESAS', 'OPERACIONAL', 'GERENCIAL');
 CREATE TYPE tipo_responsavel AS ENUM ('PRINCIPAL', 'ADICIONAL');
 CREATE TYPE tipo_solicitacao_privacidade AS ENUM ('EXPORTACAO_DADOS', 'EXCLUSAO_DADOS', 'CORRECAO_DADOS');
+CREATE TYPE tipo_termo AS ENUM ('TERMOS_USO_APP', 'TERMOS_ENTERPRISE', 'POLITICA_PRIVACIDADE', 'CONSENTIMENTO_CLIENTE', 'COMUNICACAO_MARKETING');
 CREATE TYPE tipo_token AS ENUM ('CONFIRMACAO_EMAIL', 'RECUPERACAO_SENHA');
 
 CREATE TABLE perfil_acesso (
@@ -373,8 +375,6 @@ CREATE TABLE cliente (
   email varchar(255),
   data_vinculo date NOT NULL,
   observacoes text,
-  consentimento_lgpd boolean NOT NULL,
-  data_consentimento timestamptz,
   ativo boolean NOT NULL,
   empresa_id uuid NOT NULL,
   tutor_id uuid,
@@ -561,7 +561,8 @@ CREATE TABLE mensagem (
 );
 CREATE TABLE termo_uso (
   id uuid PRIMARY KEY DEFAULT gen_random_uuid(),
-  versao varchar(255) NOT NULL UNIQUE,
+  tipo tipo_termo NOT NULL,
+  versao varchar(255) NOT NULL,
   titulo varchar(255) NOT NULL,
   conteudo text NOT NULL,
   data_vigencia date NOT NULL,
@@ -574,8 +575,13 @@ CREATE TABLE consentimento (
   aceito boolean NOT NULL,
   data_aceite timestamptz NOT NULL,
   data_revogacao timestamptz,
-  ip_origem varchar(255) NOT NULL,
-  usuario_id uuid NOT NULL,
+  ip_origem varchar(255),
+  meio_coleta meio_coleta NOT NULL,
+  evidencia_url varchar(2048),
+  token_link varchar(255) UNIQUE,
+  usuario_id uuid,
+  cliente_id uuid,
+  registrado_por_id uuid,
   termo_id uuid NOT NULL,
   criado_em timestamptz NOT NULL DEFAULT now(),
   atualizado_em timestamptz NOT NULL DEFAULT now()
@@ -731,6 +737,8 @@ ALTER TABLE mensagem ADD CONSTRAINT fk_mensagem_conversa_id FOREIGN KEY (convers
 ALTER TABLE mensagem ADD CONSTRAINT fk_mensagem_remetente_id FOREIGN KEY (remetente_id) REFERENCES usuario(id) ON DELETE RESTRICT;
 ALTER TABLE consentimento ADD CONSTRAINT fk_consentimento_usuario_id FOREIGN KEY (usuario_id) REFERENCES usuario(id) ON DELETE RESTRICT;
 ALTER TABLE consentimento ADD CONSTRAINT fk_consentimento_termo_id FOREIGN KEY (termo_id) REFERENCES termo_uso(id) ON DELETE RESTRICT;
+ALTER TABLE consentimento ADD CONSTRAINT fk_consentimento_cliente_id FOREIGN KEY (cliente_id) REFERENCES cliente(id) ON DELETE RESTRICT;
+ALTER TABLE consentimento ADD CONSTRAINT fk_consentimento_registrado_por_id FOREIGN KEY (registrado_por_id) REFERENCES funcionario_enterprise(id) ON DELETE SET NULL;
 ALTER TABLE solicitacao_privacidade ADD CONSTRAINT fk_solicitacao_privacidade_usuario_id FOREIGN KEY (usuario_id) REFERENCES usuario(id) ON DELETE RESTRICT;
 ALTER TABLE log_auditoria ADD CONSTRAINT fk_log_auditoria_autor_id FOREIGN KEY (autor_id) REFERENCES usuario(id) ON DELETE RESTRICT;
 ALTER TABLE chamado_suporte ADD CONSTRAINT fk_chamado_suporte_solicitante_id FOREIGN KEY (solicitante_id) REFERENCES usuario(id) ON DELETE RESTRICT;
@@ -758,6 +766,10 @@ CREATE TABLE perfil_permissao (
 ALTER TABLE responsavel_pet ADD CONSTRAINT uq_responsavel_pet UNIQUE (pet_id, tutor_id);
 ALTER TABLE cliente ADD CONSTRAINT uq_cliente UNIQUE (empresa_id, tutor_id);
 ALTER TABLE cliente ADD CONSTRAINT uq_cliente_cpf UNIQUE (empresa_id, cpf_hash);
+ALTER TABLE termo_uso ADD CONSTRAINT uq_termo_uso_versao UNIQUE (tipo, versao);
+ALTER TABLE consentimento ADD CONSTRAINT ck_consentimento_titular CHECK ((usuario_id IS NULL) <> (cliente_id IS NULL));  -- RC-31
+ALTER TABLE consentimento ADD CONSTRAINT ck_consentimento_evidencia CHECK (meio_coleta <> 'ASSINATURA_PRESENCIAL' OR evidencia_url IS NOT NULL);  -- RC-31 / RN41
+ALTER TABLE consentimento ADD CONSTRAINT ck_consentimento_ip CHECK (meio_coleta = 'ASSINATURA_PRESENCIAL' OR ip_origem IS NOT NULL);  -- RC-31
 ALTER TABLE horario_atuacao ADD CONSTRAINT ck_horario_xor CHECK ((funcionario_id IS NULL) <> (recurso_id IS NULL));  -- RC-20
 ALTER TABLE horario_atuacao ADD CONSTRAINT ck_horario_intervalo CHECK (hora_inicio < hora_fim);
 ALTER TABLE pagamento ADD CONSTRAINT ck_pagamento_xor CHECK ((agendamento_id IS NULL) <> (assinatura_id IS NULL));  -- RC-27

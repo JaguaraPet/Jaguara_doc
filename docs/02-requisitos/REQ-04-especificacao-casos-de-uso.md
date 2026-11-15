@@ -4,11 +4,11 @@
 |---|---|
 | Projeto | Jaguara |
 | Documento | REQ-04 · Especificação de casos de uso |
-| Versão | 2.2 |
+| Versão | 2.3 |
 | Status | Em revisão |
 | Autores | Micaela Dorneles, Miguel Drozino, Nathan Rodrigues, Ricardo Guilhen |
 | Data | 14/11/2026 |
-| Tarefa Jira | JAG-35, JAG-62 |
+| Tarefa Jira | JAG-35, JAG-62, JAG-216 |
 | Padrão de referência | Modelo Bússola (curso) com campos do modelo *fully dressed* de Cockburn |
 | Original | [REQ-04-especificacao-casos-de-uso-original.xlsx](../anexos/originais/REQ-04-especificacao-casos-de-uso-original.xlsx) |
 
@@ -21,6 +21,7 @@
 | 2.0 | 01/11/2026 | Ricardo Guilhen | Migração para o repositório com campos padronizados: identificador UC, requisito, regras de negócio, prioridade, pós-condição e classes envolvidas (JAG-62). Fluxos mantidos como escritos pelo time. |
 | 2.1 | 01/11/2026 | Ricardo Guilhen | UC-21 atende clientes sem conta no Jaguara (ADR-010, item 3). Histórias de usuário retiradas desta versão do repositório. |
 | 2.2 | 14/11/2026 | Ricardo Guilhen | Histórias de usuário (REQ-05) e referências ao REQ-00 e ao REQ-02 de volta com a documentação completa. |
+| 2.3 | 14/11/2026 | Ricardo Guilhen | Aceite dos termos no UC-01 e no UC-32 (RN42); UC-21 com coleta presencial ou por link, pré-cadastro pendente e revogação sem conta (RN41); UC-46 com nova versão de termo obrigatório. |
 
 ## 1. Objetivo
 
@@ -96,13 +97,13 @@ Especificar o comportamento de cada caso de uso do Jaguara, com os mesmos campos
 |---|---|
 | Identificador | UC-01 (planilha: JGR001) |
 | Requisito | RF01 |
-| Regras de negócio | RN01, RN02 |
+| Regras de negócio | RN01, RN02, RN42 |
 | Prioridade | Must |
 | Objetivo | Permitir que um novo usuário-tutor realize seu cadastro na plataforma, com conta ativada após a confirmação do e-mail. |
 | Atores | Usuário-tutor, sistema |
 | Pré-condições | O usuário-tutor não deve possuir cadastro ativo na plataforma e deve estar na tela de cadastro. |
 | Pós-condições (garantia de sucesso) | Conta do tutor criada com status PENDENTE_CONFIRMACAO e ativada (ATIVA) após a confirmação do e-mail. |
-| Classes envolvidas | Usuario, Tutor, TokenAcesso |
+| Classes envolvidas | Usuario, Tutor, TokenAcesso, TermoUso, Consentimento |
 | História de usuário | [US-01](REQ-05-historias-de-usuario.md#us-01) |
 
 **Fluxo principal**
@@ -111,7 +112,7 @@ Especificar o comportamento de cada caso de uso do Jaguara, com os mesmos campos
 |---|---|---|
 | 1 | O usuário-tutor acessa a tela de cadastro. |  |
 | 2 |  | O sistema solicita os dados cadastrais. |
-| 3 | O usuário-tutor informa os dados obrigatórios. |  |
+| 3 | O usuário-tutor informa os dados obrigatórios e aceita os termos de uso e a política de privacidade vigentes (RN42). |  |
 | 4 |  | O sistema valida os dados preenchidos. |
 | 5 |  | O sistema verifica a unicidade do CPF (RN01). |
 | 6 |  | O sistema registra o cadastro. |
@@ -903,39 +904,75 @@ Especificar o comportamento de cada caso de uso do Jaguara, com os mesmos campos
 |---|---|
 | Identificador | UC-21 (planilha: JGR021) |
 | Requisito | RF21 |
-| Regras de negócio | RN25 |
+| Regras de negócio | RN25, RN41 |
 | Prioridade | Should |
-| Objetivo | Permitir cadastrar e atualizar dados de clientes, com ou sem conta no Jaguara. |
-| Atores | Usuário-empresa, Usuário-funcionário |
+| Objetivo | Permitir cadastrar e atualizar dados de clientes, com ou sem conta no Jaguara, com o consentimento do cliente coletado e provado antes do cadastro completo. |
+| Atores | Usuário-empresa, Usuário-funcionário, Cliente da empresa (pelo link do termo) |
 | Pré-condições | O usuário deve estar autenticado no sistema |
-| Pós-condições (garantia de sucesso) | Cliente vinculado à empresa com consentimento LGPD registrado; se o cliente tem conta, o cadastro fica ligado ao tutor. |
-| Classes envolvidas | Cliente, Tutor, Pet |
+| Pós-condições (garantia de sucesso) | Cliente vinculado à empresa com `Consentimento` vigente no termo [JUR-04](../08-juridico/JUR-04-termo-consentimento-cliente.md), com versão, meio de coleta e prova; se o cliente tem conta, o cadastro fica ligado ao tutor. |
+| Classes envolvidas | Cliente, Tutor, Pet, Consentimento, TermoUso |
 | História de usuário | [US-21](REQ-05-historias-de-usuario.md#us-21) |
 
-**Fluxo principal**
+**Fluxo principal (consentimento presencial)**
 
 | Passo | Ator | Sistema |
 |---|---|---|
-| 1 | O usuário acessa o módulo de clientes. |  |
-| 2 | O usuário seleciona cadastrar, visualizar, editar ou excluir e informa os dados. |  |
-| 3 |  | O sistema valida as informações e os consentimentos e procura uma conta de tutor com o CPF ou o e-mail informado. |
-| 4 |  | O sistema salva o cadastro, ligado à conta do tutor quando ela existe. |
+| 1 | O usuário acessa o módulo de clientes e escolhe cadastrar. |  |
+| 2 | O usuário informa o nome e um contato do cliente. |  |
+| 3 |  | O sistema cria o pré-cadastro e procura uma conta de tutor com o CPF ou o e-mail informado. |
+| 4 | O usuário escolhe o meio de consentimento "assinatura presencial". |  |
+| 5 |  | O sistema gera o termo de consentimento em PDF, com os dados da empresa e a versão vigente. |
+| 6 | O usuário colhe a assinatura do cliente e anexa a cópia digitalizada. |  |
+| 7 |  | O sistema registra o `Consentimento` com a versão do termo, o meio `ASSINATURA_PRESENCIAL`, a cópia como prova e o funcionário, e libera o cadastro completo (RN41). |
+| 8 | O usuário completa os dados e cadastra os pets atendidos. |  |
+| 9 |  | O sistema salva o cadastro, ligado à conta do tutor quando ela existe, e gera o comprovante com o código QR de revogação. |
 
-**Fluxos alternativos**
-
-| Passo | Ator | Sistema |
-|---|---|---|
-| 1 | O usuário insere e envia os dados do cliente. |  |
-| 2 |  | O sistema identifica dados inválidos ou sem o devido consentimento. |
-| 3 |  | O sistema bloqueia a gravação do cadastro (RN25 – Proteção de Dados de Clientes). |
-
-**Fluxo alternativo: cliente sem conta no Jaguara**
+**FA1. Consentimento por link digital (ramifica no passo 4)**
 
 | Passo | Ator | Sistema |
 |---|---|---|
-| 3a |  | O sistema não encontra conta de tutor e salva o cliente com os dados de contato informados. |
-| 3b | O usuário cadastra os pets atendidos desse cliente. |  |
-| 3c |  | Se houver e-mail, o sistema envia convite para o cliente criar conta; ao criar, o tutor assume os pets como responsável principal (ADR-010). |
+| 1 | O usuário escolhe "enviar link". |  |
+| 2 |  | O sistema envia ao contato do cliente o link com o termo e mantém o cadastro pendente, só com nome e contato. |
+| 3 | O cliente abre o link e marca "Concordo". |  |
+| 4 |  | O sistema registra o `Consentimento` com o meio `LINK_DIGITAL`, data, hora e IP, envia o comprovante ao cliente e avisa a empresa. |
+| 5 |  | O fluxo retorna ao passo 8 do fluxo principal. |
+
+**FA2. Pré-cadastro sem aceite (ramifica no passo 2 do FA1)**
+
+| Passo | Ator | Sistema |
+|---|---|---|
+| 1 |  | Passados 7 dias sem aceite, a rotina diária exclui o pré-cadastro (RN41). |
+| 2 |  | O sistema avisa a empresa. |
+
+**FA3. Cliente não consente (ramifica nos passos 6 e FA1.3)**
+
+| Passo | Ator | Sistema |
+|---|---|---|
+| 1 | O cliente se recusa a assinar ou não aceita o link. |  |
+| 2 |  | O sistema mantém só o pré-cadastro e bloqueia pets, agendamentos e atendimentos para esse cliente (RN25, RN41). |
+| 3 | A empresa atende o cliente sem registrar os dados dele no Jaguara. |  |
+
+**FA4. Dados inválidos (ramifica nos passos 2 e 8)**
+
+| Passo | Ator | Sistema |
+|---|---|---|
+| 1 |  | O sistema identifica dados inválidos ou CPF já cadastrado na empresa. |
+| 2 |  | O sistema bloqueia a gravação e informa o que corrigir. |
+
+**FA5. Cliente sem conta no Jaguara (ramifica no passo 3)**
+
+| Passo | Ator | Sistema |
+|---|---|---|
+| 1 |  | O sistema não encontra conta de tutor e segue com os dados de contato informados. |
+| 2 | O usuário cadastra os pets atendidos desse cliente, depois do consentimento. |  |
+| 3 |  | Se houver e-mail, o sistema envia convite para o cliente criar conta; ao criar, e com o aceite dele, o tutor assume os pets como responsável principal (ADR-010). |
+
+**FA6. Revogação do consentimento**
+
+| Passo | Ator | Sistema |
+|---|---|---|
+| 1 | O cliente usa o link ou o código QR do comprovante, sem precisar de conta, ou pede à empresa, que registra a revogação no cadastro. |  |
+| 2 |  | O sistema grava a data de revogação, inativa o cliente, anonimiza os dados dele no Jaguara, exceto o que a empresa deve guardar por lei, e avisa a empresa (RN41). |
 
 <a id="uc-22"></a>
 
@@ -1550,13 +1587,13 @@ Especificar o comportamento de cada caso de uso do Jaguara, com os mesmos campos
 |---|---|
 | Identificador | UC-32 (planilha: JGR032) |
 | Requisito | RF01 |
-| Regras de negócio | RN01, RN02 |
+| Regras de negócio | RN01, RN02, RN42 |
 | Prioridade | Must |
 | Objetivo | Permitir o cadastro de um usuário-empresa na plataforma, com conta ativada após a confirmação do e-mail. |
 | Atores | Sistema, usuário-empresa |
 | Pré-condições | A empresa não possui cadastro ativo na plataforma e está na tela de cadastro enterprise. |
 | Pós-condições (garantia de sucesso) | Conta da empresa criada e ativada após a confirmação do e-mail. |
-| Classes envolvidas | EmpresaEnterprise, Endereco, TokenAcesso |
+| Classes envolvidas | EmpresaEnterprise, Endereco, TokenAcesso, TermoUso, Consentimento |
 | História de usuário | [US-32](REQ-05-historias-de-usuario.md#us-32) |
 
 **Fluxo principal**
@@ -1565,7 +1602,7 @@ Especificar o comportamento de cada caso de uso do Jaguara, com os mesmos campos
 |---|---|---|
 | 1 | A empresa acessa a tela de cadastro enterprise |  |
 | 2 |  | O sistema solicita os dados cadastrais |
-| 3 | O usuário informa os dados obrigatórios (CNPJ, email e senha) |  |
+| 3 | O usuário informa os dados obrigatórios (CNPJ, email e senha) e aceita os termos da Enterprise e a política de privacidade vigentes (RN42) |  |
 | 4 |  | O sistema valida os dados preenchidos |
 | 5 |  | O sistema verifica a unicidade do CNPJ (RN01) |
 | 6 |  | O sistema registra o cadastro |
@@ -2404,7 +2441,7 @@ Especificar o comportamento de cada caso de uso do Jaguara, com os mesmos campos
 |---|---|
 | Identificador | UC-46 (planilha: JGR046) |
 | Requisito | RF45 |
-| Regras de negócio | RN15, RN25, RN26, RN31 |
+| Regras de negócio | RN15, RN25, RN26, RN31, RN42 |
 | Prioridade | Must |
 | Objetivo | Garantir conformidade com a LGPD, permitindo que os usuários gerenciem termos de uso, preferências de compartilhamento de dados de pets e solicitações de exclusão de conta. |
 | Atores | Usuário-tutor, usuário-empresa, usuário-funcionário, sistema |
@@ -2437,3 +2474,13 @@ Especificar o comportamento de cada caso de uso do Jaguara, com os mesmos campos
 |---|---|---|
 | 1 | O usuário clica em "Excluir Conta e Dados" e insere sua senha atual para confirmar a intenção. |  |
 | 1 |  | O sistema exige dupla confirmação por segurança, executa o protocolo de anonimização ou exclusão definitiva dos dados do usuário e de seus pets vinculados, e encerra a sessão ativa. |
+
+**Fluxo Alternativo FA3. Nova versão de termo obrigatório (RN42)**
+
+| Passo | Ator | Sistema |
+|---|---|---|
+| 1 |  | No primeiro acesso depois da vigência de uma nova versão obrigatória, o sistema mostra o resumo das mudanças e o texto completo. |
+| 2 | O usuário aceita a nova versão. |  |
+| 3 |  | O sistema registra o `Consentimento` com a nova versão e libera o acesso. |
+| 3a | O usuário não aceita. |  |
+| 3b |  | O sistema libera só a tela de privacidade, onde o usuário pode exportar os dados e excluir a conta. |

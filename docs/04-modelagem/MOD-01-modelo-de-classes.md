@@ -4,10 +4,10 @@
 |---|---|
 | Projeto | Jaguara |
 | Documento | MOD-01 · Modelo de Classes |
-| Versão | 1.1 |
+| Versão | 1.2 |
 | Status | Em revisão |
 | Autores | Micaela Dorneles, Miguel Drozino, Nathan Rodrigues, Ricardo Guilhen |
-| Data | 28/10/2026 |
+| Data | 14/11/2026 |
 | Notação | UML 2.5.1 (OMG), diagramas em PlantUML |
 
 ## Histórico de revisões
@@ -16,6 +16,7 @@
 |---|---|---|---|
 | 1.0 | 28/10/2026 | Equipe Jaguara | Versão inicial em UML 2.5.1. Substitui o rascunho em Mermaid. Pacotes rotina/notificacao e atendimento mostrados em duas visões cada. |
 | 1.1 | 01/11/2026 | Ricardo Guilhen | Questões QA-02 a QA-04 decididas (ADR-010): `Cliente` passa a ser classe própria da empresa, com conta opcional no Jaguara e pets vinculados. |
+| 1.2 | 14/11/2026 | Ricardo Guilhen | Consentimento do cliente da empresa sem conta (meio de coleta, evidência e link de revogação), `TermoUso.tipo`, enumerações `TipoTermo` e `MeioColeta` e restrição RC-31 (RN41, RN42). Tarefa JAG-216. |
 
 ## 1. Objetivo
 
@@ -624,9 +625,8 @@ Cliente cadastrado por uma EmpresaEnterprise. Pode ou não ter conta no Jaguara:
 | `email` | `String` | 0..1 |  | E-mail de contato; usado para convidar o cliente a criar conta |
 | `dataVinculo` | `Date` | 1 |  | Início do vínculo |
 | `observacoes` | `String` | 0..1 |  | Observações livres |
-| `consentimentoLGPD` | `Boolean` | 1 |  | Cliente autorizou o tratamento dos dados |
-| `dataConsentimento` | `DateTime` | 0..1 |  | Data do consentimento |
 | `ativo` | `Boolean` | 1 |  | Indica se está ativo |
+| `/consentimentoVigente` | `Boolean` | 1 | Derivado | Há `Consentimento` aceito e não revogado com termo do tipo CONSENTIMENTO_CLIENTE ([JUR-04](../08-juridico/JUR-04-termo-consentimento-cliente.md)); sem ele o cadastro fica pendente (RN41) |
 
 #### Servico (classe)
 
@@ -853,11 +853,12 @@ Mensagem de uma conversa.
 
 #### TermoUso (classe)
 
-Versão de termo de uso ou política de privacidade.
+Versão de um texto jurídico da pasta `docs/08-juridico`: termos de uso do app, termos da Enterprise, política de privacidade, termo de consentimento do cliente da empresa ou consentimento de marketing.
 
 | Atributo | Tipo | Mult. | Restrição | Descrição |
 |---|---|---|---|---|
-| `versao` | `String` | 1 | `{unique}` | Versão do termo |
+| `tipo` | `TipoTermo` | 1 |  | Que texto é e para qual público |
+| `versao` | `String` | 1 | Única por tipo | Versão do termo |
 | `titulo` | `String` | 1 |  | Título |
 | `conteudo` | `String` | 1 |  | Texto |
 | `dataVigencia` | `Date` | 1 |  | Início da vigência |
@@ -865,17 +866,23 @@ Versão de termo de uso ou política de privacidade.
 
 #### Consentimento (classe)
 
-Aceite ou revogação de um termo pelo usuário.
+Aceite ou revogação de um termo. O titular é um `Usuario` (aceite no app) ou um `Cliente` da empresa sem conta (assinatura presencial ou link digital), nunca os dois (RC-31).
 
 | Atributo | Tipo | Mult. | Restrição | Descrição |
 |---|---|---|---|---|
 | `aceito` | `Boolean` | 1 |  | Indica se aceitou |
 | `dataAceite` | `DateTime` | 1 |  | Data do aceite |
 | `dataRevogacao` | `DateTime` | 0..1 |  | Data da revogação |
-| `ipOrigem` | `String` | 1 |  | IP de origem |
+| `ipOrigem` | `String` | 0..1 |  | IP de origem; obrigatório no aceite no app e no link |
+| `meioColeta` | `MeioColeta` | 1 |  | Como o consentimento foi coletado |
+| `evidenciaUrl` | `String` | 0..1 |  | Cópia digitalizada do termo assinado; obrigatória na assinatura presencial |
+| `tokenLink` | `String` | 0..1 | `{unique}` | Token do link de aceite e de revogação enviado ao cliente sem conta |
+
+Associações: `registradoPor` (`FuncionarioEnterprise`, 0..1), quem registrou o consentimento presencial.
 
 Operações:
 
+- `estaVigente() : Boolean`: aceito e sem data de revogação.
 - `revogar()`
 
 #### SolicitacaoPrivacidade (classe)
@@ -1031,6 +1038,8 @@ Operações:
 | `comunicacao` | `StatusConversa` | ABERTA, ENCERRADA |
 | `privacidade` | `TipoSolicitacaoPrivacidade` | EXPORTACAO_DADOS, EXCLUSAO_DADOS, CORRECAO_DADOS |
 | `privacidade` | `StatusSolicitacaoPrivacidade` | ABERTA, EM_PROCESSAMENTO, CONCLUIDA, NEGADA |
+| `privacidade` | `TipoTermo` | TERMOS_USO_APP, TERMOS_ENTERPRISE, POLITICA_PRIVACIDADE, CONSENTIMENTO_CLIENTE, COMUNICACAO_MARKETING |
+| `privacidade` | `MeioColeta` | ACEITE_NO_APP, ASSINATURA_PRESENCIAL, LINK_DIGITAL |
 | `administracao` | `NivelLog` | INFO, ALERTA, CRITICO |
 | `administracao` | `StatusChamado` | ABERTO, EM_ANALISE, AGUARDANDO_INFORMACAO, RESOLVIDO, FECHADO |
 | `administracao` | `TipoIntegracao` | CALENDARIO, PAGAMENTO, PLATAFORMA_VETERINARIA, NOTIFICACAO, OUTRA |
@@ -1067,12 +1076,13 @@ Restrições que a notação gráfica não expressa. Escritas em OCL quando poss
 | RC-22 | `SolicitacaoServico` | toda mudança de status cria um HistoricoSolicitacao com autor | RN38 |
 | RC-23 | `SolicitacaoServico` | agendamento->notEmpty() implies status em {ACEITA, CONCLUIDA} | RN40 |
 | RC-24 | `Atendimento` | status = FINALIZADO implies alterações apenas por alterarComAuditoria(), que gera LogAuditoria | RN28 |
-| RC-25 | `Cliente` | consentimentoLGPD = true para salvar o cadastro | RN25 |
+| RC-25 | `Cliente` | not consentimentoVigente implies só nome e contato preenchidos, sem pets nem agendamentos; cadastro pendente há mais de 7 dias é excluído | RN25, RN41 |
 | RC-26 | `Pagamento` | status = StatusPagamento::ACEITO implies dataConfirmacao->notEmpty() | RN39 |
 | RC-27 | `Pagamento` | {xor} agendamento ou assinatura | RF43 |
 | RC-28 | `Conversa` | tipo = ASSISTENTE_VIRTUAL implies tutor.assinaturas->exists(a | a.plano = PANTERA and a.estaAtiva()); tipo = EMPRESA implies empresa->notEmpty() | RF42 |
 | RC-29 | `Webhook` | url começa com https:// e metodoAutenticacao não é vazio | RN36 |
 | RC-30 | `Integracao` | criar ou alterar exige Administrador com a permissão de integrações | RN33 |
+| RC-31 | `Consentimento` | {xor} usuario ou cliente; meioColeta = ASSINATURA_PRESENCIAL implies evidenciaUrl->notEmpty(), senão ipOrigem->notEmpty(); cliente->notEmpty() implies termo.tipo = CONSENTIMENTO_CLIENTE | RN41, RN42 |
 | RC-31 | `IntervencaoSuporte, Usuario` | toda intervenção e toda mudança de status de conta gera LogAuditoria | RN32, RN34 |
 | RC-32 | `Relatorio` | o conteúdo respeita o perfil de quem gera; empresa vê só a própria operação | RN21, RN22 |
 | RC-33 | `Cliente` | vincularConta(t) torna t responsável principal dos pets do cliente que ainda não têm responsável; um tutor é cliente no máximo uma vez por empresa | RN09, RN25 |

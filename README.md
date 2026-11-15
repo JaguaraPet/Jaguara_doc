@@ -29,6 +29,7 @@ Projeto da **Escola de TI** (turma B). **Equipe:** Micaela Dorneles, Miguel Droz
 | Protótipo, navegação e guia de estilo | [UX-03](docs/05-ux/UX-03-prototipos.md), [UX-01](docs/05-ux/UX-01-mapa-de-navegacao.md), [UX-02](docs/05-ux/UX-02-guia-de-estilo.md) |
 | Plano, casos e relatório de testes | [TST-01](docs/06-testes/TST-01-plano-de-testes.md), [TST-02](docs/06-testes/TST-02-casos-de-teste.md), [TST-03](docs/06-testes/TST-03-relatorio-de-testes.md) |
 | Implantação, manuais e notas de versão | [ENT-01](docs/07-entrega/ENT-01-implantacao.md), [ENT-02](docs/07-entrega/ENT-02-manual-tutor.md), [ENT-03](docs/07-entrega/ENT-03-manual-enterprise.md), [ENT-04](docs/07-entrega/ENT-04-notas-de-versao.md) |
+| Termos de uso, termos da Enterprise, política de privacidade e termo de consentimento do cliente | [JUR-01](docs/08-juridico/JUR-01-termos-de-uso-app.md), [JUR-02](docs/08-juridico/JUR-02-termos-enterprise.md), [JUR-03](docs/08-juridico/JUR-03-politica-de-privacidade.md), [JUR-04](docs/08-juridico/JUR-04-termo-consentimento-cliente.md) |
 | Processo de desenvolvimento | [ADR-008](docs/03-arquitetura/adr/ADR-008-processo-de-desenvolvimento.md) e [CONTRIBUTING](CONTRIBUTING.md) |
 | Artefatos originais, antes da padronização | [`docs/anexos/originais`](docs/anexos/originais) |
 
@@ -47,6 +48,7 @@ Versão e status de cada documento: [`docs/README.md`](docs/README.md).
 | [`docs/05-ux`](docs/05-ux) | Mapa de navegação, guia de estilo e protótipos | WCAG 2.2 |
 | [`docs/06-testes`](docs/06-testes) | Plano, casos e relatório de testes | ISO/IEC/IEEE 29119-3 |
 | [`docs/07-entrega`](docs/07-entrega) | Implantação, manuais e notas de versão | ISO/IEC/IEEE 26514 |
+| [`docs/08-juridico`](docs/08-juridico) | Termos de uso, termos da Enterprise, política de privacidade e termo de consentimento | LGPD, CDC, Marco Civil da Internet |
 | [`docs/anexos`](docs/anexos) | Exportações dos artefatos originais (PDF, XLSX) | — |
 
 ## Como gerar os diagramas

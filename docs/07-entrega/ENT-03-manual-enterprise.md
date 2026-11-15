@@ -4,11 +4,11 @@
 |---|---|
 | Projeto | Jaguara |
 | Documento | ENT-03 · Manual do usuário da plataforma web (empresas e funcionários) |
-| Versão | 0.4 |
+| Versão | 0.5 |
 | Status | Rascunho |
 | Autores | Ricardo Guilhen |
 | Data | 14/11/2026 |
-| Tarefa Jira | JAG-79 |
+| Tarefa Jira | JAG-79, JAG-216 |
 | Padrão de referência | ISO/IEC/IEEE 26514 (informação para usuários), orientado a tarefas |
 
 ## Histórico de revisões
@@ -17,6 +17,7 @@
 |---|---|---|---|
 | 0.3 | 01/11/2026 | Ricardo Guilhen | Estrutura e passo a passo das tarefas a partir dos casos de uso. Capturas de tela entram quando a web estiver pronta. |
 | 0.4 | 14/11/2026 | Ricardo Guilhen | Cadastro de clientes sem conta e dos pets deles (ADR-010, item 3). |
+| 0.5 | 14/11/2026 | Ricardo Guilhen | Cadastro de cliente com consentimento presencial ou por link, clientes pendentes e revogação (RN41). |
 
 ## 1. Primeiro acesso da empresa
 
@@ -53,7 +54,9 @@
 
 | Tarefa | Caminho |
 |---|---|
-| Cadastrar cliente | Clientes → Novo (informe nome, CPF e contato e registre o consentimento; se o cliente já usa o app, o cadastro fica ligado à conta dele) |
+| Cadastrar cliente | Clientes → Novo (informe nome e contato; escolha "assinatura presencial", imprima o termo, colha a assinatura e anexe a cópia, ou "enviar link" para o cliente aceitar no celular; depois do consentimento, complete CPF, dados e pets. Se o cliente já usa o app, o cadastro fica ligado à conta dele) |
+| Ver clientes pendentes | Clientes → Pendentes (pré-cadastros aguardando o aceite do link; são excluídos depois de 7 dias) |
+| Registrar revogação | Clientes → cliente → Privacidade → Revogar consentimento (o cliente também pode revogar sozinho pelo código QR do comprovante) |
 | Cadastrar pet de cliente sem conta | Clientes → cliente → Pets → Novo (o pet passa para o tutor quando o cliente cria a conta) |
 | Ver pets atendidos | Pets vinculados (aparecem pets com agendamento ou compartilhamento ativo e pets de clientes sem conta) |
 | Ver perfil, exames e alergias | Pets vinculados → pet (somente o que o tutor liberou) |

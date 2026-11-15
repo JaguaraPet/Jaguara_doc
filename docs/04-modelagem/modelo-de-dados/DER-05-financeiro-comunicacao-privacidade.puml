@@ -7,6 +7,8 @@ entity "tutor" as Tutor #EFEFEF
 entity "pet" as Pet #EFEFEF
 entity "empresa_enterprise" as EmpresaEnterprise #EFEFEF
 entity "agendamento" as Agendamento #EFEFEF
+entity "cliente" as Cliente #EFEFEF
+entity "funcionario_enterprise" as FuncionarioEnterprise #EFEFEF
 entity "categoria_despesa" as CategoriaDespesa {
   * id : uuid <<PK>>
   --
@@ -81,6 +83,7 @@ entity "mensagem" as Mensagem {
 entity "termo_uso" as TermoUso {
   * id : uuid <<PK>>
   --
+  * tipo : tipo_termo <<UK>>
   * versao : varchar(255) <<UK>>
   * titulo : varchar(255)
   * conteudo : text
@@ -93,8 +96,13 @@ entity "consentimento" as Consentimento {
   * aceito : boolean
   * data_aceite : timestamptz
     data_revogacao : timestamptz
-  * ip_origem : varchar(255)
-  * usuario_id : uuid <<FK>>
+    ip_origem : varchar(255)
+  * meio_coleta : meio_coleta
+    evidencia_url : varchar(2048)
+    token_link : varchar(255) <<UK>>
+    usuario_id : uuid <<FK>>
+    cliente_id : uuid <<FK>>
+    registrado_por_id : uuid <<FK>>
   * termo_id : uuid <<FK>>
 }
 entity "solicitacao_privacidade" as SolicitacaoPrivacidade {
@@ -120,7 +128,9 @@ EmpresaEnterprise |o--o{ Conversa
 Pet |o--o{ Conversa
 Conversa ||--o{ Mensagem
 Usuario |o--o{ Mensagem
-Usuario ||--o{ Consentimento
+Usuario |o--o{ Consentimento
+Cliente |o--o{ Consentimento
+FuncionarioEnterprise |o--o{ Consentimento
 TermoUso ||--o{ Consentimento
 Usuario ||--o{ SolicitacaoPrivacidade
 @enduml

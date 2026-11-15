@@ -4,11 +4,11 @@
 |---|---|
 | Projeto | Jaguara |
 | Documento | REQ-01 · Especificação de Requisitos de Software |
-| Versão | 3.0 |
+| Versão | 3.1 |
 | Status | Em revisão |
 | Autores | Micaela Dorneles, Miguel Drozino, Nathan Rodrigues, Ricardo Guilhen |
-| Data | 01/11/2026 |
-| Tarefa Jira | JAG-5, JAG-17 (elaboração), JAG-58, JAG-59 (reestruturação) |
+| Data | 14/11/2026 |
+| Tarefa Jira | JAG-5, JAG-17 (elaboração), JAG-58, JAG-59 (reestruturação), JAG-216 |
 | Padrão de referência | ISO/IEC/IEEE 29148:2018; ISO/IEC 25010 para os requisitos não funcionais |
 | Original | [REQ-01-documento-de-requisitos-original.pdf](../anexos/originais/REQ-01-documento-de-requisitos-original.pdf) |
 
@@ -19,6 +19,7 @@
 | 1.0 | 05/06/2026 | Equipe Jaguara | Escopo, atores, RF01 a RF32, RN01 a RN36 e RNF01 a RNF10. |
 | 2.0 | 09/09/2026 | Equipe Jaguara | Requisitos adicionais RF33 a RF45 e RN37 a RN40 (JAG-5, JAG-17). |
 | 3.0 | 01/11/2026 | Ricardo Guilhen | Reestruturação no modelo ISO/IEC/IEEE 29148: prioridades MoSCoW, ligação com casos de uso e RNF mensuráveis classificados pela ISO/IEC 25010. Texto dos RF e das RN mantido. |
+| 3.1 | 14/11/2026 | Ricardo Guilhen | RN41 (consentimento do cliente da empresa) e RN42 (aceite dos termos), a partir dos gaps da avaliação de 10/11/2026; RF01, RF21 e RF45 ligados a elas. |
 
 ## 1. Introdução
 
@@ -89,7 +90,7 @@ Prioridade MoSCoW: **Must** (indispensável na v1.0), **Should** (importante, en
 
 | ID | Requisito | Descrição | Atores | Regras | Casos de uso | Prioridade |
 |---|---|---|---|---|---|---|
-| RF01 | Cadastro de usuário | Permite o cadastro de novos usuários na plataforma | Tutor, Empresa, Administrador | RN01, RN02 | UC-01, UC-32 | Must |
+| RF01 | Cadastro de usuário | Permite o cadastro de novos usuários na plataforma | Tutor, Empresa, Administrador | RN01, RN02, RN42 | UC-01, UC-32 | Must |
 | RF02 | Autenticação de usuário | Permite acessar a plataforma com login e senha | Todos | RN03, RN04 | UC-02 | Must |
 | RF03 | Recuperação de senha | Permite redefinir a senha pelo e-mail cadastrado | Todos | RN05, RN06 | UC-03 | Must |
 | RF04 | Gerenciar pet | Permite cadastrar, editar, arquivar e remover pets; empresas e funcionários têm acesso parcial a dados operacionais e clínicos autorizados | Tutor (Empresa, Funcionário parcial) | RN07, RN08, RN30 | UC-04 | Must |
@@ -109,7 +110,7 @@ Prioridade MoSCoW: **Must** (indispensável na v1.0), **Should** (importante, en
 | RF18 | Emitir relatórios | Permite gerar relatórios operacionais e administrativos | Empresa | RN22 | UC-18 | Should |
 | RF19 | Gerenciar funcionários | Permite cadastrar, editar e remover funcionários | Empresa | RN23 | UC-19 | Must |
 | RF20 | Consultar pets vinculados | Permite consultar informações dos pets atendidos pela empresa | Empresa, Funcionário | RN24 | UC-20 | Should |
-| RF21 | Gerenciar clientes | Permite cadastrar e atualizar informações dos clientes | Empresa, Funcionário | RN25 | UC-21 | Should |
+| RF21 | Gerenciar clientes | Permite cadastrar e atualizar informações dos clientes | Empresa, Funcionário | RN25, RN41 | UC-21 | Should |
 | RF22 | Visualizar perfil do pet | Permite acessar o perfil e o histórico do pet | Empresa, Funcionário | RN26 | UC-22 | Should |
 | RF23 | Registrar serviços e atendimentos | Permite registrar, em um único registro, os serviços realizados, os procedimentos executados e as observações clínicas | Empresa, Funcionário | RN27, RN28 | UC-23 | Must |
 | RF24 | Registrar atendimentos | Descontinuado; incorporado ao RF23 | — | — | — | — |
@@ -133,7 +134,7 @@ Prioridade MoSCoW: **Must** (indispensável na v1.0), **Should** (importante, en
 | RF42 | Conversar em chat na plataforma | Permite a comunicação entre tutores e empresas e com o assistente virtual ([ADR-010](../03-arquitetura/adr/ADR-010-decisoes-de-dominio.md)) | Tutor, Empresa | RN25, RN31 | UC-43 | Could |
 | RF43 | Realizar pagamento | Permite ao tutor pagar os serviços contratados | Tutor | RN25, RN31, RN39 | UC-44 | Should |
 | RF44 | Gerenciar pagamentos | Permite consultar e gerenciar pagamentos realizados e recebidos | Tutor, Empresa | RN22, RN25, RN31, RN39 | UC-45 | Should |
-| RF45 | Gerenciar privacidade e consentimentos | Permite gerenciar consentimentos, compartilhamentos e solicitações de privacidade, incluindo exclusão | Tutor, Empresa | RN15, RN25, RN26, RN31 | UC-46 | Must |
+| RF45 | Gerenciar privacidade e consentimentos | Permite gerenciar consentimentos, compartilhamentos e solicitações de privacidade, incluindo exclusão | Tutor, Empresa | RN15, RN25, RN26, RN31, RN41, RN42 | UC-46 | Must |
 
 A especificação detalhada de cada requisito está no caso de uso correspondente do [REQ-04](REQ-04-especificacao-casos-de-uso.md). As prioridades são uma proposta da padronização e devem ser confirmadas pelo *Product Owner* no planejamento.
 
@@ -181,6 +182,8 @@ A especificação detalhada de cada requisito está no caso de uso correspondent
 | RN38 | Ciclo das solicitações | Toda solicitação de serviço tem status e histórico de alterações até a conclusão, o cancelamento ou o encerramento |
 | RN39 | Integridade das transações financeiras | Toda transação registra valor, data, status (pendente, aceito, cancelado, recusado) e identificação da operação, e só é concluída com a confirmação do processamento |
 | RN40 | Confirmação de agendamento pela empresa | O tutor escolhe um horário disponível; a empresa confirma ou recusa; o horário só é confirmado após a aprovação, e o tutor é notificado da decisão |
+| RN41 | Consentimento do cliente da empresa | A empresa só registra dados do cliente além de nome e contato, e só liga pets, agendamentos e atendimentos a ele, depois do consentimento no termo vigente ([JUR-04](../08-juridico/JUR-04-termo-consentimento-cliente.md)), coletado por assinatura presencial com cópia anexada ou por link digital. Pré-cadastro sem aceite em 7 dias é excluído. O cliente revoga pela empresa ou pelo link do comprovante, sem precisar de conta |
+| RN42 | Aceite dos termos | Criar conta e continuar usando a plataforma exigem o aceite da versão vigente dos termos obrigatórios do seu público: termos de uso do app e política de privacidade para tutores; termos da Enterprise e política de privacidade para empresas. Uma nova versão obrigatória pede novo aceite no primeiro acesso após a vigência |
 
 As restrições de integridade correspondentes no modelo de classes estão no [MOD-01](../04-modelagem/MOD-01-modelo-de-classes.md), seção 9.
 

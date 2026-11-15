@@ -4,11 +4,11 @@
 |---|---|
 | Projeto | Jaguara |
 | Documento | MOD-03 · Modelo de dados (DER lógico, modelo físico e dicionário de dados) |
-| Versão | 1.3 |
+| Versão | 1.4 |
 | Status | Em revisão |
 | Autores | Ricardo Guilhen |
 | Data | 14/11/2026 |
-| Tarefa Jira | JAG-47 (modelo lógico), JAG-48 (modelo físico), JAG-215 |
+| Tarefa Jira | JAG-47 (modelo lógico), JAG-48 (modelo físico), JAG-215, JAG-216 |
 | Padrão de referência | Diagrama Entidade-Relacionamento em notação pé de galinha (Information Engineering); PostgreSQL 16 |
 
 ## Histórico de revisões
@@ -19,6 +19,7 @@
 | 1.1 | 01/11/2026 | Ricardo Guilhen | `cliente` com dados próprios e conta opcional, tabela `cliente_pet` (ADR-010, item 3). Dicionário de dados passa a ser o próprio script. |
 | 1.2 | 14/11/2026 | Ricardo Guilhen | Dicionário de dados de volta ao documento (seção 7) e conferido com o script, com `cliente`, `cliente_pet` e `perfil_permissao`. |
 | 1.3 | 14/11/2026 | Ricardo Guilhen | CPF cifrado na aplicação com índice cego (`cpf_cifrado` e `cpf_hash`) em `tutor`, `funcionario_enterprise` e `cliente`, conforme ARQ-02 2.0. |
+| 1.4 | 14/11/2026 | Ricardo Guilhen | Consentimento do cliente da empresa como registro próprio (`consentimento.cliente_id`, meio de coleta, evidência e token do link), `termo_uso.tipo` e remoção de `cliente.consentimento_lgpd` (RN41, RN42). |
 
 ## 1. Objetivo
 
@@ -83,7 +84,7 @@ Fontes: [`modelo-de-dados/`](modelo-de-dados).
 
 ## 5. Modelo físico
 
-O script [`MOD-03-schema.sql`](modelo-de-dados/MOD-03-schema.sql) cria os 39 tipos enumerados, as 56 tabelas (54 entidades e as associativas `perfil_permissao` e `cliente_pet`), as 87 chaves estrangeiras, as restrições de negócio e os índices. Ele é validado executando-o em um PostgreSQL 16 limpo.
+O script [`MOD-03-schema.sql`](modelo-de-dados/MOD-03-schema.sql) cria os 41 tipos enumerados, as 56 tabelas (54 entidades e as associativas `perfil_permissao` e `cliente_pet`), as 89 chaves estrangeiras, as restrições de negócio e os índices. Ele é validado executando-o em um PostgreSQL 16 limpo.
 
 ## 6. Restrições de negócio no banco
 
@@ -101,6 +102,8 @@ As regras que o banco consegue garantir sozinho ficam no banco; as demais ficam 
 | Pagamento de agendamento ou de assinatura | RC-27 | `CHECK` de exclusividade |
 | Pagamento aceito só com confirmação | RN39, RC-26 | `CHECK (status <> 'ACEITO' OR data_confirmacao IS NOT NULL)` |
 | Webhook só HTTPS | RN36, RC-29 | `CHECK (url LIKE 'https://%')` |
+| Consentimento de um único titular, com prova da coleta | RN41, RC-31 | `CHECK` de exclusividade entre `usuario_id` e `cliente_id`; `CHECK` de evidência na assinatura presencial e de IP nos demais meios |
+| Uma versão por tipo de termo | RN42 | `UNIQUE (tipo, versao)` em `termo_uso` |
 | Preço contratado imutável | RN27, RC-21 | Coluna própria em `agendamento`; o serviço de domínio não atualiza |
 | Pet com histórico não é excluído | RN08 | `ON DELETE RESTRICT` em `registro_clinico`, `despesa` e `agendamento`, mais regra no serviço |
 
@@ -605,8 +608,6 @@ Classe de origem: `Cliente`.
 | `email` | `varchar(255)` | sim |  | Usado para convidar o cliente a criar conta |
 | `data_vinculo` | `date` | não |  |  |
 | `observacoes` | `text` | sim |  |  |
-| `consentimento_lgpd` | `boolean` | não |  |  |
-| `data_consentimento` | `timestamptz` | sim |  |  |
 | `ativo` | `boolean` | não |  |  |
 | `empresa_id` | `uuid` | não | FK → empresa_enterprise.id |  |
 | `tutor_id` | `uuid` | sim | FK → tutor.id | Conta do cliente no Jaguara, quando existe; único com empresa_id |
@@ -879,7 +880,8 @@ Classe de origem: `TermoUso`.
 | Coluna | Tipo | Nulo | Restrição | Observação |
 |---|---|---|---|---|
 | `id` | `uuid` | não | PK | Identificador |
-| `versao` | `varchar(255)` | não | UNIQUE |  |
+| `tipo` | `tipo_termo` | não | UNIQUE com versao | Termos de uso do app, termos da Enterprise, política de privacidade, consentimento do cliente ou marketing |
+| `versao` | `varchar(255)` | não | UNIQUE com tipo |  |
 | `titulo` | `varchar(255)` | não |  |  |
 | `conteudo` | `text` | não |  |  |
 | `data_vigencia` | `date` | não |  |  |
@@ -897,8 +899,13 @@ Classe de origem: `Consentimento`.
 | `aceito` | `boolean` | não |  |  |
 | `data_aceite` | `timestamptz` | não |  |  |
 | `data_revogacao` | `timestamptz` | sim |  |  |
-| `ip_origem` | `varchar(255)` | não |  |  |
-| `usuario_id` | `uuid` | não | FK → usuario.id |  |
+| `ip_origem` | `varchar(255)` | sim |  | Obrigatório, salvo na assinatura presencial |
+| `meio_coleta` | `meio_coleta` | não |  | Aceite no app, assinatura presencial ou link digital |
+| `evidencia_url` | `varchar(2048)` | sim |  | Cópia digitalizada do termo assinado; obrigatória na assinatura presencial |
+| `token_link` | `varchar(255)` | sim | UNIQUE | Token do link de aceite e de revogação enviado ao cliente sem conta |
+| `usuario_id` | `uuid` | sim | FK → usuario.id | Titular com conta; exclusivo com cliente_id |
+| `cliente_id` | `uuid` | sim | FK → cliente.id | Cliente da empresa; exclusivo com usuario_id |
+| `registrado_por_id` | `uuid` | sim | FK → funcionario_enterprise.id | Funcionário que registrou o consentimento presencial |
 | `termo_id` | `uuid` | não | FK → termo_uso.id |  |
 | `criado_em` | `timestamptz` | não | DEFAULT now() | Auditoria de criação |
 | `atualizado_em` | `timestamptz` | não | DEFAULT now() | Auditoria de alteração |

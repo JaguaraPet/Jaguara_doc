@@ -4,11 +4,11 @@
 |---|---|
 | Projeto | Jaguara |
 | Documento | UX-01 · Mapa de navegação e fluxos de tela |
-| Versão | 1.0 |
+| Versão | 1.1 |
 | Status | Em revisão |
 | Autores | Ricardo Guilhen |
-| Data | 01/11/2026 |
-| Tarefa Jira | JAG-71 |
+| Data | 14/11/2026 |
+| Tarefa Jira | JAG-71, JAG-216 |
 | Padrão de referência | Mapa de navegação (sitemap) e fluxos de usuário; WCAG 2.2 |
 
 ## Histórico de revisões
@@ -16,6 +16,7 @@
 | Versão | Data | Autor | Descrição |
 |---|---|---|---|
 | 1.0 | 01/11/2026 | Ricardo Guilhen | Telas do app do tutor e da web Enterprise e administração, ligadas aos casos de uso. |
+| 1.1 | 14/11/2026 | Ricardo Guilhen | Aceite dos termos no cadastro e em nova versão (RN42), termo de consentimento e clientes pendentes na web Enterprise e página pública do termo do cliente (RN41). |
 
 ## 1. Objetivo
 
@@ -33,6 +34,9 @@ Listar todas as telas da versão 1.0, como se navega entre elas e qual caso de u
 ```mermaid
 flowchart LR
   A[Boas-vindas] --> B[Cadastro UC-01]
+  B --> BT[Termos de uso e política de privacidade RN42]
+  C --> NT[Aceite de nova versão dos termos UC-46]
+  NT --> H
   A --> C[Login UC-02]
   C --> C1[Recuperar senha UC-03]
   C --> H((Início))
@@ -80,12 +84,15 @@ flowchart LR
 flowchart LR
   L[Login UC-02] --> D((Painel))
   CE[Cadastro da empresa UC-32] --> L
+  CE --> CT[Termos da Enterprise e política de privacidade RN42]
   D --> AGD[Agenda semanal UC-24]
   AGD --> NA[Novo agendamento UC-39]
   AGD --> AT[Registrar atendimento UC-23]
   D --> SO[Solicitações UC-41]
   D --> CA[Catálogo UC-38]
   D --> CL[Clientes UC-21]
+  CL --> CLT[Termo de consentimento: imprimir ou enviar link RN41]
+  CL --> CLP[Clientes pendentes UC-21]
   D --> PV[Pets vinculados UC-20]
   PV --> PP[Perfil do pet UC-22]
   PP --> LT[Linha do tempo UC-35]
@@ -101,6 +108,18 @@ flowchart LR
 ```
 
 Funcionários veem apenas os itens liberados pelo seu perfil (RN20).
+
+### 4.1 Página pública do termo do cliente
+
+O cliente sem conta recebe um link (ou lê o código QR do comprovante) que abre uma página web sem login, com o termo ([JUR-04](../08-juridico/JUR-04-termo-consentimento-cliente.md)), os dados da empresa e os botões "Concordo" e, depois do aceite, "Revogar consentimento" (UC-21, RN41).
+
+```mermaid
+flowchart LR
+  LK[Link ou código QR] --> TP[Termo da empresa]
+  TP --> AC[Concordo]
+  AC --> CP[Comprovante por e-mail]
+  CP --> RV[Revogar consentimento]
+```
 
 ## 5. Web de administração
 

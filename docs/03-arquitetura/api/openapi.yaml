@@ -1,7 +1,7 @@
 openapi: 3.1.0
 info:
   title: Jaguara API
-  version: 1.1.0
+  version: 1.2.0
   summary: API REST da plataforma Jaguara (tutores e empresas Enterprise).
   description: |
     Contrato da API do Jaguara (tarefa JAG-68). Os recursos seguem o modelo de classes
@@ -932,7 +932,7 @@ paths:
           application/json:
             schema:
               type: object
-              required: [nome, consentimentoLGPD]
+              required: [nome, meioConsentimento]
               properties:
                 nome: { type: string, maxLength: 255 }
                 cpf: { type: string, maxLength: 14 }
@@ -942,12 +942,20 @@ paths:
                   format: email
                   description: Contato do cliente. Se houver conta de tutor com este e-mail ou com o CPF, o cadastro fica ligado a ela (ADR-010).
                 observacoes: { type: string }
-                consentimentoLGPD:
-                  type: boolean
-                  const: true
-                  description: Obrigatório (RN25).
+                meioConsentimento:
+                  type: string
+                  enum: [ASSINATURA_PRESENCIAL, LINK_DIGITAL]
+                  description: Como o consentimento no termo vigente (JUR-04) é coletado (RN41).
+                evidenciaArquivoUrl:
+                  type: string
+                  format: uri
+                  description: Cópia digitalizada do termo assinado, enviada por URL assinada. Obrigatória com ASSINATURA_PRESENCIAL.
       responses:
-        '201': { description: "Cliente cadastrado." }
+        '201':
+          description: >-
+            Cliente cadastrado. Com ASSINATURA_PRESENCIAL o consentimento já fica vigente; com LINK_DIGITAL
+            o link é enviado ao contato do cliente e o cadastro fica pendente, só com nome e contato,
+            por até 7 dias (RN41).
         '422': { $ref: '#/components/responses/Validacao' }
   /empresas/{empresaId}/clientes/{clienteId}/pets:
     parameters:
@@ -971,6 +979,19 @@ paths:
             application/json:
               schema: { $ref: '#/components/schemas/Pet' }
         '422': { $ref: '#/components/responses/Validacao' }
+  /empresas/{empresaId}/clientes/{clienteId}/consentimento/revogacao:
+    parameters:
+      - $ref: '#/components/parameters/EmpresaId'
+      - in: path
+        name: clienteId
+        required: true
+        schema: { type: string, format: uuid }
+    post:
+      tags: [Empresa]
+      summary: Registrar a revogação pedida pelo cliente (UC-21, RN41)
+      responses:
+        '204': { description: "Consentimento revogado; cliente inativado e dados anonimizados, exceto o exigido por lei." }
+        '404': { $ref: '#/components/responses/NaoEncontrado' }
   /empresas/{empresaId}/pets-vinculados:
     parameters:
       - $ref: '#/components/parameters/EmpresaId'
@@ -1183,6 +1204,65 @@ paths:
           content:
             application/problem+json:
               schema: { $ref: '#/components/schemas/Problema' }
+  /termos/vigentes:
+    get:
+      tags: [Privacidade]
+      summary: Consultar as versões vigentes dos termos (RN42)
+      security: []
+      parameters:
+        - in: query
+          name: tipo
+          schema:
+            type: string
+            enum: [TERMOS_USO_APP, TERMOS_ENTERPRISE, POLITICA_PRIVACIDADE, CONSENTIMENTO_CLIENTE, COMUNICACAO_MARKETING]
+      responses:
+        '200':
+          description: Termos vigentes, para exibir no cadastro e na página pública.
+          content:
+            application/json:
+              schema:
+                type: array
+                items: { $ref: '#/components/schemas/Termo' }
+  /consentimentos-clientes/{token}:
+    parameters:
+      - $ref: '#/components/parameters/TokenLink'
+    get:
+      tags: [Privacidade]
+      summary: Abrir o termo enviado ao cliente sem conta (UC-21, RN41)
+      security: []
+      responses:
+        '200':
+          description: Texto do termo, dados da empresa controladora e situação do consentimento.
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  empresa: { type: string }
+                  termo: { $ref: '#/components/schemas/Termo' }
+                  situacao: { type: string, enum: [PENDENTE, VIGENTE, REVOGADO] }
+        '404': { $ref: '#/components/responses/NaoEncontrado' }
+        '410': { $ref: '#/components/responses/Expirado' }
+  /consentimentos-clientes/{token}/aceite:
+    parameters:
+      - $ref: '#/components/parameters/TokenLink'
+    post:
+      tags: [Privacidade]
+      summary: Aceitar o termo pelo link (UC-21, RN41)
+      security: []
+      responses:
+        '204': { description: "Consentimento registrado com data, hora, IP e versão; comprovante enviado ao cliente." }
+        '410': { $ref: '#/components/responses/Expirado' }
+  /consentimentos-clientes/{token}/revogacao:
+    parameters:
+      - $ref: '#/components/parameters/TokenLink'
+    post:
+      tags: [Privacidade]
+      summary: Revogar o consentimento pelo link do comprovante, sem conta (UC-21, RN41)
+      security: []
+      responses:
+        '204': { description: "Consentimento revogado; a empresa é avisada." }
+        '404': { $ref: '#/components/responses/NaoEncontrado' }
   /privacidade/solicitacoes:
     post:
       tags: [Privacidade]
@@ -1333,6 +1413,12 @@ components:
       name: agendamentoId
       required: true
       schema: { type: string, format: uuid }
+    TokenLink:
+      in: path
+      name: token
+      required: true
+      description: Token do link de aceite e de revogação enviado ao cliente sem conta (RN41).
+      schema: { type: string, minLength: 32 }
     Pagina:
       in: query
       name: pagina
@@ -1418,7 +1504,10 @@ components:
         email: { type: string, format: email }
         telefone: { type: string }
         senha: { type: string, format: password, minLength: 8 }
-        aceiteTermos: { type: boolean, const: true }
+        aceiteTermos:
+          type: boolean
+          const: true
+          description: Aceite das versões vigentes dos termos de uso do app e da política de privacidade (RN42).
     CadastroEmpresa:
       type: object
       required: [cnpj, razaoSocial, nomeFantasia, tipo, email, senha, endereco, aceiteTermos]
@@ -1432,7 +1521,10 @@ components:
         email: { type: string, format: email }
         senha: { type: string, format: password, minLength: 8 }
         endereco: { $ref: '#/components/schemas/Endereco' }
-        aceiteTermos: { type: boolean, const: true }
+        aceiteTermos:
+          type: boolean
+          const: true
+          description: Aceite das versões vigentes dos termos da Enterprise e da política de privacidade (RN42).
     Usuario:
       type: object
       properties:
@@ -1737,10 +1829,24 @@ components:
           format: uuid
           description: Nulo quando a mensagem é do assistente virtual.
         lida: { type: boolean }
+    Termo:
+      type: object
+      properties:
+        id: { type: string, format: uuid }
+        tipo:
+          type: string
+          enum: [TERMOS_USO_APP, TERMOS_ENTERPRISE, POLITICA_PRIVACIDADE, CONSENTIMENTO_CLIENTE, COMUNICACAO_MARKETING]
+        versao: { type: string }
+        titulo: { type: string }
+        conteudo: { type: string }
+        dataVigencia: { type: string, format: date }
+        obrigatorio: { type: boolean }
     Consentimento:
       type: object
       properties:
         termoId: { type: string, format: uuid }
+        tipo: { type: string }
+        meioColeta: { type: string, enum: [ACEITE_NO_APP, ASSINATURA_PRESENCIAL, LINK_DIGITAL] }
         titulo: { type: string }
         versao: { type: string }
         obrigatorio: { type: boolean }
