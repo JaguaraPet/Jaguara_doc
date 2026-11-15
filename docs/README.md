@@ -34,7 +34,7 @@ Status: **Aprovado** (revisado e aceito pelo time), **Em revisão** (completo, a
 
 | Documento | Versão | Status | Jira |
 |---|---|---|---|
-| [ARQ-01 · Documentação de arquitetura (arc42 e C4)](03-arquitetura/ARQ-01-arquitetura.md) | 1.2 | Em revisão | JAG-41, JAG-44, JAG-217 |
+| [ARQ-01 · Documentação de arquitetura (arc42 e C4)](03-arquitetura/ARQ-01-arquitetura.md) | 1.3 | Em revisão | JAG-41, JAG-44, JAG-217 |
 | [ARQ-02 · Segurança e conformidade com a LGPD](03-arquitetura/ARQ-02-seguranca-e-lgpd.md) | 2.2 | Em revisão | JAG-69, JAG-215, JAG-216, JAG-217 |
 | [ARQ-03 · Integrações externas](03-arquitetura/ARQ-03-integracoes.md) | 1.0 | Em revisão | JAG-70 |
 
@@ -53,7 +53,7 @@ Status: **Aprovado** (revisado e aceito pelo time), **Em revisão** (completo, a
 | [ADR-009 · Autenticação e autorização](03-arquitetura/adr/ADR-009-autenticacao-e-autorizacao.md) | Aceita | JAG-38, JAG-39 |
 | [ADR-010 · Decisões de domínio: chat, plano PANTERA e cliente](03-arquitetura/adr/ADR-010-decisoes-de-dominio.md) | Aceita | JAG-38, JAG-65 |
 | [ADR-011 · Tempo real e tarefas assíncronas](03-arquitetura/adr/ADR-011-tempo-real-e-tarefas-assincronas.md) | Aceita | JAG-38, JAG-39 |
-| [ADR-012 · Camada de acesso centralizada e login social](03-arquitetura/adr/ADR-012-camada-de-acesso-e-login-social.md) | Proposta | JAG-217 |
+| [ADR-012 · Camada de acesso centralizada e login social](03-arquitetura/adr/ADR-012-camada-de-acesso-e-login-social.md) | Aceita | JAG-217 |
 
 ## Modelagem
 

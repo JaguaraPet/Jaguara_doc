@@ -2,7 +2,7 @@
 
 | Campo | Valor |
 |---|---|
-| Status | Proposta |
+| Status | Aceita |
 | Data | 14/11/2026 |
 | Autores | Ricardo Guilhen |
 | Tarefa Jira | JAG-217 |
@@ -76,4 +76,4 @@ SSO por SAML ou OIDC com o provedor de identidade da empresa (Microsoft Entra ID
 
 Complementa a ADR-009, que continua valendo para senhas, tokens, sessões e RBAC.
 
-Aguarda a revisão do time para passar a Aceita.
+Proposta em 14/11/2026. Aceita em 15/11/2026, após a revisão de Ricardo Guilhen (JAG-217).

@@ -15,4 +15,4 @@ Decisões no formato de Michael Nygard: contexto, decisão, alternativas e conse
 | [ADR-009](ADR-009-autenticacao-e-autorizacao.md) | Autenticação e autorização | Aceita | 01/11/2026 |
 | [ADR-010](ADR-010-decisoes-de-dominio.md) | Decisões de domínio: chat, plano PANTERA e cliente | Aceita | 01/11/2026 |
 | [ADR-011](ADR-011-tempo-real-e-tarefas-assincronas.md) | Tempo real e tarefas assíncronas | Aceita | 01/11/2026 |
-| [ADR-012](ADR-012-camada-de-acesso-e-login-social.md) | Camada de acesso centralizada e login social | Proposta | 14/11/2026 |
+| [ADR-012](ADR-012-camada-de-acesso-e-login-social.md) | Camada de acesso centralizada e login social | Aceita | 14/11/2026 |

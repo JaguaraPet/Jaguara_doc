@@ -4,10 +4,10 @@
 |---|---|
 | Projeto | Jaguara |
 | Documento | ARQ-01 · Documentação de arquitetura de software |
-| Versão | 1.2 |
+| Versão | 1.3 |
 | Status | Em revisão |
 | Autores | Ricardo Guilhen |
-| Data | 14/11/2026 |
+| Data | 15/11/2026 |
 | Tarefa Jira | JAG-41, JAG-44, JAG-217 |
 | Padrão de referência | arc42 (versão 8), diagramas C4 e UML 2.5.1 (implantação) |
 
@@ -18,6 +18,7 @@
 | 1.0 | 01/11/2026 | Ricardo Guilhen | Primeira versão nas 12 seções do arc42, com C4 de contexto, contêineres e componentes. |
 | 1.1 | 14/11/2026 | Ricardo Guilhen | ADRs 004 e 006 a 011 aceitas pelo time; ADR-010 com cliente sem conta obrigatória. |
 | 1.2 | 14/11/2026 | Ricardo Guilhen | Camada de acesso centralizada e login social (ADR-012) nos conceitos transversais, na tabela de ADRs e no cenário de RNF01. |
+| 1.3 | 15/11/2026 | Ricardo Guilhen | ADR-012 aceita. |
 
 ## 1. Introdução e objetivos
 
@@ -194,7 +195,7 @@ O registro completo está em [adr/](adr/README.md).
 | ADR-009 | Autenticação própria com JWT e sessão revogável | Aceita |
 | ADR-010 | Chat em dois modos, plano PANTERA e cliente sem conta obrigatória | Aceita |
 | ADR-011 | WebSocket e filas BullMQ | Aceita |
-| ADR-012 | Camada de acesso centralizada e login social | Proposta |
+| ADR-012 | Camada de acesso centralizada e login social | Aceita |
 
 ## 10. Requisitos de qualidade
 

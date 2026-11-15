@@ -31,4 +31,4 @@ Proposta pela padronização.
 
 Aceita pelo time em 01/11/2026, na revisão das ADRs (JAG-39).
 
-Complementada pela [ADR-012](ADR-012-camada-de-acesso-e-login-social.md) (camada de acesso centralizada e login social), em proposta desde 14/11/2026.
+Complementada pela [ADR-012](ADR-012-camada-de-acesso-e-login-social.md) (camada de acesso centralizada e login social), aceita em 15/11/2026.
