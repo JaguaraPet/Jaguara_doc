@@ -11,6 +11,7 @@ Projeto da **Escola de TI** (turma B). **Equipe:** Micaela Dorneles, Miguel Droz
 | Escopo e objetivos do projeto | [GES-01 · Termo de abertura](docs/01-gestao/GES-01-TAP.md) |
 | EAP, cronograma, RACI, riscos e processo do time | [GES-02](docs/01-gestao/GES-02-EAP.md), [GES-03](docs/01-gestao/GES-03-cronograma.md), [GES-04](docs/01-gestao/GES-04-RACI.md), [GES-05](docs/01-gestao/GES-05-registro-de-riscos.md), [GES-06](docs/01-gestao/GES-06-processo-do-time.md) |
 | Pesquisa de mercado, SWOT, Duplo Diamante e GUT | [GES-08](docs/01-gestao/GES-08-pesquisa-de-mercado.md) |
+| Tamanho do mercado, público-alvo, concorrentes e modelo de negócio | [GES-09](docs/01-gestao/GES-09-mercado-e-concorrencia.md) |
 | Requisitos funcionais, regras de negócio e requisitos não funcionais | [REQ-01 · ERS](docs/02-requisitos/REQ-01-ERS.md) |
 | Glossário e identificadores | [REQ-02](docs/02-requisitos/REQ-02-glossario.md), [REQ-00](docs/02-requisitos/REQ-00-identificadores.md) |
 | Diagrama de casos de uso | [REQ-03](docs/02-requisitos/REQ-03-diagrama-casos-de-uso.md) |
