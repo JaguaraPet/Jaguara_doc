@@ -46,7 +46,7 @@ Seções próprias do tipo de documento, conforme o padrão de referência.
 
 ## Regras de uso do modelo
 
-- **Identificador:** prefixo da área (`GES`, `REQ`, `ARQ`, `MOD`, `TST`, `UX`, `ENT`, `TCC`) + número de dois dígitos. O identificador não muda depois de publicado.
+- **Identificador:** prefixo da área (`GES`, `REQ`, `ARQ`, `MOD`, `TST`, `UX`, `ENT`, `JUR`) + número de dois dígitos. O identificador não muda depois de publicado.
 - **Nome do arquivo:** `XXX-NN-titulo-em-kebab-case.md`, na pasta da área.
 - **Versão:** `0.x` enquanto rascunho; `1.0` na primeira aprovação; incremento menor (`1.1`) para ajustes e maior (`2.0`) para reestruturação.
 - **Status:** `Rascunho` → `Em revisão` → `Aprovado`. Um documento substituído vira `Obsoleto` e aponta para o substituto.

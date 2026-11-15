@@ -229,6 +229,18 @@ package privacidade {
     CONCLUIDA
     NEGADA
   }
+  enum TipoTermo {
+    TERMOS_USO_APP
+    TERMOS_ENTERPRISE
+    POLITICA_PRIVACIDADE
+    CONSENTIMENTO_CLIENTE
+    COMUNICACAO_MARKETING
+  }
+  enum MeioColeta {
+    ACEITE_NO_APP
+    ASSINATURA_PRESENCIAL
+    LINK_DIGITAL
+  }
 }
 
 package administracao {
@@ -285,6 +297,8 @@ StatusPagamento -[hidden]down- StatusReembolso
 TipoPlano -[hidden]down- StatusAssinatura
 TipoConversa -[hidden]down- StatusConversa
 TipoSolicitacaoPrivacidade -[hidden]down- StatusSolicitacaoPrivacidade
+StatusSolicitacaoPrivacidade -[hidden]down- TipoTermo
+TipoTermo -[hidden]down- MeioColeta
 NivelLog -[hidden]down- StatusChamado
 StatusChamado -[hidden]down- TipoIntegracao
 TipoRelatorio -[hidden]down- FormatoRelatorio

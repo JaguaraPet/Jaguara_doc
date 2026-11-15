@@ -15,9 +15,8 @@ class Cliente {
   - email : String [0..1]
   - dataVinculo : Date
   - observacoes : String [0..1]
-  - consentimentoLGPD : Boolean
-  - dataConsentimento : DateTime [0..1]
   - ativo : Boolean
+  - /consentimentoVigente : Boolean
   + vincularConta(tutor : Tutor)
 }
 

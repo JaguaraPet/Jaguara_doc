@@ -4,11 +4,11 @@
 |---|---|
 | Projeto | Jaguara |
 | Documento | REQ-05 · Histórias de usuário e critérios de aceitação |
-| Versão | 1.1 |
+| Versão | 1.2 |
 | Status | Em revisão |
 | Autores | Micaela Dorneles, Miguel Drozino, Nathan Rodrigues, Ricardo Guilhen |
 | Data | 14/11/2026 |
-| Tarefa Jira | JAG-63 |
+| Tarefa Jira | JAG-63, JAG-216 |
 | Padrão de referência | User stories (Connextra) com critérios em Gherkin |
 
 ## Histórico de revisões
@@ -18,6 +18,7 @@
 | 0.1 | 30/09/2026 | Equipe Jaguara | Narrativas das 46 histórias na planilha de casos de uso. |
 | 1.0 | 01/11/2026 | Ricardo Guilhen | Critérios de aceitação em Gherkin (um cenário de sucesso e um de exceção por história) e ligação com casos de uso e regras de negócio. |
 | 1.1 | 14/11/2026 | Ricardo Guilhen | US-21 atende clientes sem conta no Jaguara (ADR-010, item 3). |
+| 1.2 | 14/11/2026 | Ricardo Guilhen | US-21 com consentimento presencial e por link, pré-cadastro pendente e revogação (RN41); cenários de aceite dos termos em US-01 e US-46 (RN42). |
 
 ## 1. Objetivo
 
@@ -53,6 +54,11 @@ Funcionalidade: US-01 Cadastrar usuário tutor
     Dado que já existe um tutor com o CPF informado
     Quando o visitante tenta concluir o cadastro
     Então o sistema recusa o cadastro e informa que o CPF já está em uso
+
+  Cenário: Cadastro sem aceitar os termos (RN42)
+    Dado que o visitante preencheu os dados obrigatórios
+    Quando ele não marca o aceite dos termos de uso e da política de privacidade
+    Então o sistema não conclui o cadastro
 ```
 
 <a id="us-02"></a>
@@ -504,20 +510,35 @@ Funcionalidade: US-20 Consultar Pets Vinculados
 # language: pt
 Funcionalidade: US-21 Gerenciar Clientes
 
-  Cenário: Cadastro de cliente com consentimento
-    Dado que o cliente consentiu o tratamento dos dados
-    Quando a empresa cadastra o cliente com nome, CPF e contato
-    Então o cliente é salvo com a data do consentimento
+  Cenário: Cadastro com consentimento presencial (RN41)
+    Dado que o cliente assinou o termo de consentimento da empresa
+    Quando o funcionário anexa a cópia digitalizada e completa o cadastro com nome, CPF e contato
+    Então o cliente é salvo com o consentimento registrado com a versão do termo, o meio de coleta e a prova
+
+  Cenário: Cadastro sem consentimento (RN25, RN41)
+    Dado que o cliente ainda não consentiu
+    Quando a empresa tenta cadastrar um pet ou um agendamento para ele
+    Então o sistema bloqueia a gravação e mantém só nome e contato no pré-cadastro
 
   Cenário: Cliente sem conta cria a conta depois (ADR-010)
     Dado que a empresa cadastrou um cliente sem conta e um pet dele
     Quando o cliente cria a conta de tutor com o e-mail do cadastro
     Então o cadastro fica ligado ao tutor e ele passa a ser o responsável principal do pet
 
-  Cenário: Cadastro sem consentimento (RN25)
-    Dado que não há consentimento do cliente
-    Quando a empresa tenta salvar o cliente
-    Então o sistema bloqueia a gravação
+  Cenário: Consentimento por link digital (RN41)
+    Dado que a empresa enviou o link do termo ao cliente
+    Quando o cliente marca "Concordo" na página do link
+    Então o consentimento é registrado com data, hora, IP e versão e o cadastro é liberado
+
+  Cenário: Pré-cadastro sem aceite (RN41)
+    Dado que um pré-cadastro está pendente há mais de 7 dias
+    Quando a rotina diária de limpeza é executada
+    Então o pré-cadastro é excluído e a empresa é avisada
+
+  Cenário: Revogação pelo cliente sem conta (RN41)
+    Dado que o cliente tem consentimento vigente
+    Quando ele usa o link de revogação do comprovante
+    Então o consentimento fica revogado com data, o cliente é inativado e a empresa é avisada
 ```
 
 <a id="us-22"></a>
@@ -1093,4 +1114,9 @@ Funcionalidade: US-46 Gerenciar Privacidade e Consentimentos
     Dado que o termo de uso é obrigatório
     Quando o tutor tenta revogá-lo
     Então o sistema alerta que o serviço não pode ser prestado e oferece a exclusão da conta
+
+  Cenário: Nova versão de termo obrigatório (RN42)
+    Dado que entrou em vigor uma nova versão obrigatória dos termos de uso
+    Quando o tutor acessa o app
+    Então o sistema pede o aceite da nova versão antes de liberar as demais telas
 ```

@@ -4,11 +4,11 @@
 |---|---|
 | Projeto | Jaguara |
 | Documento | GES-05 · Registro de riscos |
-| Versão | 1.2 |
+| Versão | 1.3 |
 | Status | Em revisão |
 | Autores | Ricardo Guilhen |
 | Data | 14/11/2026 |
-| Tarefa Jira | JAG-56, JAG-215 |
+| Tarefa Jira | JAG-56, JAG-215, JAG-216 |
 | Padrão de referência | PMBOK, gerenciamento de riscos; Matriz GUT para priorização |
 
 ## Histórico de revisões
@@ -18,6 +18,7 @@
 | 1.0 | 01/11/2026 | Ricardo Guilhen | Consolidação dos riscos do TAP, da SWOT e da Matriz GUT, com acréscimo dos riscos de execução da Sprint 7. |
 | 1.1 | 14/11/2026 | Ricardo Guilhen | R12 encerrado: decisões de domínio registradas na ADR-010. |
 | 1.2 | 14/11/2026 | Ricardo Guilhen | R15 e R16 (dados dos pets, backups e transferência internacional) e ação de R03 alinhada ao ARQ-02 2.0. |
+| 1.3 | 14/11/2026 | Ricardo Guilhen | R17: cliente da empresa sem consentimento válido (RN41, JUR-04). |
 
 ## 1. Objetivo
 
@@ -28,7 +29,7 @@ Manter em um só lugar os riscos do projeto, com probabilidade, impacto, respost
 - Riscos iniciais do [TAP (GES-01)](GES-01-TAP.md), seção 8.
 - SWOT e Matriz GUT da [pesquisa de mercado (GES-08)](GES-08-pesquisa-de-mercado.md), com a mesma numeração (R01 a R08 = IDs 1 a 8 da GUT).
 - Riscos de execução identificados na padronização da documentação (R09 a R14).
-- Riscos de proteção de dados apontados na avaliação de 10/11/2026 (R15 e R16).
+- Riscos de proteção de dados apontados na avaliação de 10/11/2026 (R15 a R17).
 
 ## 3. Escalas
 
@@ -56,6 +57,7 @@ Manter em um só lugar os riscos do projeto, com probabilidade, impacto, respost
 | R14 | Atrasos por concorrência com outras disciplinas | TAP, risco 2 | – | 3 | 3 | 9 | Mitigar | Sprints de duas semanas com meta única e revisão do cronograma a cada sprint | Miguel Drozino | Aberto |
 | R15 | Exposição de dados ligados aos pets (documentos, fotos com localização, microchip) ou de um backup | ARQ-02 2.0, avaliação de 10/11 | – | 2 | 5 | 10 | Mitigar | Documentos de nível Restrito com URL assinada, remoção de metadados das fotos, backups cifrados e teste de restauração mensal ([ARQ-02](../03-arquitetura/ARQ-02-seguranca-e-lgpd.md), seções 5 e 6) | Ricardo Guilhen | Em tratamento |
 | R16 | Envio de dados a suboperador no exterior sem salvaguarda (IA, e-mail, *push*) | ARQ-02 2.0, art. 33 da LGPD | – | 3 | 4 | 12 | Mitigar | Só contratar provedor que aceite as cláusulas-padrão da ANPD e não retenha os dados; enviar o mínimo ([ARQ-02](../03-arquitetura/ARQ-02-seguranca-e-lgpd.md), seção 8) | Ricardo Guilhen | Aberto |
+| R17 | Cliente cadastrado por empresa sem consentimento válido ou sem prova dele | Avaliação de 10/11/2026 | – | 3 | 4 | 12 | Mitigar | Termo padrão ([JUR-04](../08-juridico/JUR-04-termo-consentimento-cliente.md)), pré-cadastro só com nome e contato até o aceite, prova da coleta e revogação sem conta (RN41) | Ricardo Guilhen | Em tratamento |
 
 ## 5. Revisão
 

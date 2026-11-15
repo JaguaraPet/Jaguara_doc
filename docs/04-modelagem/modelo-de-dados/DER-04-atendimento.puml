@@ -19,8 +19,6 @@ entity "cliente" as Cliente {
     email : varchar(255)
   * data_vinculo : date
     observacoes : text
-  * consentimento_lgpd : boolean
-    data_consentimento : timestamptz
   * ativo : boolean
   * empresa_id : uuid <<FK>>
     tutor_id : uuid <<FK>>

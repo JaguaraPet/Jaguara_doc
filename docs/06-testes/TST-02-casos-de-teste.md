@@ -4,11 +4,11 @@
 |---|---|
 | Projeto | Jaguara |
 | Documento | TST-02 · Casos de teste |
-| Versão | 1.1 |
+| Versão | 1.2 |
 | Status | Em revisão |
 | Autores | Micaela Dorneles, Miguel Drozino, Nathan Rodrigues, Ricardo Guilhen |
 | Data | 14/11/2026 |
-| Tarefa Jira | JAG-73 |
+| Tarefa Jira | JAG-73, JAG-216 |
 | Padrão de referência | ISO/IEC/IEEE 29119-3, especificação de casos de teste |
 
 ## Histórico de revisões
@@ -17,6 +17,7 @@
 |---|---|---|---|
 | 1.0 | 01/11/2026 | Ricardo Guilhen | Casos de teste derivados dos cenários Gherkin do REQ-05. |
 | 1.1 | 14/11/2026 | Ricardo Guilhen | Casos de UC-21 ajustados ao cliente sem conta e CT-21-03 (ADR-010, item 3). |
+| 1.2 | 14/11/2026 | Ricardo Guilhen | CT-21 refeitos para o consentimento do cliente (RN41) e CT-01-03 e CT-46-03 para o aceite dos termos (RN42). |
 
 ## 1. Objetivo
 
@@ -35,6 +36,7 @@ Especificar os casos de teste de sistema e de aceitação do Jaguara. Cada caso 
 |---|---|---|---|---|---|---|---|
 | CT-01-01 | US-01 | RN01 | Must | Positivo | Não existe conta com o cpf informado | O visitante informa os dados obrigatórios e confirma o e-mail recebido | A conta do tutor fica com status ativa |
 | CT-01-02 | US-01 | RN01 | Must | Negativo | Já existe um tutor com o cpf informado | O visitante tenta concluir o cadastro | O sistema recusa o cadastro e informa que o cpf já está em uso |
+| CT-01-03 | US-01 | RN42 | Must | Negativo | O visitante preencheu os dados obrigatórios | Tenta concluir o cadastro sem marcar o aceite dos termos de uso e da política de privacidade | O sistema não conclui o cadastro |
 | CT-02-01 | US-02 | RN03 | Must | Positivo | O usuário possui conta ativa | Informa e-mail e senha corretos | O sistema cria a sessão e exibe a tela inicial do perfil do usuário |
 | CT-02-02 | US-02 | RN03 | Must | Negativo | O usuário errou a senha quatro vezes seguidas | Informa a senha errada pela quinta vez | A conta fica bloqueada por 5 minutos |
 | CT-03-01 | US-03 | RN05 | Must | Positivo | O usuário recebeu o link de recuperação há menos de 2 horas | Define uma senha diferente das três últimas | A nova senha passa a valer e o link deixa de funcionar |
@@ -73,9 +75,12 @@ Especificar os casos de teste de sistema e de aceitação do Jaguara. Cada caso 
 | CT-19-02 | US-19 | RN23 | Must | Negativo | O funcionário está com sessão ativa | A empresa remove o funcionário | Todas as sessões dele são revogadas imediatamente |
 | CT-20-01 | US-20 | RN24 | Should | Positivo | A empresa tem pets com agendamento ou compartilhamento ativo | O funcionário abre a lista de pets vinculados | O sistema lista somente esses pets |
 | CT-20-02 | US-20 | RN24 | Should | Negativo | O pet não tem atendimento nem compartilhamento com a empresa | O funcionário tenta abrir os dados do pet | O sistema nega o acesso |
-| CT-21-01 | US-21 | RN25 | Should | Positivo | O cliente consentiu o tratamento dos dados | A empresa cadastra o cliente com nome, CPF e contato | O cliente é salvo com a data do consentimento |
-| CT-21-02 | US-21 | RN25 | Should | Negativo | Não há consentimento do cliente | A empresa tenta salvar o cliente | O sistema bloqueia a gravação |
+| CT-21-01 | US-21 | RN41 | Should | Positivo | O cliente assinou o termo de consentimento da empresa | O funcionário anexa a cópia digitalizada e completa o cadastro com nome, CPF e contato | O cliente é salvo com o consentimento registrado com a versão do termo, o meio de coleta e a prova |
+| CT-21-02 | US-21 | RN25 | Should | Negativo | O cliente ainda não consentiu | A empresa tenta cadastrar um pet ou um agendamento para ele | O sistema bloqueia a gravação e mantém só nome e contato no pré-cadastro |
 | CT-21-03 | US-21 | RN09 | Should | Positivo | A empresa cadastrou um cliente sem conta e um pet dele | O cliente cria a conta de tutor com o e-mail do cadastro | O cadastro fica ligado ao tutor, que passa a ser o responsável principal do pet |
+| CT-21-04 | US-21 | RN41 | Should | Positivo | A empresa enviou o link do termo ao cliente | O cliente marca "Concordo" na página do link | O consentimento é registrado com data, hora, IP e versão e o cadastro é liberado |
+| CT-21-05 | US-21 | RN41 | Should | Negativo | Um pré-cadastro está pendente há mais de 7 dias | A rotina diária de limpeza é executada | O pré-cadastro é excluído e a empresa é avisada |
+| CT-21-06 | US-21 | RN41 | Should | Positivo | O cliente tem consentimento vigente | Usa o link de revogação do comprovante | O consentimento fica revogado com data, o cliente é inativado e a empresa é avisada |
 | CT-22-01 | US-22 | RN26 | Should | Positivo | A empresa tem compartilhamento ativo com o pet | O funcionário abre o perfil do pet | O sistema exibe as seções liberadas pelo tutor |
 | CT-22-02 | US-22 | RN26 | Should | Negativo | A empresa não tem autorização sobre o pet | O funcionário tenta abrir o perfil completo | O sistema nega o acesso |
 | CT-23-01 | US-23 | RN27 | Must | Positivo | O agendamento de banho foi contratado por r$ 60,00 e o preço atual é r$ 70,00 | O funcionário registra o atendimento | O item é cobrado por r$ 60,00 |
@@ -126,6 +131,7 @@ Especificar os casos de teste de sistema e de aceitação do Jaguara. Cada caso 
 | CT-45-02 | US-45 | RN39 | Should | Negativo | O pagamento está pendente | O tutor solicita reembolso | O sistema não permite o reembolso |
 | CT-46-01 | US-46 | RN15 | Must | Positivo | O tutor consentiu o compartilhamento opcional de dados | Revoga esse consentimento | O consentimento fica revogado com data e a ação é auditada |
 | CT-46-02 | US-46 | RN25 | Must | Negativo | O termo de uso é obrigatório | O tutor tenta revogá-lo | O sistema alerta que o serviço não pode ser prestado e oferece a exclusão da conta |
+| CT-46-03 | US-46 | RN42 | Must | Positivo | Entrou em vigor uma nova versão obrigatória dos termos de uso | O tutor acessa o app | O sistema pede o aceite da nova versão antes de liberar as demais telas |
 
 ## 4. Cobertura das regras de negócio
 
@@ -171,3 +177,5 @@ Especificar os casos de teste de sistema e de aceitação do Jaguara. Cada caso 
 | RN38 | CT-42-02 |
 | RN39 | CT-44-02, CT-45-02 |
 | RN40 | CT-41-02 |
+| RN41 | CT-21-02, CT-21-05 |
+| RN42 | CT-01-03, CT-46-03 |

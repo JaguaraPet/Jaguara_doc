@@ -6,6 +6,8 @@ abstract class "acesso::Usuario" as Usuario #EFEFEF
 class "acesso::Tutor" as Tutor #EFEFEF
 class "acesso::EmpresaEnterprise" as EmpresaEnterprise #EFEFEF
 class "pet::Pet" as Pet #EFEFEF
+class "atendimento::Cliente" as Cliente #EFEFEF
+class "acesso::FuncionarioEnterprise" as FuncionarioEnterprise #EFEFEF
 
 package comunicacao {
   class Conversa {
@@ -25,7 +27,8 @@ package comunicacao {
 
 package privacidade {
   class TermoUso {
-    - versao : String {unique}
+    - tipo : TipoTermo
+    - versao : String
     - titulo : String
     - conteudo : String
     - dataVigencia : Date
@@ -36,7 +39,11 @@ package privacidade {
     - aceito : Boolean
     - dataAceite : DateTime
     - dataRevogacao : DateTime [0..1]
-    - ipOrigem : String
+    - ipOrigem : String [0..1]
+    - meioColeta : MeioColeta
+    - evidenciaUrl : String [0..1]
+    - tokenLink : String [0..1] {unique}
+    + estaVigente() : Boolean
     + revogar()
   }
 
@@ -55,7 +62,12 @@ Conversa "0..*" --> "pet 0..1" Pet
 Conversa "1" *-- "mensagens 0..* {ordered}" Mensagem
 Mensagem "0..*" --> "remetente 0..1" Usuario
 
-Usuario "1" *-- "consentimentos 0..*" Consentimento
+Usuario "0..1" *-- "consentimentos 0..*" Consentimento
+Cliente "0..1" *-- "consentimentos 0..*" Consentimento
+Consentimento "0..*" --> "registradoPor 0..1" FuncionarioEnterprise
+note bottom of Consentimento
+  {xor} titular é Usuario ou Cliente (RC-31)
+end note
 Consentimento "0..*" --> "termo 1" TermoUso
 Usuario "1" *-- "solicitacoesPrivacidade 0..*" SolicitacaoPrivacidade
 @enduml
