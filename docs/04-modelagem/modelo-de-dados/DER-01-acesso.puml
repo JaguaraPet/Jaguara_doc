@@ -6,7 +6,7 @@ entity "usuario" as Usuario {
   * id : uuid <<PK>>
   --
   * email : varchar(255) <<UK>>
-  * senha_hash : varchar(255)
+    senha_hash : varchar(255)
     telefone : varchar(255)
   * status : status_conta
   * email_confirmado : boolean
@@ -69,6 +69,15 @@ entity "sessao" as Sessao {
     dispositivo : varchar(255)
   * usuario_id : uuid <<FK>>
 }
+entity "identidade_externa" as IdentidadeExterna {
+  * id : uuid <<PK>>
+  --
+  * provedor : provedor_identidade <<UK>>
+  * id_externo : varchar(255) <<UK>>
+    email_provedor : varchar(255)
+  * data_vinculo : timestamptz
+  * usuario_id : uuid <<FK>>
+}
 entity "token_acesso" as TokenAcesso {
   * id : uuid <<PK>>
   --
@@ -102,6 +111,7 @@ entity "permissao" as Permissao {
 }
 EmpresaEnterprise ||--o{ FuncionarioEnterprise
 Usuario ||--o{ Sessao
+Usuario ||--o{ IdentidadeExterna
 Usuario ||--o{ TokenAcesso
 Usuario ||--o{ HistoricoSenha
 PerfilAcesso ||--o{ Usuario

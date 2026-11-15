@@ -4,11 +4,11 @@
 |---|---|
 | Projeto | Jaguara |
 | Documento | MOD-02 · Diagramas de sequência |
-| Versão | 2.0 |
+| Versão | 2.1 |
 | Status | Em revisão |
 | Autores | Micaela Dorneles (versão 1), Ricardo Guilhen (versão 2) |
-| Data | 01/11/2026 |
-| Tarefa Jira | JAG-26 |
+| Data | 14/11/2026 |
+| Tarefa Jira | JAG-26, JAG-217 |
 | Padrão de referência | UML 2.5.1, diagrama de sequência |
 | Original | [MOD-02-diagramas-de-sequencia-original.pdf](../anexos/originais/MOD-02-diagramas-de-sequencia-original.pdf) |
 
@@ -18,6 +18,7 @@
 |---|---|---|---|
 | 1.0 | 30/10/2026 | Micaela Dorneles | Diagramas dos seis fluxos obrigatórios e dos demais casos de uso (JGR001 a JGR046), em imagem. |
 | 2.0 | 01/11/2026 | Ricardo Guilhen | Fluxos obrigatórios redesenhados em PlantUML com as classes e operações do MOD-01 e as camadas da arquitetura (ARQ-01). |
+| 2.1 | 14/11/2026 | Ricardo Guilhen | DS-07, requisição autorizada pela camada de acesso (ADR-012), e nota do DS-01 sobre a inatividade verificada na renovação. |
 
 ## 1. Objetivo
 
@@ -38,7 +39,7 @@ Mostrar a troca de mensagens entre usuário, aplicativos, API, serviços de dom�
 
 ### 4.1 DS-01 · Autenticação
 
-Caso de uso UC-02. Mostra o bloqueio temporário após cinco falhas (RN03) e a expiração da sessão por inatividade (RN04).
+Caso de uso UC-02. Mostra o bloqueio temporário após cinco falhas (RN03) e a expiração da sessão por inatividade (RN04), verificada a cada renovação do token.
 
 ![DS-01](diagramas-de-sequencia/img/DS-01-autenticacao.svg)
 
@@ -71,5 +72,11 @@ Caso de uso UC-44. O pagamento nasce PENDENTE e só vira ACEITO pela confirmaç�
 Caso de uso UC-31. Qualquer classe `Notificavel` agenda a notificação com a antecedência do usuário (RN37); um *worker* dispara e reagenda em caso de falha.
 
 ![DS-06](diagramas-de-sequencia/img/DS-06-notificacao-automatica.svg)
+
+### 4.7 DS-07 · Requisição autorizada
+
+Vale para todos os casos de uso que exigem login. Mostra a camada de acesso da [ADR-012](../03-arquitetura/adr/ADR-012-camada-de-acesso-e-login-social.md): *middlewares* globais, validação do JWT sem consultar o banco, lista de sessões revogadas no Redis (RN23) com consulta ao banco se o Redis cair, permissões do perfil e a política de acesso ao pet no serviço (RN15, RN24, RN26). A inatividade de 4 horas é aplicada na renovação do token (RN04).
+
+![DS-07](diagramas-de-sequencia/img/DS-07-requisicao-autorizada.svg)
 
 Fontes: [`diagramas-de-sequencia/`](diagramas-de-sequencia).

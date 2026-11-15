@@ -4,11 +4,11 @@
 |---|---|
 | Projeto | Jaguara |
 | Documento | REQ-06 · Matriz de rastreabilidade |
-| Versão | 1.2 |
+| Versão | 1.3 |
 | Status | Em revisão |
 | Autores | Micaela Dorneles, Miguel Drozino, Nathan Rodrigues, Ricardo Guilhen |
 | Data | 14/11/2026 |
-| Tarefa Jira | JAG-64, JAG-216 |
+| Tarefa Jira | JAG-64, JAG-216, JAG-217 |
 | Padrão de referência | ISO/IEC/IEEE 29148, rastreabilidade bidirecional |
 
 ## Histórico de revisões
@@ -18,6 +18,7 @@
 | 1.0 | 01/11/2026 | Ricardo Guilhen | Matriz inicial ligando RF, RN, UC, US, classes e casos de teste. |
 | 1.1 | 14/11/2026 | Ricardo Guilhen | RF21 com a classe Pet e o caso de teste CT-21-03 (cliente sem conta, ADR-010). |
 | 1.2 | 14/11/2026 | Ricardo Guilhen | RN41 e RN42 ligadas a RF01, RF21 e RF45, com os casos de teste CT-01-03, CT-21-04 a CT-21-06 e CT-46-03. |
+| 1.3 | 14/11/2026 | Ricardo Guilhen | RF46 (login social) com UC-01, UC-02, US-02 e os casos de teste CT-02-03 e CT-02-04. |
 
 ## 1. Objetivo
 
@@ -72,6 +73,7 @@ Garantir que todo requisito tenha caso de uso, história, classes e testes, e qu
 | RF43 | Realizar pagamento | RN25, RN31, RN39 | UC-44 | US-44 | Pagamento | CT-44-01, CT-44-02 |
 | RF44 | Gerenciar pagamentos | RN22, RN25, RN31, RN39 | UC-45 | US-45 | Pagamento, SolicitacaoReembolso | CT-45-01, CT-45-02 |
 | RF45 | Gerenciar privacidade e consentimentos | RN15, RN25, RN26, RN31, RN41, RN42 | UC-46 | US-46 | Consentimento, TermoUso, SolicitacaoPrivacidade | CT-46-01, CT-46-02, CT-46-03 |
+| RF46 | Login social | RN01, RN42 | UC-01, UC-02 | US-02 | Usuario, Tutor, IdentidadeExterna | CT-02-03, CT-02-04 |
 
 ## 3. Regra de negócio → casos de uso
 
@@ -122,7 +124,7 @@ Garantir que todo requisito tenha caso de uso, história, classes e testes, e qu
 
 ## 4. Verificações
 
-- Todo RF ativo (RF01 a RF45, exceto o RF24 descontinuado) tem ao menos um caso de uso, uma história e dois casos de teste.
+- Todo RF ativo (RF01 a RF46, exceto o RF24 descontinuado) tem ao menos um caso de uso, uma história e dois casos de teste.
 - Toda regra de negócio (RN01 a RN40) é aplicada por ao menos um caso de uso.
 - RF17 (BI) e RF34 (linha do tempo) são consultas sobre classes existentes e não têm classe própria ([MOD-01](../04-modelagem/MOD-01-modelo-de-classes.md), seção 10).
 - A rastreabilidade de requisitos não funcionais para decisões de arquitetura está no [ARQ-01](../03-arquitetura/ARQ-01-arquitetura.md), seção 10.

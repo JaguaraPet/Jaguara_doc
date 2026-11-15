@@ -1,0 +1,63 @@
+@startuml DS-07-requisicao-autorizada
+!include _estilo.iuml
+title DS-07 · Requisição autorizada pela camada de acesso (ADR-012, RN04, RN23, RN26)
+
+actor Usuario as "Usuário"
+participant App as "App / Web"
+participant MW as "Middlewares\nglobais"
+participant Guard as "AutenticacaoGuard"
+database Redis as "Redis"
+participant Perm as "PermissoesGuard"
+participant Ctrl as "PetController"
+participant Serv as "PetService\n+ PoliticaAcessoPet"
+database DB as "PostgreSQL"
+
+Usuario -> App : abre o perfil do pet
+App -> MW : GET /pets/{id}\nAuthorization: Bearer <access token>
+MW -> MW : cabeçalhos de segurança, CORS,\nid da requisição, limite por IP
+MW -> Guard : canActivate()
+alt rota marcada com @Publica()
+  Guard --> MW : libera sem token
+else rota protegida
+  Guard -> Guard : valida assinatura e validade do JWT
+  alt token ausente, inválido ou expirado
+    Guard --> App : 401 Unauthorized
+    App -> App : POST /auth/renovacao com o refresh token\n(lê a Sessao no banco e aplica a inatividade de 4 h, RN04)
+  else token válido
+    Guard -> Redis : EXISTS sessao:revogada:{sid}
+    alt Redis indisponível
+      Guard -> DB : SELECT sessao WHERE id = sid
+      DB --> Guard : sessao
+    else Redis responde
+      Redis --> Guard : 0 ou 1
+    end
+    alt sessão revogada (logout, RN23, troca de senha)
+      Guard --> App : 401 Unauthorized
+    else sessão ativa
+      Guard -> Perm : canActivate()
+      Perm -> Perm : @Permissoes('pet:ler') ⊆ permissões do token?
+      alt sem a permissão
+        Perm --> App : 403 Forbidden
+      else com a permissão
+        Perm -> Ctrl : obter(id, usuario)
+        Ctrl -> Serv : obterPet(id, usuario)
+        Serv -> DB : pet + responsáveis, compartilhamento ativo\nou agendamento da empresa
+        DB --> Serv : dados
+        alt sem posse, vínculo ou escopo (RN15, RN24, RN26)
+          Serv --> App : 403 Forbidden
+        else acesso permitido
+          Serv --> Ctrl : Pet com as seções do escopo
+          Ctrl --> App : 200 OK
+          App --> Usuario : perfil do pet
+        end
+      end
+    end
+  end
+end
+
+note over Guard, Redis
+  Em uma requisição comum, autenticar não consulta o banco:
+  o JWT é validado na memória e a revogação, no Redis.
+  O sid fica na lista por 15 min, a vida máxima do token.
+end note
+@enduml

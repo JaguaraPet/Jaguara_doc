@@ -4,11 +4,11 @@
 |---|---|
 | Projeto | Jaguara |
 | Documento | REQ-04 · Especificação de casos de uso |
-| Versão | 2.3 |
+| Versão | 2.4 |
 | Status | Em revisão |
 | Autores | Micaela Dorneles, Miguel Drozino, Nathan Rodrigues, Ricardo Guilhen |
 | Data | 14/11/2026 |
-| Tarefa Jira | JAG-35, JAG-62, JAG-216 |
+| Tarefa Jira | JAG-35, JAG-62, JAG-216, JAG-217 |
 | Padrão de referência | Modelo Bússola (curso) com campos do modelo *fully dressed* de Cockburn |
 | Original | [REQ-04-especificacao-casos-de-uso-original.xlsx](../anexos/originais/REQ-04-especificacao-casos-de-uso-original.xlsx) |
 
@@ -22,6 +22,7 @@
 | 2.1 | 01/11/2026 | Ricardo Guilhen | UC-21 atende clientes sem conta no Jaguara (ADR-010, item 3). Histórias de usuário retiradas desta versão do repositório. |
 | 2.2 | 14/11/2026 | Ricardo Guilhen | Histórias de usuário (REQ-05) e referências ao REQ-00 e ao REQ-02 de volta com a documentação completa. |
 | 2.3 | 14/11/2026 | Ricardo Guilhen | Aceite dos termos no UC-01 e no UC-32 (RN42); UC-21 com coleta presencial ou por link, pré-cadastro pendente e revogação sem conta (RN41); UC-46 com nova versão de termo obrigatório. |
+| 2.4 | 14/11/2026 | Ricardo Guilhen | Login social: FA3 do UC-01 e FA04 do UC-02 (RF46, ADR-012). |
 
 ## 1. Objetivo
 
@@ -96,7 +97,7 @@ Especificar o comportamento de cada caso de uso do Jaguara, com os mesmos campos
 | Campo | Valor |
 |---|---|
 | Identificador | UC-01 (planilha: JGR001) |
-| Requisito | RF01 |
+| Requisito | RF01, RF46 |
 | Regras de negócio | RN01, RN02, RN42 |
 | Prioridade | Must |
 | Objetivo | Permitir que um novo usuário-tutor realize seu cadastro na plataforma, com conta ativada após a confirmação do e-mail. |
@@ -138,6 +139,15 @@ Especificar o comportamento de cada caso de uso do Jaguara, com os mesmos campos
 | 2 |  | O sistema mantém a conta inativa. |
 | 3 |  | A operação é finalizada. |
 
+**FA3. Cadastro com conta Google ou Apple (RF46, ramifica no passo 2)**
+
+| Passo | Ator | Sistema |
+|---|---|---|
+| 1 | O usuário-tutor escolhe "Continuar com Google" ou "Continuar com Apple" e se autentica no provedor. |  |
+| 2 |  | O sistema valida o token do provedor e preenche nome e e-mail. |
+| 3 | O usuário-tutor informa o CPF e aceita os termos de uso e a política de privacidade (RN01, RN42). |  |
+| 4 |  | O sistema cria a conta já com o e-mail confirmado pelo provedor, liga a `IdentidadeExterna` e abre a sessão. |
+
 <a id="uc-02"></a>
 
 ### UC-02 · Autenticar usuário
@@ -145,7 +155,7 @@ Especificar o comportamento de cada caso de uso do Jaguara, com os mesmos campos
 | Campo | Valor |
 |---|---|
 | Identificador | UC-02 (planilha: JGR002) |
-| Requisito | RF02 |
+| Requisito | RF02, RF46 |
 | Regras de negócio | RN03, RN04 |
 | Prioridade | Must |
 | Objetivo | Permite que o usuário acesse o sistema utilizando login e senha, iniciando uma sessão autenticada. |
@@ -179,6 +189,9 @@ Especificar o comportamento de cada caso de uso do Jaguara, com os mesmos campos
 | FA03-1 | O usuário permanece inativo por período superior ao permitido |  |
 | FA03-2 |  | O sistema encerra a sessão (RN04) |
 | FA03-3 | O usuário deve se autenticar novamente |  |
+| FA04-1 | O usuário-tutor escolhe entrar com Google ou Apple (RF46) |  |
+| FA04-2 |  | O sistema valida o token do provedor e procura a `IdentidadeExterna` |
+| FA04-3 |  | Se existe, cria a sessão com os mesmos tokens do login por senha; se não existe, segue o FA3 do UC-01; se já existe conta com o mesmo e-mail, pede a senha dessa conta antes de ligar a identidade |
 
 <a id="uc-03"></a>
 

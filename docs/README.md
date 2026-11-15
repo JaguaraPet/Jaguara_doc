@@ -22,19 +22,19 @@ Status: **Aprovado** (revisado e aceito pelo time), **Em revisão** (completo, a
 | Documento | Versão | Status | Jira |
 |---|---|---|---|
 | [REQ-00 · Identificadores e correspondência](02-requisitos/REQ-00-identificadores.md) | 1.0 | Em revisão | JAG-53 |
-| [REQ-01 · Especificação de Requisitos de Software (ERS)](02-requisitos/REQ-01-ERS.md) | 3.1 | Em revisão | JAG-5, JAG-17 (elaboração), JAG-58, JAG-59 (reestruturação), JAG-216 |
+| [REQ-01 · Especificação de Requisitos de Software (ERS)](02-requisitos/REQ-01-ERS.md) | 3.2 | Em revisão | JAG-5, JAG-17 (elaboração), JAG-58, JAG-59 (reestruturação), JAG-216, JAG-217 |
 | [REQ-02 · Glossário](02-requisitos/REQ-02-glossario.md) | 1.1 | Em revisão | JAG-60 |
 | [REQ-03 · Diagrama de casos de uso](02-requisitos/REQ-03-diagrama-casos-de-uso.md) | 2.0 | Em revisão | JAG-2 (versão 1), JAG-61 (adequação à UML) |
-| [REQ-04 · Especificação de casos de uso](02-requisitos/REQ-04-especificacao-casos-de-uso.md) | 2.3 | Em revisão | JAG-35, JAG-62, JAG-216 |
-| [REQ-05 · Histórias de usuário e critérios de aceitação](02-requisitos/REQ-05-historias-de-usuario.md) | 1.2 | Em revisão | JAG-63, JAG-216 |
-| [REQ-06 · Matriz de rastreabilidade](02-requisitos/REQ-06-matriz-de-rastreabilidade.md) | 1.2 | Em revisão | JAG-64, JAG-216 |
+| [REQ-04 · Especificação de casos de uso](02-requisitos/REQ-04-especificacao-casos-de-uso.md) | 2.4 | Em revisão | JAG-35, JAG-62, JAG-216, JAG-217 |
+| [REQ-05 · Histórias de usuário e critérios de aceitação](02-requisitos/REQ-05-historias-de-usuario.md) | 1.3 | Em revisão | JAG-63, JAG-216, JAG-217 |
+| [REQ-06 · Matriz de rastreabilidade](02-requisitos/REQ-06-matriz-de-rastreabilidade.md) | 1.3 | Em revisão | JAG-64, JAG-216, JAG-217 |
 
 ## Arquitetura
 
 | Documento | Versão | Status | Jira |
 |---|---|---|---|
-| [ARQ-01 · Documentação de arquitetura (arc42 e C4)](03-arquitetura/ARQ-01-arquitetura.md) | 1.1 | Em revisão | JAG-41, JAG-44 |
-| [ARQ-02 · Segurança e conformidade com a LGPD](03-arquitetura/ARQ-02-seguranca-e-lgpd.md) | 2.1 | Em revisão | JAG-69, JAG-215, JAG-216 |
+| [ARQ-01 · Documentação de arquitetura (arc42 e C4)](03-arquitetura/ARQ-01-arquitetura.md) | 1.2 | Em revisão | JAG-41, JAG-44, JAG-217 |
+| [ARQ-02 · Segurança e conformidade com a LGPD](03-arquitetura/ARQ-02-seguranca-e-lgpd.md) | 2.2 | Em revisão | JAG-69, JAG-215, JAG-216, JAG-217 |
 | [ARQ-03 · Integrações externas](03-arquitetura/ARQ-03-integracoes.md) | 1.0 | Em revisão | JAG-70 |
 
 ### Decisões de arquitetura
@@ -52,14 +52,15 @@ Status: **Aprovado** (revisado e aceito pelo time), **Em revisão** (completo, a
 | [ADR-009 · Autenticação e autorização](03-arquitetura/adr/ADR-009-autenticacao-e-autorizacao.md) | Aceita | JAG-38, JAG-39 |
 | [ADR-010 · Decisões de domínio: chat, plano PANTERA e cliente](03-arquitetura/adr/ADR-010-decisoes-de-dominio.md) | Aceita | JAG-38, JAG-65 |
 | [ADR-011 · Tempo real e tarefas assíncronas](03-arquitetura/adr/ADR-011-tempo-real-e-tarefas-assincronas.md) | Aceita | JAG-38, JAG-39 |
+| [ADR-012 · Camada de acesso centralizada e login social](03-arquitetura/adr/ADR-012-camada-de-acesso-e-login-social.md) | Proposta | JAG-217 |
 
 ## Modelagem
 
 | Documento | Versão | Status | Jira |
 |---|---|---|---|
-| [MOD-01 · Modelo de classes](04-modelagem/MOD-01-modelo-de-classes.md) | 1.2 | Em revisão | JAG-27, JAG-216 |
-| [MOD-02 · Diagramas de sequência](04-modelagem/MOD-02-diagramas-de-sequencia.md) | 2.0 | Em revisão | JAG-26 |
-| [MOD-03 · Modelo de dados (DER, script e dicionário)](04-modelagem/MOD-03-modelo-de-dados.md) | 1.4 | Em revisão | JAG-47 (modelo lógico), JAG-48 (modelo físico), JAG-215 (CPF cifrado), JAG-216 |
+| [MOD-01 · Modelo de classes](04-modelagem/MOD-01-modelo-de-classes.md) | 1.3 | Em revisão | JAG-27, JAG-216, JAG-217 |
+| [MOD-02 · Diagramas de sequência](04-modelagem/MOD-02-diagramas-de-sequencia.md) | 2.1 | Em revisão | JAG-26, JAG-217 |
+| [MOD-03 · Modelo de dados (DER, script e dicionário)](04-modelagem/MOD-03-modelo-de-dados.md) | 1.5 | Em revisão | JAG-47 (modelo lógico), JAG-48 (modelo físico), JAG-215 (CPF cifrado), JAG-216, JAG-217 |
 | [MOD-04 · Diagramas de máquina de estados](04-modelagem/MOD-04-diagramas-de-estado.md) | 1.0 | Em revisão | JAG-66 |
 | [MOD-05 · Diagramas de atividades](04-modelagem/MOD-05-diagramas-de-atividade.md) | 1.0 | Em revisão | JAG-67 |
 
@@ -67,7 +68,7 @@ Status: **Aprovado** (revisado e aceito pelo time), **Em revisão** (completo, a
 
 | Documento | Versão | Status | Jira |
 |---|---|---|---|
-| [UX-01 · Mapa de navegação](05-ux/UX-01-mapa-de-navegacao.md) | 1.1 | Em revisão | JAG-71, JAG-216 |
+| [UX-01 · Mapa de navegação](05-ux/UX-01-mapa-de-navegacao.md) | 1.2 | Em revisão | JAG-71, JAG-216, JAG-217 |
 | [UX-02 · Guia de estilo](05-ux/UX-02-guia-de-estilo.md) | 0.9 | Rascunho | JAG-28 |
 | [UX-03 · Protótipos de alta fidelidade](05-ux/UX-03-prototipos.md) | 0.5 | Rascunho | JAG-36, JAG-99 (e uma tarefa por tela, como JAG-83) |
 
@@ -76,7 +77,7 @@ Status: **Aprovado** (revisado e aceito pelo time), **Em revisão** (completo, a
 | Documento | Versão | Status | Jira |
 |---|---|---|---|
 | [TST-01 · Plano de testes](06-testes/TST-01-plano-de-testes.md) | 1.0 | Em revisão | JAG-72, JAG-43 (testes unitários) |
-| [TST-02 · Casos de teste](06-testes/TST-02-casos-de-teste.md) | 1.2 | Em revisão | JAG-73, JAG-216 |
+| [TST-02 · Casos de teste](06-testes/TST-02-casos-de-teste.md) | 1.3 | Em revisão | JAG-73, JAG-216, JAG-217 |
 | [TST-03 · Relatório de execução de testes](06-testes/TST-03-relatorio-de-testes.md) | 0.1 | Rascunho | JAG-74 |
 
 ## Entrega

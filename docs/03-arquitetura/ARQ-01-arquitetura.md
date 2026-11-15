@@ -4,11 +4,11 @@
 |---|---|
 | Projeto | Jaguara |
 | Documento | ARQ-01 · Documentação de arquitetura de software |
-| Versão | 1.1 |
+| Versão | 1.2 |
 | Status | Em revisão |
 | Autores | Ricardo Guilhen |
 | Data | 14/11/2026 |
-| Tarefa Jira | JAG-41, JAG-44 |
+| Tarefa Jira | JAG-41, JAG-44, JAG-217 |
 | Padrão de referência | arc42 (versão 8), diagramas C4 e UML 2.5.1 (implantação) |
 
 ## Histórico de revisões
@@ -17,6 +17,7 @@
 |---|---|---|---|
 | 1.0 | 01/11/2026 | Ricardo Guilhen | Primeira versão nas 12 seções do arc42, com C4 de contexto, contêineres e componentes. |
 | 1.1 | 14/11/2026 | Ricardo Guilhen | ADRs 004 e 006 a 011 aceitas pelo time; ADR-010 com cliente sem conta obrigatória. |
+| 1.2 | 14/11/2026 | Ricardo Guilhen | Camada de acesso centralizada e login social (ADR-012) nos conceitos transversais, na tabela de ADRs e no cenário de RNF01. |
 
 ## 1. Introdução e objetivos
 
@@ -164,7 +165,7 @@ Procedimentos no [ENT-01](../07-entrega/ENT-01-implantacao.md).
 
 | Conceito | Abordagem |
 |---|---|
-| Autenticação e autorização | JWT de curta duração e sessão revogável; RBAC por rota e verificação de posse ou compartilhamento no serviço ([ADR-009](adr/ADR-009-autenticacao-e-autorizacao.md)) |
+| Autenticação e autorização | JWT de curta duração e sessão revogável; RBAC por rota e verificação de posse ou compartilhamento no serviço ([ADR-009](adr/ADR-009-autenticacao-e-autorizacao.md)). Camada de acesso única: *guards* globais que negam por padrão, decoradores `@Publica()` e `@Permissoes()`, revogação de sessões pelo Redis e login social para tutores ([ADR-012](adr/ADR-012-camada-de-acesso-e-login-social.md), DS-07) |
 | Privacidade | Minimização de dados, consentimentos versionados, exportação e exclusão a pedido do titular ([ARQ-02](ARQ-02-seguranca-e-lgpd.md)) |
 | Validação | DTOs validados na entrada; regras de domínio nas entidades; restrições no banco |
 | Erros | Formato único `application/problem+json` (RFC 9457) com código de negócio ([OpenAPI](api/openapi.yaml)) |
@@ -193,12 +194,13 @@ O registro completo está em [adr/](adr/README.md).
 | ADR-009 | Autenticação própria com JWT e sessão revogável | Aceita |
 | ADR-010 | Chat em dois modos, plano PANTERA e cliente sem conta obrigatória | Aceita |
 | ADR-011 | WebSocket e filas BullMQ | Aceita |
+| ADR-012 | Camada de acesso centralizada e login social | Proposta |
 
 ## 10. Requisitos de qualidade
 
 | RNF | Cenário de qualidade | Resposta da arquitetura |
 |---|---|---|
-| RNF01 | Funcionário removido tenta usar um token ainda válido | Sessão revogada no banco; o *guard* consulta a sessão e responde 401 (RN23) |
+| RNF01 | Funcionário removido tenta usar um token ainda válido | Sessão encerrada no banco e `sid` gravado na lista de revogadas do Redis; o *guard* global consulta a lista e responde 401 na requisição seguinte (RN23, ADR-012) |
 | RNF02 | Queda da instância da API | CapRover reinicia o contêiner; *health check* externo alerta o time |
 | RNF03 | 100 usuários abrem a agenda ao mesmo tempo | Índices por data e empresa; paginação; p95 medido com k6 |
 | RNF04 | Tutor usa um Android 10 | Expo SDK com suporte ao Android 10; matriz de testes |

@@ -4,11 +4,11 @@
 |---|---|
 | Projeto | Jaguara |
 | Documento | ARQ-02 · Segurança da informação e proteção de dados pessoais |
-| Versão | 2.1 |
+| Versão | 2.2 |
 | Status | Em revisão |
 | Autores | Ricardo Guilhen |
 | Data | 14/11/2026 |
-| Tarefa Jira | JAG-69, JAG-215, JAG-216 |
+| Tarefa Jira | JAG-69, JAG-215, JAG-216, JAG-217 |
 | Padrão de referência | LGPD (Lei nº 13.709/2018); Resoluções CD/ANPD nº 2/2022 (agentes de pequeno porte), nº 15/2024 (incidentes) e nº 19/2024 (transferência internacional); OWASP ASVS 4.0 nível 2; modelo de RIPD da ANPD (simplificado) |
 
 ## Histórico de revisões
@@ -19,6 +19,7 @@
 | 1.1 | 14/11/2026 | Ricardo Guilhen | Dados de clientes sem conta no Jaguara (ADR-010, item 3). |
 | 2.0 | 14/11/2026 | Ricardo Guilhen | Gaps da avaliação de 10/11: classificação dos dados, dados dos pets, criptografia em repouso e de backups, CPF cifrado e mascarado, suboperadores e transferência internacional, registro das operações de tratamento, RIPD revisado e prazos de incidente. |
 | 2.1 | 14/11/2026 | Ricardo Guilhen | Ligação com os textos jurídicos (JUR-02, JUR-03 e JUR-04) e a regra RN41. |
+| 2.2 | 14/11/2026 | Ricardo Guilhen | Sessões e controle de acesso alinhados à ADR-012 e provedores de login social na lista de serviços externos. |
 
 ## 1. Objetivo
 
@@ -150,6 +151,7 @@ O Jaguara só envia a cada serviço o mínimo necessário para a finalidade. A e
 | E-mail transacional | E-mail e texto da mensagem | Confirmação de conta, recuperação de senha e avisos | Exterior, em geral | Cláusulas-padrão contratuais da ANPD (art. 33, II, b; Resolução CD/ANPD nº 19/2024) |
 | *Push* (Expo, FCM e APNs) | Token do dispositivo e texto da notificação, sem dado de saúde nem CPF | Lembretes e avisos (RN37) | Exterior | Cláusulas-padrão contratuais; texto mínimo, como "Lembrete de medicamento do Thor" |
 | Provedor de IA do assistente | Espécie, raça, idade e alergias do pet e o texto da conversa | Assistente virtual (RF42) | Exterior | Cláusulas-padrão contratuais; contrato sem retenção e sem uso dos dados para treino; aviso ao tutor para não digitar dados pessoais |
+| Login social (Google, Apple) | Recebem o evento de login iniciado pelo titular; enviam ao Jaguara nome, e-mail e identificador | Login opcional de tutores (RF46) | Exterior | Escolha do próprio titular, para executar o contrato a pedido dele (art. 33, IX) |
 | Lojas e Expo EAS | Nenhum dado da plataforma | Distribuir o app | Exterior | Não se aplica |
 
 A lista atualizada de suboperadores fica na política de privacidade. Incluir ou trocar um suboperador exige atualizar esta tabela, avisar as empresas Enterprise com 30 dias de antecedência (termos da Enterprise) e revisar o RIPD.
@@ -179,8 +181,8 @@ O registro é revisto junto com o RIPD (seção 11).
 | Área ASVS | Controle no Jaguara | Requisito |
 |---|---|---|
 | V2 Autenticação | Argon2id; senha mínima de 8 caracteres verificada contra listas de senhas vazadas; bloqueio após 5 falhas; recuperação com token de uso único de 2 h | RN03, RN05, RN06 |
-| V3 Sessão | Access token de 15 min; refresh token rotativo vinculado à `Sessao`; expiração por inatividade de 4 h; revogação imediata | RN04, RN23 |
-| V4 Controle de acesso | RBAC por rota; verificação de posse e de compartilhamento em cada consulta de pet; negar por padrão | RN20, RN24, RN26, RN30 |
+| V3 Sessão | Access token de 15 min; refresh token rotativo vinculado à `Sessao`; expiração por inatividade de 4 h, verificada na renovação; revogação imediata pela lista de sessões revogadas no Redis ([ADR-012](adr/ADR-012-camada-de-acesso-e-login-social.md)) | RN04, RN23 |
+| V4 Controle de acesso | *Guards* globais com RBAC por rota e negação por padrão; teste automatizado que falha se uma rota não declarar `@Publica()` ou `@Permissoes()`; verificação de posse e de compartilhamento em cada consulta de pet | RN20, RN24, RN26, RN30 |
 | V5 Validação | DTOs validados; consultas parametrizadas (Prisma); saída escapada no frontend; tipo e tamanho de arquivo checados (PDF, JPEG, PNG, até 10 MB) | RNF01 |
 | V6 Criptografia | TLS 1.2 ou superior; AES-256-GCM nas colunas de nível Restrito; índice cego HMAC-SHA256 para CPF; backups cifrados; chaves fora do repositório e com rotação anual (seção 6) | RNF01, RNF07 |
 | V7 Erros e logs | Erros sem detalhes internos; logs estruturados sem senha, token, CPF ou dado de saúde | RN31 |
