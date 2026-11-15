@@ -4,11 +4,11 @@
 |---|---|
 | Projeto | Jaguara |
 | Documento | MOD-03 · Modelo de dados (DER lógico, modelo físico e dicionário de dados) |
-| Versão | 1.2 |
+| Versão | 1.3 |
 | Status | Em revisão |
 | Autores | Ricardo Guilhen |
 | Data | 14/11/2026 |
-| Tarefa Jira | JAG-47 (modelo lógico), JAG-48 (modelo físico) |
+| Tarefa Jira | JAG-47 (modelo lógico), JAG-48 (modelo físico), JAG-215 |
 | Padrão de referência | Diagrama Entidade-Relacionamento em notação pé de galinha (Information Engineering); PostgreSQL 16 |
 
 ## Histórico de revisões
@@ -18,6 +18,7 @@
 | 1.0 | 01/11/2026 | Ricardo Guilhen | Modelo derivado do MOD-01: DER por área, dicionário de dados e DDL PostgreSQL. |
 | 1.1 | 01/11/2026 | Ricardo Guilhen | `cliente` com dados próprios e conta opcional, tabela `cliente_pet` (ADR-010, item 3). Dicionário de dados passa a ser o próprio script. |
 | 1.2 | 14/11/2026 | Ricardo Guilhen | Dicionário de dados de volta ao documento (seção 7) e conferido com o script, com `cliente`, `cliente_pet` e `perfil_permissao`. |
+| 1.3 | 14/11/2026 | Ricardo Guilhen | CPF cifrado na aplicação com índice cego (`cpf_cifrado` e `cpf_hash`) em `tutor`, `funcionario_enterprise` e `cliente`, conforme ARQ-02 2.0. |
 
 ## 1. Objetivo
 
@@ -46,6 +47,7 @@ Definir como as classes persistentes do [modelo de classes (MOD-01)](MOD-01-mode
 | Classe de associação | Tabela com as duas chaves estrangeiras e restrição de unicidade | `responsavel_pet` |
 | Interface `Notificavel` | Referência polimórfica (`origem_tipo`, `origem_id`) | `notificacao` |
 | `{unique}` | `UNIQUE` | `usuario.email` |
+| Atributo de nível Restrito ([ARQ-02](../03-arquitetura/ARQ-02-seguranca-e-lgpd.md), seção 3) | Coluna `<nome>_cifrado bytea` cifrada na aplicação e, quando há busca ou unicidade, índice cego `<nome>_hash char(64)` | `Tutor.cpf` → `tutor.cpf_cifrado` e `tutor.cpf_hash` |
 | Atributo derivado (`/idade`) | Não é armazenado; calculado na consulta | — |
 | Todas as tabelas | `criado_em` e `atualizado_em` para auditoria | — |
 
@@ -89,7 +91,7 @@ As regras que o banco consegue garantir sozinho ficam no banco; as demais ficam 
 
 | Restrição | Regra | Implementação |
 |---|---|---|
-| CPF, CNPJ e e-mail únicos | RN01 | `UNIQUE` |
+| CPF, CNPJ e e-mail únicos | RN01 | `UNIQUE`; o CPF pelo índice cego `cpf_hash` |
 | Conta ativa só com e-mail confirmado | RN02, RC-01 | `CHECK` em `usuario` |
 | Responsável e cliente sem duplicidade | RN09, RN25 | `UNIQUE (pet_id, tutor_id)` e `UNIQUE (empresa_id, tutor_id)` |
 | Despesa sempre com categoria | RN10 | `categoria_id NOT NULL` |
@@ -135,7 +137,8 @@ Classe de origem: `Tutor`.
 |---|---|---|---|---|
 | `id` | `uuid` | não | PK, FK → usuario.id | Identificador |
 | `nome` | `varchar(255)` | não |  |  |
-| `cpf` | `char(11)` | não | UNIQUE |  |
+| `cpf_cifrado` | `bytea` | não |  | CPF cifrado com AES-256-GCM na aplicação (ARQ-02, seção 6) |
+| `cpf_hash` | `char(64)` | não | UNIQUE | Índice cego HMAC-SHA256 do CPF, para unicidade e busca (RN01) |
 | `data_nascimento` | `date` | sim |  |  |
 | `endereco_cep` | `varchar(10)` | sim |  | Endereço: cep |
 | `endereco_logradouro` | `varchar(120)` | sim |  | Endereço: logradouro |
@@ -187,7 +190,8 @@ Classe de origem: `FuncionarioEnterprise`.
 |---|---|---|---|---|
 | `id` | `uuid` | não | PK, FK → usuario.id | Identificador |
 | `nome` | `varchar(255)` | não |  |  |
-| `cpf` | `char(11)` | não | UNIQUE |  |
+| `cpf_cifrado` | `bytea` | não |  | CPF cifrado com AES-256-GCM na aplicação (ARQ-02, seção 6) |
+| `cpf_hash` | `char(64)` | não | UNIQUE | Índice cego HMAC-SHA256 do CPF, para unicidade e busca (RN01) |
 | `cargo` | `varchar(255)` | sim |  |  |
 | `ativo` | `boolean` | não |  |  |
 | `empresa_id` | `uuid` | não | FK → empresa_enterprise.id | empregador |
@@ -595,7 +599,8 @@ Classe de origem: `Cliente`.
 | `id` | `uuid` | não | PK | Identificador |
 | `codigo` | `varchar(255)` | não |  |  |
 | `nome` | `varchar(255)` | não |  |  |
-| `cpf` | `varchar(14)` | sim | UNIQUE com empresa_id |  |
+| `cpf_cifrado` | `bytea` | sim |  | CPF cifrado com AES-256-GCM na aplicação (ARQ-02, seção 6) |
+| `cpf_hash` | `char(64)` | sim | UNIQUE com empresa_id | Índice cego HMAC-SHA256 do CPF; liga o cliente à conta do tutor com o mesmo CPF |
 | `telefone` | `varchar(20)` | sim |  |  |
 | `email` | `varchar(255)` | sim |  | Usado para convidar o cliente a criar conta |
 | `data_vinculo` | `date` | não |  |  |

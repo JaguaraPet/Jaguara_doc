@@ -13,7 +13,8 @@ entity "cliente" as Cliente {
   --
   * codigo : varchar(255)
   * nome : varchar(255)
-    cpf : varchar(14)
+    cpf_cifrado : bytea
+    cpf_hash : char(64)
     telefone : varchar(20)
     email : varchar(255)
   * data_vinculo : date

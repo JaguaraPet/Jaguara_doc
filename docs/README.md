@@ -12,7 +12,7 @@ Status: **Aprovado** (revisado e aceito pelo time), **Em revisão** (completo, a
 | [GES-02 · Estrutura Analítica do Projeto (EAP)](01-gestao/GES-02-EAP.md) | 1.1 | Em revisão | JAG-54 |
 | [GES-03 · Cronograma](01-gestao/GES-03-cronograma.md) | 1.1 | Em revisão | JAG-55 |
 | [GES-04 · Matriz RACI](01-gestao/GES-04-RACI.md) | 2.0 | Aprovado | JAG-21 (elaboração), JAG-51 (migração) |
-| [GES-05 · Registro de riscos](01-gestao/GES-05-registro-de-riscos.md) | 1.1 | Em revisão | JAG-56 |
+| [GES-05 · Registro de riscos](01-gestao/GES-05-registro-de-riscos.md) | 1.2 | Em revisão | JAG-56, JAG-215 |
 | [GES-06 · Processo do time](01-gestao/GES-06-processo-do-time.md) | 1.0 | Em revisão | JAG-57 |
 | [GES-07 · Backlog de documentação](01-gestao/GES-07-backlog-documentacao.md) | 1.4 | Documentação entregue | — |
 | [GES-08 · Pesquisa de mercado e análise estratégica](01-gestao/GES-08-pesquisa-de-mercado.md) | 2.0 | Aprovado | JAG-16, JAG-18, JAG-19, JAG-20 (elaboração), JAG-51 (migração) |
@@ -34,7 +34,7 @@ Status: **Aprovado** (revisado e aceito pelo time), **Em revisão** (completo, a
 | Documento | Versão | Status | Jira |
 |---|---|---|---|
 | [ARQ-01 · Documentação de arquitetura (arc42 e C4)](03-arquitetura/ARQ-01-arquitetura.md) | 1.1 | Em revisão | JAG-41, JAG-44 |
-| [ARQ-02 · Segurança e conformidade com a LGPD](03-arquitetura/ARQ-02-seguranca-e-lgpd.md) | 1.1 | Em revisão | JAG-69 |
+| [ARQ-02 · Segurança e conformidade com a LGPD](03-arquitetura/ARQ-02-seguranca-e-lgpd.md) | 2.0 | Em revisão | JAG-69, JAG-215 |
 | [ARQ-03 · Integrações externas](03-arquitetura/ARQ-03-integracoes.md) | 1.0 | Em revisão | JAG-70 |
 
 ### Decisões de arquitetura
@@ -59,7 +59,7 @@ Status: **Aprovado** (revisado e aceito pelo time), **Em revisão** (completo, a
 |---|---|---|---|
 | [MOD-01 · Modelo de classes](04-modelagem/MOD-01-modelo-de-classes.md) | 1.1 | Em revisão | JAG-27 |
 | [MOD-02 · Diagramas de sequência](04-modelagem/MOD-02-diagramas-de-sequencia.md) | 2.0 | Em revisão | JAG-26 |
-| [MOD-03 · Modelo de dados (DER, script e dicionário)](04-modelagem/MOD-03-modelo-de-dados.md) | 1.2 | Em revisão | JAG-47 (modelo lógico), JAG-48 (modelo físico) |
+| [MOD-03 · Modelo de dados (DER, script e dicionário)](04-modelagem/MOD-03-modelo-de-dados.md) | 1.3 | Em revisão | JAG-47 (modelo lógico), JAG-48 (modelo físico), JAG-215 (CPF cifrado) |
 | [MOD-04 · Diagramas de máquina de estados](04-modelagem/MOD-04-diagramas-de-estado.md) | 1.0 | Em revisão | JAG-66 |
 | [MOD-05 · Diagramas de atividades](04-modelagem/MOD-05-diagramas-de-atividade.md) | 1.0 | Em revisão | JAG-67 |
 

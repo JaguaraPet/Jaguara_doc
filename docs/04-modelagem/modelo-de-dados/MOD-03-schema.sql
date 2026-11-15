@@ -69,7 +69,8 @@ CREATE TABLE usuario (
 CREATE TABLE tutor (
   id uuid PRIMARY KEY,
   nome varchar(255) NOT NULL,
-  cpf char(11) NOT NULL UNIQUE,
+  cpf_cifrado bytea NOT NULL,
+  cpf_hash char(64) NOT NULL UNIQUE,
   data_nascimento date,
   endereco_cep varchar(10),
   endereco_logradouro varchar(120),
@@ -106,7 +107,8 @@ CREATE TABLE empresa_enterprise (
 CREATE TABLE funcionario_enterprise (
   id uuid PRIMARY KEY,
   nome varchar(255) NOT NULL,
-  cpf char(11) NOT NULL UNIQUE,
+  cpf_cifrado bytea NOT NULL,
+  cpf_hash char(64) NOT NULL UNIQUE,
   cargo varchar(255),
   ativo boolean NOT NULL,
   empresa_id uuid NOT NULL,
@@ -365,7 +367,8 @@ CREATE TABLE cliente (
   id uuid PRIMARY KEY DEFAULT gen_random_uuid(),
   codigo varchar(255) NOT NULL,
   nome varchar(255) NOT NULL,
-  cpf varchar(14),
+  cpf_cifrado bytea,
+  cpf_hash char(64),
   telefone varchar(20),
   email varchar(255),
   data_vinculo date NOT NULL,
@@ -754,7 +757,7 @@ CREATE TABLE perfil_permissao (
 -- Restrições de negócio (MOD-01, seção 9)
 ALTER TABLE responsavel_pet ADD CONSTRAINT uq_responsavel_pet UNIQUE (pet_id, tutor_id);
 ALTER TABLE cliente ADD CONSTRAINT uq_cliente UNIQUE (empresa_id, tutor_id);
-ALTER TABLE cliente ADD CONSTRAINT uq_cliente_cpf UNIQUE (empresa_id, cpf);
+ALTER TABLE cliente ADD CONSTRAINT uq_cliente_cpf UNIQUE (empresa_id, cpf_hash);
 ALTER TABLE horario_atuacao ADD CONSTRAINT ck_horario_xor CHECK ((funcionario_id IS NULL) <> (recurso_id IS NULL));  -- RC-20
 ALTER TABLE horario_atuacao ADD CONSTRAINT ck_horario_intervalo CHECK (hora_inicio < hora_fim);
 ALTER TABLE pagamento ADD CONSTRAINT ck_pagamento_xor CHECK ((agendamento_id IS NULL) <> (assinatura_id IS NULL));  -- RC-27
