@@ -89,6 +89,7 @@ Status: **Aprovado** (revisado e aceito pelo time), **Em revisão** (completo, a
 | [ENT-02 · Manual do usuário: tutor](07-entrega/ENT-02-manual-tutor.md) | 0.3 | Rascunho | JAG-78 |
 | [ENT-03 · Manual do usuário: Enterprise](07-entrega/ENT-03-manual-enterprise.md) | 0.5 | Rascunho | JAG-79, JAG-216 |
 | [ENT-04 · Notas de versão](07-entrega/ENT-04-notas-de-versao.md) | 0.1 | Rascunho | JAG-80 |
+| [ENT-05 · Guia do ambiente de desenvolvimento](07-entrega/ENT-05-guia-do-ambiente.md) | 1.0 | Em revisão | JAG-75 |
 
 ## Jurídico
 
