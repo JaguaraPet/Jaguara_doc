@@ -1,7 +1,7 @@
 openapi: 3.1.0
 info:
   title: Jaguara API
-  version: 1.4.0
+  version: 1.5.0
   summary: API REST da plataforma Jaguara (tutores e empresas Enterprise).
   description: |
     Contrato da API do Jaguara (tarefa JAG-68). Os recursos seguem o modelo de classes
@@ -600,6 +600,50 @@ paths:
             application/pdf:
               schema: { type: string, contentMediaType: application/pdf }
 
+  /empresas:
+    get:
+      tags: [Catálogo e agenda]
+      summary: Buscar empresas com serviços ativos (UC-33)
+      parameters:
+        - in: query
+          name: busca
+          description: Trecho do nome da empresa ou de um serviço.
+          schema: { type: string }
+        - in: query
+          name: tipo
+          schema:
+            type: string
+            enum: [CLINICA_VETERINARIA, PET_SHOP, HOTEL_PET, CRECHE, CASA_DE_CUIDADO]
+        - in: query
+          name: categoria
+          description: Categoria de serviço oferecida.
+          schema:
+            type: string
+            enum: [CONSULTA, EXAME, CIRURGIA, VACINACAO, BANHO_TOSA, HOSPEDAGEM, PET_SITTER, CRECHE, OUTRO]
+        - in: query
+          name: cidade
+          schema: { type: string }
+        - $ref: '#/components/parameters/Pagina'
+        - $ref: '#/components/parameters/Tamanho'
+      responses:
+        '200':
+          description: Empresas encontradas.
+          content:
+            application/json:
+              schema: { $ref: '#/components/schemas/PaginaEmpresas' }
+  /empresas/{empresaId}:
+    parameters:
+      - $ref: '#/components/parameters/EmpresaId'
+    get:
+      tags: [Catálogo e agenda]
+      summary: Ver o perfil público da empresa (UC-33)
+      responses:
+        '200':
+          description: Dados públicos da empresa.
+          content:
+            application/json:
+              schema: { $ref: '#/components/schemas/EmpresaPublica' }
+        '404': { $ref: '#/components/responses/NaoEncontrado' }
   /empresas/{empresaId}/servicos:
     parameters:
       - $ref: '#/components/parameters/EmpresaId'
@@ -1811,6 +1855,30 @@ components:
           properties:
             id: { type: string, format: uuid }
             empresaId: { type: string, format: uuid }
+    EmpresaPublica:
+      type: object
+      properties:
+        id: { type: string, format: uuid }
+        nomeFantasia: { type: string }
+        tipo:
+          type: string
+          enum: [CLINICA_VETERINARIA, PET_SHOP, HOTEL_PET, CRECHE, CASA_DE_CUIDADO]
+        bairro: { type: string }
+        cidade: { type: string }
+        uf: { type: string }
+        categorias:
+          type: array
+          description: Categorias dos serviços ativos.
+          items: { type: string }
+    PaginaEmpresas:
+      type: object
+      properties:
+        itens:
+          type: array
+          items: { $ref: '#/components/schemas/EmpresaPublica' }
+        total: { type: integer }
+        pagina: { type: integer }
+        tamanho: { type: integer }
     RecursoEntrada:
       type: object
       required: [nome, tipo]
