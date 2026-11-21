@@ -1,7 +1,7 @@
 openapi: 3.1.0
 info:
   title: Jaguara API
-  version: 1.14.0
+  version: 1.15.0
   summary: API REST da plataforma Jaguara (tutores e empresas Enterprise).
   description: |
     Contrato da API do Jaguara (tarefa JAG-68). Os recursos seguem o modelo de classes
@@ -427,16 +427,39 @@ paths:
   /pets/{petId}/tratamentos:
     parameters:
       - $ref: '#/components/parameters/PetId'
+    get:
+      tags: [Saúde]
+      summary: Listar tratamentos medicamentosos (UC-14)
+      responses:
+        '200':
+          description: Tratamentos do pet, do mais recente para o mais antigo.
+          content:
+            application/json:
+              schema:
+                type: array
+                items: { $ref: '#/components/schemas/Tratamento' }
+        '403': { $ref: '#/components/responses/SemPermissao' }
+        '404': { $ref: '#/components/responses/NaoEncontrado' }
     post:
       tags: [Saúde]
       summary: Cadastrar tratamento medicamentoso (UC-14)
+      description: |
+        Agenda um lembrete por dose para cada responsável do pet, da primeira dose até o fim do
+        último dia (sem data de fim, os próximos 30 dias; no máximo 120 doses).
       requestBody:
         required: true
         content:
           application/json:
             schema: { $ref: '#/components/schemas/TratamentoEntrada' }
       responses:
-        '201': { description: "Tratamento ativo com lembretes agendados (RN18)." }
+        '201':
+          description: Tratamento ativo com lembretes agendados (RN18).
+          content:
+            application/json:
+              schema: { $ref: '#/components/schemas/Tratamento' }
+        '403': { $ref: '#/components/responses/SemPermissao' }
+        '404': { $ref: '#/components/responses/NaoEncontrado' }
+        '422': { $ref: '#/components/responses/Validacao' }
   /tratamentos/{tratamentoId}/finalizacao:
     parameters:
       - in: path
@@ -448,6 +471,8 @@ paths:
       summary: Finalizar tratamento e cancelar lembretes
       responses:
         '204': { description: "Tratamento finalizado." }
+        '403': { $ref: '#/components/responses/SemPermissao' }
+        '404': { $ref: '#/components/responses/NaoEncontrado' }
   /pets/{petId}/exames:
     parameters:
       - $ref: '#/components/parameters/PetId'
@@ -1953,9 +1978,30 @@ components:
         medicamento: { type: string }
         dosagem: { type: string }
         viaAdministracao: { type: string }
-        intervaloHoras: { type: integer, minimum: 1 }
+        intervaloHoras: { type: integer, minimum: 1, maximum: 720 }
         dataInicio: { type: string, format: date }
         dataFim: { type: string, format: date }
+        horaPrimeiraDose:
+          type: string
+          pattern: '^([01][0-9]|2[0-3]):[0-5][0-9]$'
+          default: '08:00'
+          description: Hora da primeira dose, em Brasília.
+        observacoes: { type: string, maxLength: 2000 }
+    Tratamento:
+      type: object
+      properties:
+        id: { type: string, format: uuid }
+        medicamento: { type: string }
+        dosagem: { type: string }
+        viaAdministracao: { type: string }
+        intervaloHoras: { type: integer }
+        dataInicio: { type: string, format: date }
+        dataFim: { type: string, format: date }
+        status: { type: string, enum: [ATIVO, FINALIZADO, SUSPENSO] }
+        observacoes: { type: string }
+        lembretesAgendados:
+          type: integer
+          description: Só na resposta do cadastro.
     ExameEntrada:
       type: object
       required: [tipoExame, dataRealizacao]
