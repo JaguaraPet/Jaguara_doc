@@ -1,7 +1,7 @@
 openapi: 3.1.0
 info:
   title: Jaguara API
-  version: 1.17.0
+  version: 1.18.0
   summary: API REST da plataforma Jaguara (tutores e empresas Enterprise).
   description: |
     Contrato da API do Jaguara (tarefa JAG-68). Os recursos seguem o modelo de classes
@@ -363,6 +363,18 @@ paths:
   /pets/{petId}/compartilhamentos:
     parameters:
       - $ref: '#/components/parameters/PetId'
+    get:
+      tags: [Pets]
+      summary: Listar compartilhamentos do pet (UC-11)
+      responses:
+        '200':
+          description: Compartilhamentos com a situação atual (ativo, revogado ou expirado).
+          content:
+            application/json:
+              schema:
+                type: array
+                items: { $ref: '#/components/schemas/Compartilhamento' }
+        '404': { $ref: '#/components/responses/NaoEncontrado' }
     post:
       tags: [Pets]
       summary: Compartilhar perfil do pet (UC-11)
@@ -373,10 +385,83 @@ paths:
             schema: { $ref: '#/components/schemas/CompartilhamentoEntrada' }
       responses:
         '201':
-          description: Compartilhamento ativo com os escopos informados (RN15).
+          description: |
+            Compartilhamento ativo com os escopos informados (RN15). Com `destinatarioEmail`, o
+            destinatário recebe por e-mail um link de leitura sem conta; o `link` só aparece nesta
+            resposta. Com `empresaId`, o acesso vale dentro do sistema. Informe um dos dois.
           content:
             application/json:
               schema: { $ref: '#/components/schemas/Compartilhamento' }
+        '404': { $ref: '#/components/responses/NaoEncontrado' }
+        '422': { $ref: '#/components/responses/Validacao' }
+  /compartilhamentos/{compartilhamentoId}/revogacao:
+    parameters:
+      - in: path
+        name: compartilhamentoId
+        required: true
+        schema: { type: string, format: uuid }
+    post:
+      tags: [Pets]
+      summary: Revogar compartilhamento (UC-11)
+      responses:
+        '204': { description: "Acesso revogado na hora." }
+        '404': { $ref: '#/components/responses/NaoEncontrado' }
+  /compartilhados/{token}:
+    parameters:
+      - in: path
+        name: token
+        required: true
+        schema: { type: string }
+    get:
+      tags: [Pets]
+      summary: Ver o perfil compartilhado por link (UC-11)
+      security: []
+      responses:
+        '200':
+          description: Nome do pet, dados básicos se liberados e as seções compartilhadas.
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  pet:
+                    type: object
+                    properties:
+                      nome: { type: string }
+                      especie: { type: string }
+                      raca: { type: string }
+                      sexo: { type: string }
+                      castrado: { type: boolean }
+                      idadeAnos: { type: integer }
+                  escopos: { type: array, items: { type: string } }
+                  secoes:
+                    type: array
+                    items: { type: string, enum: [vacinas, exames, medicamentos, alergias] }
+                  dataExpiracao: { type: string, format: date-time }
+        '410': { $ref: '#/components/responses/Expirado' }
+  /compartilhados/{token}/{secao}:
+    parameters:
+      - in: path
+        name: token
+        required: true
+        schema: { type: string }
+      - in: path
+        name: secao
+        required: true
+        schema: { type: string, enum: [vacinas, exames, medicamentos, alergias] }
+    get:
+      tags: [Pets]
+      summary: Ver uma seção do perfil compartilhado (UC-11)
+      security: []
+      responses:
+        '200':
+          description: Registros da seção, só se o escopo foi compartilhado (CT-11-02).
+          content:
+            application/json:
+              schema: { type: array, items: { type: object } }
+        '403': { $ref: '#/components/responses/SemPermissao' }
+        '404': { $ref: '#/components/responses/NaoEncontrado' }
+        '410': { $ref: '#/components/responses/Expirado' }
   /pets/{petId}/linha-do-tempo:
     parameters:
       - $ref: '#/components/parameters/PetId'
