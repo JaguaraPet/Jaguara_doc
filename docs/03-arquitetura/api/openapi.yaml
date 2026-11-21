@@ -1,7 +1,7 @@
 openapi: 3.1.0
 info:
   title: Jaguara API
-  version: 1.12.0
+  version: 1.13.0
   summary: API REST da plataforma Jaguara (tutores e empresas Enterprise).
   description: |
     Contrato da API do Jaguara (tarefa JAG-68). Os recursos seguem o modelo de classes
@@ -1013,6 +1013,17 @@ paths:
   /agendamentos/{agendamentoId}/atendimento:
     parameters:
       - $ref: '#/components/parameters/AgendamentoId'
+    get:
+      tags: [Atendimentos]
+      summary: Consultar o atendimento de um agendamento (UC-23)
+      responses:
+        '200':
+          description: Atendimento com os itens cobrados.
+          content:
+            application/json:
+              schema: { $ref: '#/components/schemas/Atendimento' }
+        '403': { $ref: '#/components/responses/SemPermissao' }
+        '404': { $ref: '#/components/responses/NaoEncontrado' }
     post:
       tags: [Atendimentos]
       summary: Registrar serviços e atendimento (UC-23)
@@ -1027,6 +1038,13 @@ paths:
           content:
             application/json:
               schema: { $ref: '#/components/schemas/Atendimento' }
+        '404': { $ref: '#/components/responses/NaoEncontrado' }
+        '409':
+          description: Atendimento já registrado (ATENDIMENTO_JA_REGISTRADO), agendamento inativo ou ainda não ocorrido (AGENDAMENTO_NAO_OCORREU).
+          content:
+            application/problem+json:
+              schema: { $ref: '#/components/schemas/Problema' }
+        '422': { $ref: '#/components/responses/Validacao' }
         '403': { $ref: '#/components/responses/SemPermissao' }
   /atendimentos/{atendimentoId}:
     parameters:
@@ -1054,6 +1072,8 @@ paths:
           content:
             application/json:
               schema: { $ref: '#/components/schemas/Atendimento' }
+        '403': { $ref: '#/components/responses/SemPermissao' }
+        '404': { $ref: '#/components/responses/NaoEncontrado' }
         '422': { $ref: '#/components/responses/Validacao' }
 
   /empresas/{empresaId}/funcionarios:
@@ -2161,9 +2181,23 @@ components:
       properties:
         id: { type: string, format: uuid }
         agendamentoId: { type: string, format: uuid }
+        petId: { type: string, format: uuid }
         status: { type: string, enum: [EM_ANDAMENTO, FINALIZADO] }
+        procedimentosRealizados: { type: string }
+        observacoesClinicas: { type: string }
         total: { type: number }
         finalizadoEm: { type: string, format: date-time }
+        itens:
+          type: array
+          items:
+            type: object
+            properties:
+              servicoId: { type: string, format: uuid }
+              quantidade: { type: integer }
+              valorUnitario:
+                type: number
+                description: Preço contratado para o serviço agendado (RN27); preço atual para extras.
+              observacao: { type: string }
     Funcionario:
       type: object
       properties:
