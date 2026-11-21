@@ -1,7 +1,7 @@
 openapi: 3.1.0
 info:
   title: Jaguara API
-  version: 1.19.0
+  version: 1.20.0
   summary: API REST da plataforma Jaguara (tutores e empresas Enterprise).
   description: |
     Contrato da API do Jaguara (tarefa JAG-68). Os recursos seguem o modelo de classes
@@ -689,9 +689,78 @@ paths:
         '204': { description: "Evento excluído." }
         '404': { $ref: '#/components/responses/NaoEncontrado' }
         '409': { $ref: '#/components/responses/Conflito' }
+  /pets/{petId}/plano-alimentar:
+    parameters:
+      - $ref: '#/components/parameters/PetId'
+    get:
+      tags: [Rotina]
+      summary: Ver o plano alimentar ativo (UC-08)
+      responses:
+        '200':
+          description: Plano ativo, ou `plano` nulo quando não há.
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  plano:
+                    oneOf:
+                      - $ref: '#/components/schemas/PlanoAlimentar'
+                      - type: 'null'
+        '404': { $ref: '#/components/responses/NaoEncontrado' }
+    put:
+      tags: [Rotina]
+      summary: Definir meta e limite diários (UC-08, RN12)
+      description: Substitui o plano ativo; o anterior fica no histórico.
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              required: [alimento, metaDiariaGramas, refeicoesPorDia]
+              properties:
+                alimento: { type: string }
+                metaDiariaGramas: { type: number, exclusiveMinimum: 0 }
+                limiteDiarioGramas:
+                  type: number
+                  exclusiveMinimum: 0
+                  description: Não pode ser menor que a meta.
+                refeicoesPorDia: { type: integer, minimum: 1, maximum: 12 }
+      responses:
+        '200':
+          description: Plano ativo.
+          content:
+            application/json:
+              schema: { $ref: '#/components/schemas/PlanoAlimentar' }
+        '404': { $ref: '#/components/responses/NaoEncontrado' }
+        '422': { $ref: '#/components/responses/Validacao' }
   /pets/{petId}/refeicoes:
     parameters:
       - $ref: '#/components/parameters/PetId'
+    get:
+      tags: [Rotina]
+      summary: Refeições do dia com o consumo (UC-08)
+      parameters:
+        - in: query
+          name: data
+          description: Dia em Brasília; padrão, hoje.
+          schema: { type: string, format: date }
+      responses:
+        '200':
+          description: Refeições do dia e o resumo do consumo.
+          content:
+            application/json:
+              schema:
+                allOf:
+                  - $ref: '#/components/schemas/ResumoAlimentar'
+                  - type: object
+                    properties:
+                      data: { type: string, format: date }
+                      refeicoes:
+                        type: array
+                        items: { $ref: '#/components/schemas/Refeicao' }
+        '404': { $ref: '#/components/responses/NaoEncontrado' }
     post:
       tags: [Rotina]
       summary: Registrar refeição (UC-08)
@@ -706,16 +775,18 @@ paths:
                 dataHora: { type: string, format: date-time }
                 alimento: { type: string }
                 quantidadeGramas: { type: number, exclusiveMinimum: 0 }
+                observacao: { type: string, maxLength: 1000 }
       responses:
         '201':
-          description: Refeição registrada; `limiteExcedido` indica alerta (RN12).
+          description: Refeição registrada; `limiteExcedido` indica alerta (RN12, CT-08-02).
           content:
             application/json:
               schema:
-                type: object
-                properties:
-                  consumoDoDia: { type: number }
-                  limiteExcedido: { type: boolean }
+                allOf:
+                  - $ref: '#/components/schemas/Refeicao'
+                  - $ref: '#/components/schemas/ResumoAlimentar'
+        '404': { $ref: '#/components/responses/NaoEncontrado' }
+        '422': { $ref: '#/components/responses/Validacao' }
   /categorias-despesa:
     get:
       tags: [Financeiro]
@@ -2167,6 +2238,31 @@ components:
           format: uuid
           description: Documento do próprio pet usado como laudo (UC-34).
         observacoes: { type: string, maxLength: 2000 }
+    PlanoAlimentar:
+      type: object
+      properties:
+        id: { type: string, format: uuid }
+        alimento: { type: string }
+        metaDiariaGramas: { type: number }
+        limiteDiarioGramas: { type: number }
+        refeicoesPorDia: { type: integer }
+        dataInicio: { type: string, format: date }
+    Refeicao:
+      type: object
+      properties:
+        id: { type: string, format: uuid }
+        dataHora: { type: string, format: date-time }
+        alimento: { type: string }
+        quantidadeGramas: { type: number }
+        observacao: { type: string }
+    ResumoAlimentar:
+      type: object
+      properties:
+        consumoDoDia: { type: number }
+        metaDiariaGramas: { type: number }
+        limiteDiarioGramas: { type: number }
+        percentualMeta: { type: integer }
+        limiteExcedido: { type: boolean }
     Exame:
       type: object
       properties:
