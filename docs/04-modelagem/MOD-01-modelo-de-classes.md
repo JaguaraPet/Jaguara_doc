@@ -1046,7 +1046,7 @@ Operações:
 | `financeiro` | `StatusPagamento` | PENDENTE, ACEITO, CANCELADO, RECUSADO |
 | `financeiro` | `StatusReembolso` | EM_ANALISE, APROVADO, NEGADO |
 | `financeiro` | `TipoPlano` | GRATUITO, PANTERA |
-| `financeiro` | `StatusAssinatura` | ATIVA, CANCELADA, EXPIRADA |
+| `financeiro` | `StatusAssinatura` | PENDENTE, ATIVA, CANCELADA, EXPIRADA |
 | `comunicacao` | `TipoConversa` | EMPRESA, ASSISTENTE_VIRTUAL |
 | `comunicacao` | `StatusConversa` | ABERTA, ENCERRADA |
 | `privacidade` | `TipoSolicitacaoPrivacidade` | EXPORTACAO_DADOS, EXCLUSAO_DADOS, CORRECAO_DADOS |
