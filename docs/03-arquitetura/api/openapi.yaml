@@ -1,7 +1,7 @@
 openapi: 3.1.0
 info:
   title: Jaguara API
-  version: 1.23.0
+  version: 1.24.0
   summary: API REST da plataforma Jaguara (tutores e empresas Enterprise).
   description: |
     Contrato da API do Jaguara (tarefa JAG-68). Os recursos seguem o modelo de classes
@@ -2017,10 +2017,117 @@ paths:
               schema:
                 type: array
                 items: { $ref: '#/components/schemas/LogAuditoria' }
+  /admin/integracoes:
+    get:
+      tags: [Administração]
+      summary: Listar integrações (UC-27)
+      responses:
+        '200':
+          description: Integrações, sem as credenciais.
+          content:
+            application/json:
+              schema:
+                type: array
+                items: { $ref: '#/components/schemas/Integracao' }
+        '403': { $ref: '#/components/responses/SemPermissao' }
+    post:
+      tags: [Administração]
+      summary: Criar integração (UC-27, RN33)
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              required: [nome, tipo, endpointUrl, credenciais]
+              properties:
+                nome: { type: string }
+                tipo: { type: string, enum: [CALENDARIO, PAGAMENTO, PLATAFORMA_VETERINARIA, NOTIFICACAO, OUTRA] }
+                endpointUrl: { type: string, format: uri, pattern: '^https://' }
+                credenciais:
+                  type: string
+                  maxLength: 150
+                  description: Gravadas cifradas e nunca devolvidas.
+                parametros: { type: string }
+      responses:
+        '201':
+          description: Integração salva (CT-27-01).
+          content:
+            application/json:
+              schema: { $ref: '#/components/schemas/Integracao' }
+        '403': { $ref: '#/components/responses/SemPermissao' }
+        '422': { $ref: '#/components/responses/Validacao' }
+  /admin/integracoes/{integracaoId}:
+    parameters:
+      - in: path
+        name: integracaoId
+        required: true
+        schema: { type: string, format: uuid }
+    patch:
+      tags: [Administração]
+      summary: Alterar integração (UC-27)
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                nome: { type: string }
+                endpointUrl: { type: string, format: uri }
+                credenciais: { type: string, maxLength: 150 }
+                parametros: { type: string }
+                ativa: { type: boolean }
+      responses:
+        '200':
+          description: Integração alterada e auditada.
+          content:
+            application/json:
+              schema: { $ref: '#/components/schemas/Integracao' }
+        '404': { $ref: '#/components/responses/NaoEncontrado' }
+        '422': { $ref: '#/components/responses/Validacao' }
+  /admin/integracoes/{integracaoId}/teste:
+    parameters:
+      - in: path
+        name: integracaoId
+        required: true
+        schema: { type: string, format: uuid }
+    post:
+      tags: [Administração]
+      summary: Testar se o serviço da integração responde (CT-27-01)
+      responses:
+        '200':
+          description: Resultado do teste.
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  ok: { type: boolean }
+                  status: { type: integer }
+                  detalhe: { type: string }
+        '404': { $ref: '#/components/responses/NaoEncontrado' }
   /admin/webhooks:
+    get:
+      tags: [Administração]
+      summary: Listar webhooks (UC-30)
+      responses:
+        '200':
+          description: Webhooks, sem o segredo.
+          content:
+            application/json:
+              schema:
+                type: array
+                items: { $ref: '#/components/schemas/Webhook' }
+        '403': { $ref: '#/components/responses/SemPermissao' }
     post:
       tags: [Administração]
       summary: Cadastrar webhook (UC-30)
+      description: |
+        Só URL HTTPS pública com assinatura HMAC-SHA256 (RN36). Sem `segredo`, a API gera um; ele
+        aparece só nesta resposta. Cada envio leva `X-Jaguara-Evento`, `X-Jaguara-Id` e
+        `X-Jaguara-Assinatura: t=<segundos>,v1=<HMAC-SHA256 de t.corpo>`, com até 5 tentativas e
+        espera exponencial (ARQ-03, seção 3.7).
       requestBody:
         required: true
         content:
@@ -2033,12 +2140,47 @@ paths:
                 eventos:
                   type: array
                   minItems: 1
-                  items: { type: string }
+                  items:
+                    type: string
+                    enum: [solicitacao.criada, solicitacao.status_alterado, agendamento.criado, agendamento.cancelado, atendimento.finalizado, pagamento.confirmado]
                 metodoAutenticacao:
                   type: string
                   enum: [HMAC_SHA256]
+                segredo: { type: string, minLength: 16, maxLength: 64 }
+                integracaoId: { type: string, format: uuid }
       responses:
-        '201': { description: "Webhook salvo (RN36)." }
+        '201':
+          description: Webhook salvo (RN36), com o segredo só desta vez.
+          content:
+            application/json:
+              schema: { $ref: '#/components/schemas/Webhook' }
+        '403': { $ref: '#/components/responses/SemPermissao' }
+        '422': { $ref: '#/components/responses/Validacao' }
+  /admin/webhooks/{webhookId}:
+    parameters:
+      - in: path
+        name: webhookId
+        required: true
+        schema: { type: string, format: uuid }
+    patch:
+      tags: [Administração]
+      summary: Ativar, desativar ou mudar os eventos do webhook (UC-30)
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                ativo: { type: boolean }
+                eventos: { type: array, items: { type: string } }
+      responses:
+        '200':
+          description: Webhook alterado e auditado.
+          content:
+            application/json:
+              schema: { $ref: '#/components/schemas/Webhook' }
+        '404': { $ref: '#/components/responses/NaoEncontrado' }
         '422': { $ref: '#/components/responses/Validacao' }
   /webhooks/pagamentos:
     post:
@@ -2691,6 +2833,28 @@ components:
         canal: { type: string, enum: [PUSH, EMAIL, SMS] }
         antecedenciaMinutos: { type: integer }
         ativa: { type: boolean }
+    Integracao:
+      type: object
+      properties:
+        id: { type: string, format: uuid }
+        nome: { type: string }
+        tipo: { type: string, enum: [CALENDARIO, PAGAMENTO, PLATAFORMA_VETERINARIA, NOTIFICACAO, OUTRA] }
+        endpointUrl: { type: string }
+        parametros: { type: string }
+        ativa: { type: boolean }
+        temCredenciais: { type: boolean }
+    Webhook:
+      type: object
+      properties:
+        id: { type: string, format: uuid }
+        url: { type: string }
+        eventos: { type: array, items: { type: string } }
+        metodoAutenticacao: { type: string }
+        ativo: { type: boolean }
+        integracaoId: { type: string, format: uuid }
+        segredo:
+          type: string
+          description: Só na resposta da criação.
     Assinatura:
       type: object
       properties:
