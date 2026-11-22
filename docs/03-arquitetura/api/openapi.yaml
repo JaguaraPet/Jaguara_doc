@@ -1,7 +1,7 @@
 openapi: 3.1.0
 info:
   title: Jaguara API
-  version: 1.26.0
+  version: 1.27.0
   summary: API REST da plataforma Jaguara (tutores e empresas Enterprise).
   description: |
     Contrato da API do Jaguara (tarefa JAG-68). Os recursos seguem o modelo de classes
@@ -348,9 +348,22 @@ paths:
   /pets/{petId}/responsaveis:
     parameters:
       - $ref: '#/components/parameters/PetId'
+    get:
+      tags: [Pets]
+      summary: Listar responsáveis pelo pet (UC-05)
+      responses:
+        '200':
+          description: Responsáveis ativos, principais primeiro.
+          content:
+            application/json:
+              schema:
+                type: array
+                items: { $ref: '#/components/schemas/Responsavel' }
+        '404': { $ref: '#/components/responses/NaoEncontrado' }
     post:
       tags: [Pets]
       summary: Vincular responsável (UC-05)
+      description: Só o responsável principal vincula; a outra pessoa precisa ter conta de tutor ativa.
       requestBody:
         required: true
         content:
@@ -362,7 +375,53 @@ paths:
                 email: { type: string, format: email }
                 tipo: { $ref: '#/components/schemas/TipoResponsavel' }
       responses:
-        '201': { description: "Vínculo criado." }
+        '201':
+          description: Vínculo criado; devolve os responsáveis.
+          content:
+            application/json:
+              schema:
+                type: array
+                items: { $ref: '#/components/schemas/Responsavel' }
+        '403': { $ref: '#/components/responses/SemPermissao' }
+        '404': { $ref: '#/components/responses/NaoEncontrado' }
+        '409': { $ref: '#/components/responses/Conflito' }
+  /pets/{petId}/responsaveis/{tutorId}:
+    parameters:
+      - $ref: '#/components/parameters/PetId'
+      - in: path
+        name: tutorId
+        required: true
+        schema: { type: string, format: uuid }
+    patch:
+      tags: [Pets]
+      summary: Trocar entre principal e adicional (UC-05, RN09)
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              required: [tipo]
+              properties:
+                tipo: { $ref: '#/components/schemas/TipoResponsavel' }
+      responses:
+        '200':
+          description: Responsáveis atualizados.
+          content:
+            application/json:
+              schema:
+                type: array
+                items: { $ref: '#/components/schemas/Responsavel' }
+        '403': { $ref: '#/components/responses/SemPermissao' }
+        '409': { $ref: '#/components/responses/Conflito' }
+    delete:
+      tags: [Pets]
+      summary: Remover responsável (UC-05)
+      description: O principal remove qualquer um; o adicional só sai do próprio vínculo. O pet nunca fica sem principal (RN09_SEM_PRINCIPAL).
+      responses:
+        '204': { description: "Vínculo removido." }
+        '403': { $ref: '#/components/responses/SemPermissao' }
+        '404': { $ref: '#/components/responses/NaoEncontrado' }
         '409': { $ref: '#/components/responses/Conflito' }
   /pets/{petId}/compartilhamentos:
     parameters:
@@ -2867,6 +2926,14 @@ components:
         segredo:
           type: string
           description: Só na resposta da criação.
+    Responsavel:
+      type: object
+      properties:
+        tutorId: { type: string, format: uuid }
+        nome: { type: string }
+        tipo: { $ref: '#/components/schemas/TipoResponsavel' }
+        dataVinculo: { type: string, format: date-time }
+        voce: { type: boolean, description: É o usuário autenticado. }
     Assinatura:
       type: object
       properties:
