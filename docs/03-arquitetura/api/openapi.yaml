@@ -1,7 +1,7 @@
 openapi: 3.1.0
 info:
   title: Jaguara API
-  version: 1.33.0
+  version: 1.34.0
   summary: API REST da plataforma Jaguara (tutores e empresas Enterprise).
   description: |
     Contrato da API do Jaguara (tarefa JAG-68). Os recursos seguem o modelo de classes
@@ -1699,6 +1699,45 @@ paths:
             application/json:
               schema: { $ref: '#/components/schemas/PerfilPetEmpresa' }
         '403': { $ref: '#/components/responses/SemPermissao' }
+  /empresas/{empresaId}/relatorios/{tipo}:
+    parameters:
+      - $ref: '#/components/parameters/EmpresaId'
+      - in: path
+        name: tipo
+        required: true
+        description: "`atendimentos` (operacional) ou `financeiro` (gerencial, exige também financeiro:ler)."
+        schema: { type: string, enum: [atendimentos, financeiro] }
+    get:
+      tags: [Empresa]
+      summary: Emitir relatórios (UC-18, RN22)
+      parameters:
+        - in: query
+          name: de
+          required: true
+          schema: { type: string, format: date }
+        - in: query
+          name: ate
+          required: true
+          schema: { type: string, format: date }
+      responses:
+        '200':
+          description: "Relatório da própria empresa em JSON, ou PDF com `Accept: application/pdf`."
+          content:
+            application/json:
+              schema:
+                oneOf:
+                  - $ref: '#/components/schemas/RelatorioAtendimentos'
+                  - $ref: '#/components/schemas/RelatorioFinanceiro'
+                discriminator:
+                  propertyName: tipo
+                  mapping:
+                    atendimentos: '#/components/schemas/RelatorioAtendimentos'
+                    financeiro: '#/components/schemas/RelatorioFinanceiro'
+            application/pdf:
+              schema: { type: string, contentMediaType: application/pdf }
+        '403': { $ref: '#/components/responses/SemPermissao' }
+        '404': { $ref: '#/components/responses/NaoEncontrado' }
+        '422': { $ref: '#/components/responses/Validacao' }
   /empresas/{empresaId}/indicadores:
     parameters:
       - $ref: '#/components/parameters/EmpresaId'
@@ -2602,6 +2641,53 @@ components:
         cor: { type: string }
         microchip: { type: string }
         castrado: { type: boolean }
+    ContagemRelatorio:
+      type: object
+      required: [chave, quantidade]
+      properties:
+        chave: { type: string }
+        quantidade: { type: integer }
+        total: { type: number }
+    RelatorioAtendimentos:
+      type: object
+      required: [tipo, de, ate, total, taxaComparecimento, porStatus, porServico, porProfissional, agendamentos]
+      properties:
+        tipo: { type: string, enum: [atendimentos] }
+        de: { type: string, format: date }
+        ate: { type: string, format: date }
+        total: { type: integer }
+        taxaComparecimento: { type: number, description: "Percentual de realizados entre realizados e faltas." }
+        porStatus: { type: array, items: { $ref: '#/components/schemas/ContagemRelatorio' } }
+        porServico: { type: array, items: { $ref: '#/components/schemas/ContagemRelatorio' } }
+        porProfissional: { type: array, items: { $ref: '#/components/schemas/ContagemRelatorio' } }
+        agendamentos:
+          type: array
+          items:
+            type: object
+            properties:
+              dataHora: { type: string, format: date-time }
+              pet: { type: string }
+              servico: { type: string }
+              profissional: { type: string }
+              status: { type: string }
+              atendimentoFinalizado: { type: boolean }
+    RelatorioFinanceiro:
+      type: object
+      required: [tipo, de, ate, faturamento, pagamentosConfirmados, ticketMedio, pendentes, porServico, porMetodo]
+      properties:
+        tipo: { type: string, enum: [financeiro] }
+        de: { type: string, format: date }
+        ate: { type: string, format: date }
+        faturamento: { type: number }
+        pagamentosConfirmados: { type: integer }
+        ticketMedio: { type: number }
+        pendentes:
+          type: object
+          properties:
+            quantidade: { type: integer }
+            total: { type: number }
+        porServico: { type: array, items: { $ref: '#/components/schemas/ContagemRelatorio' } }
+        porMetodo: { type: array, items: { $ref: '#/components/schemas/ContagemRelatorio' } }
     StatusConta:
       type: string
       enum: [PENDENTE_CONFIRMACAO, ATIVA, BLOQUEADA, SUSPENSA, INATIVA]
