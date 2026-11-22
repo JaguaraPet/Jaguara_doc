@@ -1,7 +1,7 @@
 openapi: 3.1.0
 info:
   title: Jaguara API
-  version: 1.25.0
+  version: 1.26.0
   summary: API REST da plataforma Jaguara (tutores e empresas Enterprise).
   description: |
     Contrato da API do Jaguara (tarefa JAG-68). Os recursos seguem o modelo de classes
@@ -229,7 +229,11 @@ paths:
               properties:
                 email: { type: string, format: email }
       responses:
-        '202': { description: "Se o e-mail existir, um link válido por 2 horas é enviado (RN05)." }
+        '202':
+          description: |
+            Se o e-mail tiver conta ativa, um link `<URL_WEB>/redefinir-senha?token=...` válido por
+            2 horas e uso único é enviado (RN05); um link novo invalida os anteriores. A resposta
+            é a mesma para qualquer e-mail.
   /auth/senha/redefinicao:
     post:
       tags: [Autenticação]
@@ -246,10 +250,10 @@ paths:
                 token: { type: string }
                 novaSenha: { type: string, format: password, minLength: 8 }
       responses:
-        '204': { description: "Senha redefinida." }
+        '204': { description: "Senha redefinida; a conta é desbloqueada e as sessões abertas são encerradas." }
         '410': { $ref: '#/components/responses/Expirado' }
         '422':
-          description: Senha igual a uma das três últimas (RN06).
+          description: Senha fora da política ou igual a uma das três últimas (RN06).
           content:
             application/problem+json:
               schema: { $ref: '#/components/schemas/Problema' }
