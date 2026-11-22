@@ -1,7 +1,7 @@
 openapi: 3.1.0
 info:
   title: Jaguara API
-  version: 1.28.0
+  version: 1.29.0
   summary: API REST da plataforma Jaguara (tutores e empresas Enterprise).
   description: |
     Contrato da API do Jaguara (tarefa JAG-68). Os recursos seguem o modelo de classes
@@ -1333,11 +1333,18 @@ paths:
                 recursoId: { type: string, format: uuid }
       responses:
         '200':
-          description: Solicitação ACEITA e agendamento criado.
+          description: Solicitação ACEITA e agendamento criado pelo preço atual (RN27); o tutor recebe e-mail.
           content:
             application/json:
               schema: { $ref: '#/components/schemas/Agendamento' }
-        '409': { $ref: '#/components/responses/Conflito' }
+        '403': { $ref: '#/components/responses/SemPermissao' }
+        '404': { $ref: '#/components/responses/NaoEncontrado' }
+        '409':
+          description: Já respondida (SOLICITACAO_RESPONDIDA) ou conflito de agenda (RN14, RN29).
+          content:
+            application/problem+json:
+              schema: { $ref: '#/components/schemas/Problema' }
+        '422': { $ref: '#/components/responses/Validacao' }
   /solicitacoes/{solicitacaoId}/recusa:
     parameters:
       - $ref: '#/components/parameters/SolicitacaoId'
@@ -1354,7 +1361,11 @@ paths:
               properties:
                 motivo: { type: string, minLength: 3 }
       responses:
-        '204': { description: "Solicitação RECUSADA." }
+        '204': { description: "Solicitação RECUSADA; o tutor recebe o motivo por e-mail." }
+        '403': { $ref: '#/components/responses/SemPermissao' }
+        '404': { $ref: '#/components/responses/NaoEncontrado' }
+        '409': { $ref: '#/components/responses/Conflito' }
+        '422': { $ref: '#/components/responses/Validacao' }
   /solicitacoes/{solicitacaoId}/cancelamento:
     parameters:
       - $ref: '#/components/parameters/SolicitacaoId'
