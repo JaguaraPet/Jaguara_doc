@@ -340,6 +340,15 @@ paths:
   /pets/{petId}/arquivamento:
     parameters:
       - $ref: '#/components/parameters/PetId'
+    delete:
+      tags: [Pets]
+      summary: Desarquivar pet
+      description: Só o responsável principal. O pet arquivado volta para a lista de ativos; pet falecido não volta.
+      responses:
+        '204': { description: Pet de volta à lista de ativos. }
+        '403': { $ref: '#/components/responses/SemPermissao' }
+        '404': { $ref: '#/components/responses/NaoEncontrado' }
+        '409': { $ref: '#/components/responses/Conflito' }
     post:
       tags: [Pets]
       summary: Arquivar pet
