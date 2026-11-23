@@ -1,7 +1,7 @@
 openapi: 3.1.0
 info:
   title: Jaguara API
-  version: 1.37.0
+  version: 1.38.0
   summary: API REST da plataforma Jaguara (tutores e empresas Enterprise).
   description: |
     Contrato da API do Jaguara (tarefa JAG-68). Os recursos seguem o modelo de classes
@@ -1643,6 +1643,89 @@ paths:
                 type: array
                 items: { $ref: '#/components/schemas/PerfilDaEmpresa' }
         '403': { $ref: '#/components/responses/SemPermissao' }
+    post:
+      tags: [Empresa]
+      summary: Criar perfil de acesso (UC-16, RN20)
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema: { $ref: '#/components/schemas/PerfilEntrada' }
+      responses:
+        '201':
+          description: Perfil criado e auditado.
+          content:
+            application/json:
+              schema: { $ref: '#/components/schemas/PerfilDaEmpresa' }
+        '403': { $ref: '#/components/responses/SemPermissao' }
+        '409':
+          description: "Já existe perfil com esse nome (PERFIL_DUPLICADO)."
+          content:
+            application/problem+json:
+              schema: { $ref: '#/components/schemas/Problema' }
+        '422': { $ref: '#/components/responses/Validacao' }
+  /empresas/{empresaId}/permissoes:
+    parameters:
+      - $ref: '#/components/parameters/EmpresaId'
+    get:
+      tags: [Empresa]
+      summary: Listar as permissões que a empresa pode distribuir (UC-16)
+      responses:
+        '200':
+          description: Permissões do catálogo para perfis de empresa.
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  type: object
+                  required: [codigo, modulo, descricao]
+                  properties:
+                    codigo: { type: string }
+                    modulo: { type: string }
+                    descricao: { type: string }
+        '403': { $ref: '#/components/responses/SemPermissao' }
+  /perfis/{perfilId}:
+    parameters:
+      - in: path
+        name: perfilId
+        required: true
+        schema: { type: string, format: uuid }
+    put:
+      tags: [Empresa]
+      summary: Alterar perfil de acesso (UC-16, RN20)
+      description: As sessões de quem usa o perfil são encerradas para as permissões novas valerem na hora.
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema: { $ref: '#/components/schemas/PerfilEntrada' }
+      responses:
+        '200':
+          description: Perfil alterado e auditado.
+          content:
+            application/json:
+              schema: { $ref: '#/components/schemas/PerfilDaEmpresa' }
+        '403': { $ref: '#/components/responses/SemPermissao' }
+        '404': { $ref: '#/components/responses/NaoEncontrado' }
+        '409':
+          description: "Perfil Proprietário (PERFIL_PROTEGIDO) ou nome repetido (PERFIL_DUPLICADO)."
+          content:
+            application/problem+json:
+              schema: { $ref: '#/components/schemas/Problema' }
+        '422': { $ref: '#/components/responses/Validacao' }
+    delete:
+      tags: [Empresa]
+      summary: Excluir perfil de acesso (UC-16)
+      responses:
+        '204': { description: Perfil excluído e auditado. }
+        '403': { $ref: '#/components/responses/SemPermissao' }
+        '404': { $ref: '#/components/responses/NaoEncontrado' }
+        '409':
+          description: "Perfil Proprietário (PERFIL_PROTEGIDO) ou com pessoas (PERFIL_EM_USO)."
+          content:
+            application/problem+json:
+              schema: { $ref: '#/components/schemas/Problema' }
   /funcionarios/{funcionarioId}:
     parameters:
       - in: path
@@ -3320,6 +3403,16 @@ components:
         perfilId: { type: string, format: uuid }
         ativo: { type: boolean }
         pendente: { type: boolean, description: "Convite ainda não aceito: o funcionário não criou a senha (RN02)." }
+    PerfilEntrada:
+      type: object
+      required: [nome, permissoes]
+      properties:
+        nome: { type: string, minLength: 3, maxLength: 60 }
+        descricao: { type: string, maxLength: 255 }
+        permissoes:
+          type: array
+          minItems: 1
+          items: { type: string }
     PerfilDaEmpresa:
       type: object
       required: [id, nome, permissoes]
