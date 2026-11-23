@@ -1,7 +1,7 @@
 openapi: 3.1.0
 info:
   title: Jaguara API
-  version: 1.36.0
+  version: 1.37.0
   summary: API REST da plataforma Jaguara (tutores e empresas Enterprise).
   description: |
     Contrato da API do Jaguara (tarefa JAG-68). Os recursos seguem o modelo de classes
@@ -729,10 +729,26 @@ paths:
   /pets/{petId}/documentos:
     parameters:
       - $ref: '#/components/parameters/PetId'
+    get:
+      tags: [Saúde]
+      summary: Listar documentos do pet (UC-34)
+      description: Tutor responsável ou empresa com o escopo DOCUMENTOS (RN15). A lista não traz endereço de arquivo.
+      responses:
+        '200':
+          description: Documentos, do envio mais recente para o mais antigo.
+          content:
+            application/json:
+              schema:
+                type: array
+                items: { $ref: '#/components/schemas/Documento' }
+        '403': { $ref: '#/components/responses/SemPermissao' }
+        '404': { $ref: '#/components/responses/NaoEncontrado' }
     post:
       tags: [Saúde]
       summary: Iniciar envio de documento (UC-34)
-      description: Retorna uma URL assinada de envio válida por 5 minutos.
+      description: |
+        Registra o documento e devolve a URL assinada para o aparelho enviar o arquivo com PUT,
+        válida por 5 minutos (ADR-005). Aceita PDF, JPG, PNG, WEBP e HEIC até 10 MB.
       requestBody:
         required: true
         content:
@@ -741,10 +757,12 @@ paths:
               type: object
               required: [titulo, tipo, nomeArquivo, tamanhoBytes]
               properties:
-                titulo: { type: string }
+                titulo: { type: string, maxLength: 255 }
                 tipo: { $ref: '#/components/schemas/TipoDocumento' }
-                nomeArquivo: { type: string }
-                tamanhoBytes: { type: integer, maximum: 10485760 }
+                nomeArquivo: { type: string, maxLength: 255 }
+                tamanhoBytes: { type: integer, minimum: 1, maximum: 10485760 }
+                dataEmissao: { type: string, format: date }
+                dataValidade: { type: string, format: date }
       responses:
         '201':
           description: Documento criado e URL de envio.
@@ -752,9 +770,55 @@ paths:
             application/json:
               schema:
                 type: object
+                required: [documentoId, urlEnvio, expiraEm]
                 properties:
                   documentoId: { type: string, format: uuid }
                   urlEnvio: { type: string, format: uri }
+                  expiraEm: { type: string, format: date-time }
+        '403': { $ref: '#/components/responses/SemPermissao' }
+        '404': { $ref: '#/components/responses/NaoEncontrado' }
+        '422': { $ref: '#/components/responses/Validacao' }
+  /documentos/{documentoId}/download:
+    parameters:
+      - in: path
+        name: documentoId
+        required: true
+        schema: { type: string, format: uuid }
+    get:
+      tags: [Saúde]
+      summary: Baixar documento do pet (UC-34)
+      description: URL assinada de download, válida por 5 minutos, que baixa com o nome original (CT-34-02).
+      responses:
+        '200':
+          description: URL de download.
+          content:
+            application/json:
+              schema:
+                type: object
+                required: [url, expiraEm]
+                properties:
+                  url: { type: string, format: uri }
+                  expiraEm: { type: string, format: date-time }
+        '403': { $ref: '#/components/responses/SemPermissao' }
+        '404': { $ref: '#/components/responses/NaoEncontrado' }
+  /documentos/{documentoId}:
+    parameters:
+      - in: path
+        name: documentoId
+        required: true
+        schema: { type: string, format: uuid }
+    delete:
+      tags: [Saúde]
+      summary: Excluir documento do pet (UC-34)
+      responses:
+        '204': { description: Documento excluído e auditado. }
+        '403': { $ref: '#/components/responses/SemPermissao' }
+        '404': { $ref: '#/components/responses/NaoEncontrado' }
+        '409':
+          description: "O documento é o laudo de um exame (DOCUMENTO_EM_USO)."
+          content:
+            application/problem+json:
+              schema: { $ref: '#/components/schemas/Problema' }
   /pets/{petId}/eventos:
     parameters:
       - $ref: '#/components/parameters/PetId'
@@ -2789,6 +2853,17 @@ components:
               data: { type: string, format: date }
               categoria: { type: string }
               pet: { type: string }
+    Documento:
+      type: object
+      required: [id, titulo, tipo, nomeArquivo, dataUpload]
+      properties:
+        id: { type: string, format: uuid }
+        titulo: { type: string }
+        tipo: { $ref: '#/components/schemas/TipoDocumento' }
+        nomeArquivo: { type: string }
+        dataEmissao: { type: string, format: date }
+        dataValidade: { type: string, format: date }
+        dataUpload: { type: string, format: date-time }
     PetVinculado:
       type: object
       required: [id, nome, especie, raca, sexo, status, motivos, secoes]
