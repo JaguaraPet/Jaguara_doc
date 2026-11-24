@@ -1,7 +1,7 @@
 openapi: 3.1.0
 info:
   title: Jaguara API
-  version: 1.38.0
+  version: 1.39.0
   summary: API REST da plataforma Jaguara (tutores e empresas Enterprise).
   description: |
     Contrato da API do Jaguara (tarefa JAG-68). Os recursos seguem o modelo de classes
@@ -1446,21 +1446,57 @@ paths:
         '404': { $ref: '#/components/responses/NaoEncontrado' }
         '409': { $ref: '#/components/responses/Conflito' }
         '422': { $ref: '#/components/responses/Validacao' }
+  /minhas-solicitacoes:
+    get:
+      tags: [Solicitações e agendamentos]
+      summary: Minhas solicitações, com nomes e situação (UC-42)
+      description: Só o tutor. Da mais recente para a mais antiga, já com serviço, empresa, pet, agendamento, pagamento e se ainda pode cancelar.
+      responses:
+        '200':
+          description: Solicitações do tutor.
+          content:
+            application/json:
+              schema:
+                type: array
+                items: { $ref: '#/components/schemas/DetalheSolicitacao' }
+        '403': { $ref: '#/components/responses/SemPermissao' }
+  /solicitacoes/{solicitacaoId}:
+    parameters:
+      - $ref: '#/components/parameters/SolicitacaoId'
+    get:
+      tags: [Solicitações e agendamentos]
+      summary: Detalhes da solicitação com o histórico (UC-42, CT-42-01)
+      responses:
+        '200':
+          description: Status atual, histórico e se pode cancelar.
+          content:
+            application/json:
+              schema: { $ref: '#/components/schemas/DetalheSolicitacao' }
+        '403': { $ref: '#/components/responses/SemPermissao' }
+        '404': { $ref: '#/components/responses/NaoEncontrado' }
   /solicitacoes/{solicitacaoId}/cancelamento:
     parameters:
       - $ref: '#/components/parameters/SolicitacaoId'
     post:
       tags: [Solicitações e agendamentos]
       summary: Cancelar solicitação (UC-42)
+      description: |
+        Pendente ou aceita, antes do horário. Se já aceita, o agendamento é desfeito e o horário
+        volta para a agenda; a empresa recebe e-mail e o histórico registra o tutor como autor (RN38).
       responses:
         '204': { description: "Solicitação CANCELADA e horário liberado." }
-        '409': { $ref: '#/components/responses/Conflito' }
+        '404': { $ref: '#/components/responses/NaoEncontrado' }
+        '409':
+          description: "Status ou horário não permitem cancelar (RN38_CANCELAMENTO_BLOQUEADO, CT-42-02)."
+          content:
+            application/problem+json:
+              schema: { $ref: '#/components/schemas/Problema' }
   /solicitacoes/{solicitacaoId}/historico:
     parameters:
       - $ref: '#/components/parameters/SolicitacaoId'
     get:
       tags: [Solicitações e agendamentos]
-      summary: Histórico de status da solicitação (RN38)
+      summary: Histórico de status da solicitação para o tutor (RN38)
       responses:
         '200':
           description: Mudanças de status em ordem.
@@ -3326,11 +3362,56 @@ components:
         motivoRecusa: { type: string }
     HistoricoSolicitacao:
       type: object
+      required: [dataHora, statusNovo, autor]
       properties:
         dataHora: { type: string, format: date-time }
         statusAnterior: { $ref: '#/components/schemas/StatusSolicitacao' }
         statusNovo: { $ref: '#/components/schemas/StatusSolicitacao' }
-        autor: { type: string }
+        autor: { type: string, description: '"Você" ou o nome da empresa.' }
+        descricao: { type: string }
+    DetalheSolicitacao:
+      type: object
+      required: [id, status, dataHoraDesejada, servico, empresa, pet, podeCancelar, historico]
+      properties:
+        id: { type: string, format: uuid }
+        status: { $ref: '#/components/schemas/StatusSolicitacao' }
+        dataHoraDesejada: { type: string, format: date-time }
+        observacoes: { type: string }
+        motivoRecusa: { type: string }
+        servico:
+          type: object
+          required: [id, nome, preco, duracaoMinutos]
+          properties:
+            id: { type: string, format: uuid }
+            nome: { type: string }
+            preco: { type: number }
+            duracaoMinutos: { type: integer }
+        empresa:
+          type: object
+          required: [id, nome]
+          properties:
+            id: { type: string, format: uuid }
+            nome: { type: string }
+        pet:
+          type: object
+          required: [id, nome]
+          properties:
+            id: { type: string, format: uuid }
+            nome: { type: string }
+        agendamento:
+          type: object
+          required: [id, dataHoraInicio, precoContratado, status]
+          properties:
+            id: { type: string, format: uuid }
+            dataHoraInicio: { type: string, format: date-time }
+            precoContratado: { type: number }
+            status: { type: string, enum: [AGENDADO, CANCELADO, REALIZADO, NAO_COMPARECEU] }
+            pagamento: { $ref: '#/components/schemas/StatusPagamento' }
+        podeCancelar: { type: boolean }
+        motivoSemCancelamento: { type: string }
+        historico:
+          type: array
+          items: { $ref: '#/components/schemas/HistoricoSolicitacao' }
         descricao: { type: string }
     AgendamentoEntrada:
       type: object
