@@ -1,7 +1,7 @@
 openapi: 3.1.0
 info:
   title: Jaguara API
-  version: 1.40.0
+  version: 1.41.0
   summary: API REST da plataforma Jaguara (tutores e empresas Enterprise).
   description: |
     Contrato da API do Jaguara (tarefa JAG-68). Os recursos seguem o modelo de classes
@@ -862,6 +862,90 @@ paths:
             application/problem+json:
               schema: { $ref: '#/components/schemas/Problema' }
         '422': { $ref: '#/components/responses/Validacao' }
+  /calendario-externo:
+    get:
+      tags: [Rotina]
+      summary: Situação do calendário externo do tutor (UC-09)
+      responses:
+        '200':
+          description: Conta conectada, se autorizada e a última sincronização; vazio quando não há conexão.
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  provedor: { type: string, enum: [GOOGLE] }
+                  conta: { type: string }
+                  autorizado: { type: boolean }
+                  ultimaSincronizacao: { type: string, format: date-time }
+    delete:
+      tags: [Rotina]
+      summary: Desconectar o calendário externo (UC-09, RN13)
+      description: Apaga a autorização e os compromissos importados.
+      responses:
+        '204': { description: Calendário desconectado. }
+  /calendario-externo/google/autorizacao:
+    post:
+      tags: [Rotina]
+      summary: Iniciar a autorização do Google Agenda (UC-09)
+      description: |
+        Devolve o endereço de consentimento do Google (só leitura do calendário). O app abre no
+        navegador; o Google volta para a rota de retorno. Sem GOOGLE_CLIENT_ID e
+        GOOGLE_CLIENT_SECRET, o calendário é simulado e o endereço volta direto para a API.
+      responses:
+        '201':
+          description: Endereço de consentimento, válido por 10 minutos.
+          content:
+            application/json:
+              schema:
+                type: object
+                required: [url]
+                properties:
+                  url: { type: string, format: uri }
+  /calendario-externo/google/retorno:
+    get:
+      tags: [Rotina]
+      summary: Retorno do consentimento do Google (UC-09)
+      security: []
+      parameters:
+        - { in: query, name: code, schema: { type: string } }
+        - { in: query, name: state, required: true, schema: { type: string } }
+        - { in: query, name: error, schema: { type: string } }
+      responses:
+        '302':
+          description: |
+            Volta para o app em `<URL_APP>/calendario?resultado=conectado|negado|erro`. Acesso
+            negado ou estado inválido não guarda nada (CT-09-02).
+  /pets/{petId}/calendario-externo/sincronizacao:
+    parameters:
+      - $ref: '#/components/parameters/PetId'
+    post:
+      tags: [Rotina]
+      summary: Sincronizar o calendário externo com a agenda do pet (UC-09, CT-09-01)
+      description: Importa os compromissos dos próximos 30 dias como eventos de origem CALENDARIO_EXTERNO; os que saíram do calendário externo são removidos.
+      responses:
+        '201':
+          description: Resumo da sincronização.
+          content:
+            application/json:
+              schema:
+                type: object
+                required: [importados, atualizados, removidos]
+                properties:
+                  importados: { type: integer }
+                  atualizados: { type: integer }
+                  removidos: { type: integer }
+        '404': { $ref: '#/components/responses/NaoEncontrado' }
+        '409':
+          description: "Calendário não autorizado ou autorização revogada (RN13_SEM_AUTORIZACAO)."
+          content:
+            application/problem+json:
+              schema: { $ref: '#/components/schemas/Problema' }
+        '503':
+          description: "Google Agenda indisponível (CALENDARIO_INDISPONIVEL)."
+          content:
+            application/problem+json:
+              schema: { $ref: '#/components/schemas/Problema' }
   /eventos/{eventoId}:
     parameters:
       - in: path
