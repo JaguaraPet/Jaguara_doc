@@ -1,7 +1,7 @@
 openapi: 3.1.0
 info:
   title: Jaguara API
-  version: 1.39.0
+  version: 1.40.0
   summary: API REST da plataforma Jaguara (tutores e empresas Enterprise).
   description: |
     Contrato da API do Jaguara (tarefa JAG-68). Os recursos seguem o modelo de classes
@@ -973,6 +973,37 @@ paths:
                   - $ref: '#/components/schemas/ResumoAlimentar'
         '404': { $ref: '#/components/responses/NaoEncontrado' }
         '422': { $ref: '#/components/responses/Validacao' }
+  /dispositivos:
+    post:
+      tags: [Comunicação]
+      summary: Registrar o aparelho para push (UC-31)
+      description: |
+        O app registra o token de push do Expo depois do login. O mesmo aparelho com outra conta
+        passa para a conta atual. Com PUSH_EXPO ligado, o worker manda os lembretes por push.
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              required: [token, plataforma]
+              properties:
+                token: { type: string, maxLength: 255, example: 'ExponentPushToken[xxxxxxxx]' }
+                plataforma: { type: string, enum: [ios, android, web] }
+      responses:
+        '204': { description: Aparelho registrado. }
+        '422': { $ref: '#/components/responses/Validacao' }
+  /dispositivos/{token}:
+    parameters:
+      - in: path
+        name: token
+        required: true
+        schema: { type: string }
+    delete:
+      tags: [Comunicação]
+      summary: Tirar o aparelho da conta na saída (UC-31)
+      responses:
+        '204': { description: Aparelho removido da conta. }
   /notificacoes:
     get:
       tags: [Rotina]
