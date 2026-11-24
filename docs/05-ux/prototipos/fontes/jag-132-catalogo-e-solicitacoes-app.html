@@ -1,0 +1,75 @@
+<!doctype html>
+<html lang="pt-BR"><head><meta charset="utf-8"><title>JAG-132 · Catálogo, solicitação e acompanhamento no app</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700&display=swap" rel="stylesheet">
+<style>
+:root{--p:#8A4B0F;--pe:#5E3209;--s:#1F5C4A;--f:#FFFFFF;--sup:#F7F3EE;--t:#1E1B18;--t2:#5C554E;
+--ok:#1E7B3A;--al:#8A5A00;--er:#B3261E;--b:#D9D1C7;--des:#ECE6DF;--sok:#E6F2EA;--sal:#FBF1DD;--ser:#FBE9E7;--sin:#E7F0ED}
+*{box-sizing:border-box;margin:0;padding:0}
+body{font-family:Inter,system-ui,sans-serif;background:#E9E5E0;color:var(--t);padding:40px}
+h1.prototipo{font:700 32px/40px Inter,system-ui,sans-serif;margin-bottom:8px}
+p.sobre{font:400 16px/24px Inter,system-ui,sans-serif;color:var(--t2);margin-bottom:32px;max-width:900px}
+.quadros{display:flex;flex-wrap:wrap;gap:48px;align-items:flex-start}
+.quadro{display:flex;flex-direction:column;gap:12px}
+.rotulo{font:600 14px/20px Inter,system-ui,sans-serif;color:var(--t2)}
+.cel{width:390px;height:844px;background:var(--f);border-radius:24px;overflow:hidden;display:flex;flex-direction:column;box-shadow:0 2px 12px rgba(0,0,0,.08)}
+.status{height:44px;display:flex;justify-content:space-between;align-items:center;padding:0 24px;font:600 14px/20px Inter,system-ui,sans-serif}
+.tela{flex:1;padding:8px 16px 16px;display:flex;flex-direction:column;gap:12px;overflow:hidden}
+.t1{font:700 28px/36px Inter,system-ui,sans-serif}.t2{font:600 22px/30px Inter,system-ui,sans-serif}.corpo{font:400 16px/24px Inter,system-ui,sans-serif}.leg{font:400 14px/20px Inter,system-ui,sans-serif;color:var(--t2)}
+.neg{font-weight:600}
+.cartao{background:var(--sup);border-radius:8px;padding:16px;display:flex;flex-direction:column;gap:8px}
+.cartao .titulo{font:600 16px/24px Inter,system-ui,sans-serif}
+.btn{min-height:44px;border-radius:8px;display:flex;align-items:center;justify-content:center;font:600 16px/24px Inter,system-ui,sans-serif;padding:0 16px}
+.btn.prim{background:var(--p);color:#fff}.btn.sec{background:var(--f);color:var(--p);border:2px solid var(--p)}
+.btn.txt{color:var(--p)}.btn.perigo{background:var(--er);color:#fff}.btn.des{background:var(--des);color:var(--t2)}
+.campo{display:flex;flex-direction:column;gap:4px}.campo .r{font:600 14px/20px Inter,system-ui,sans-serif}
+.campo .i{min-height:48px;border:1px solid var(--b);border-radius:8px;padding:12px;font:400 16px/24px Inter,system-ui,sans-serif;color:var(--t);background:#fff}
+.campo .i.vazio{color:var(--t2)}
+.alerta{border-left:4px solid;border-radius:8px;padding:12px;display:flex;flex-direction:column;gap:4px}
+.alerta.ok{background:var(--sok);border-color:var(--ok)}.alerta.er{background:var(--ser);border-color:var(--er)}
+.alerta.al{background:var(--sal);border-color:var(--al)}.alerta.in{background:var(--sin);border-color:var(--s)}
+.opcoes{display:flex;flex-wrap:wrap;gap:8px}
+.op{min-height:40px;padding:8px 14px;border-radius:20px;border:1px solid var(--b);font:400 14px/20px Inter,system-ui,sans-serif;display:flex;align-items:center}
+.op.sel{background:var(--s);color:#fff;border-color:var(--s);font-weight:600}
+.linha{display:flex;justify-content:space-between;align-items:center;gap:12px}
+.avatar{width:48px;height:48px;border-radius:24px;background:var(--sal);color:var(--p);display:flex;align-items:center;justify-content:center;font:700 18px Inter,system-ui,sans-serif;flex:none}
+.abas{height:64px;border-top:1px solid var(--b);display:flex;justify-content:space-around;align-items:center;font:600 12px/16px Inter,system-ui,sans-serif;color:var(--t2)}
+.abas div{display:flex;flex-direction:column;align-items:center;gap:4px}.abas .ico{width:22px;height:22px;border-radius:6px;background:var(--b)}
+.abas .on{color:var(--p)}.abas .on .ico{background:var(--p)}
+.chave{width:44px;height:26px;border-radius:13px;background:var(--s);position:relative;flex:none}.chave::after{content:'';position:absolute;right:3px;top:3px;width:20px;height:20px;border-radius:10px;background:#fff}
+.chave.off{background:var(--des)}.chave.off::after{left:3px;right:auto}
+.pix{font:400 12px/16px ui-monospace,monospace;background:#fff;border:1px dashed var(--b);padding:8px;border-radius:8px;word-break:break-all}
+.web{width:1440px;height:900px;background:var(--f);display:flex;box-shadow:0 2px 12px rgba(0,0,0,.08);overflow:hidden}
+.menu{width:256px;background:var(--sup);padding:24px 16px;display:flex;flex-direction:column;gap:4px;flex:none}
+.menu .marca{font:700 22px/30px Inter,system-ui,sans-serif;color:var(--p);margin-bottom:4px}.menu .area{font:400 14px/20px Inter,system-ui,sans-serif;color:var(--t2);margin-bottom:16px}
+.menu .item{padding:10px 12px;border-radius:8px;font:400 16px/24px Inter,system-ui,sans-serif}.menu .item.on{background:var(--p);color:#fff;font-weight:600}
+.menu .sair{margin-top:auto;color:var(--p);font:600 16px/24px Inter,system-ui,sans-serif;padding:10px 12px}
+.pagina{flex:1;padding:32px 40px;display:flex;flex-direction:column;gap:16px;overflow:hidden}
+table{border-collapse:collapse;width:100%;font:400 14px/20px Inter,system-ui,sans-serif}
+th{text-align:left;font-weight:600;padding:10px 12px;border-bottom:2px solid var(--b);background:var(--sup)}
+td{padding:10px 12px;border-bottom:1px solid var(--b)}
+.grade{display:grid;gap:16px}
+.etq{display:inline-block;padding:2px 8px;border-radius:12px;font:600 12px/16px Inter,system-ui,sans-serif}
+.etq.ok{background:var(--sok);color:var(--ok)}.etq.al{background:var(--sal);color:var(--al)}.etq.er{background:var(--ser);color:var(--er)}.etq.in{background:var(--sin);color:var(--s)}
+.semana{display:grid;grid-template-columns:repeat(7,1fr);gap:8px}
+.dia{background:var(--sup);border-radius:8px;padding:8px;display:flex;flex-direction:column;gap:6px;min-height:520px}
+.dia .cab{font:600 14px/20px Inter,system-ui,sans-serif}.ev{background:#fff;border-left:4px solid var(--s);border-radius:6px;padding:6px 8px;font:400 12px/16px Inter,system-ui,sans-serif}
+.ev.pend{border-left-color:var(--al)}
+.check{display:flex;gap:8px;align-items:center;font:400 14px/20px Inter,system-ui,sans-serif}.check .cx{width:18px;height:18px;border:2px solid var(--t2);border-radius:4px}
+.check .cx.m{background:var(--p);border-color:var(--p)}
+</style></head>
+<body><h1 class="prototipo">JAG-132 · Catálogo, solicitação e acompanhamento no app</h1><p class="sobre">Busca de empresas, catálogo, pedido de agendamento, acompanhamento e pagamento com PIX (UC-33, UC-40, UC-42, UC-44).</p>
+<div class="quadros">
+<div class="quadro"><div class="rotulo">JAG-132 · 01 Serviços</div><div class="cel">
+<div class="status"><span>9:41</span><span>▲ ● ▮</span></div><div class="tela"><div class="t1">Serviços</div><div class="leg">Encontre clínicas, pet shops, hotéis e creches.</div><div class="campo"><span class="r">Buscar empresa ou serviço</span><div class="i">banho</div></div><div class="opcoes"><div class="op sel">Banho e tosa</div><div class="op">Consulta</div><div class="op">Vacinação</div><div class="op">Hotel</div></div><div class="leg">1 empresa encontrada</div><div class="cartao"><div class="titulo">Pet Shop Cheiroso</div><div class="leg">Pet shop · Vila Mariana, São Paulo</div><div class="leg">Banho e tosa</div></div></div><div class="abas"><div class=""><span class="ico"></span>Início</div><div class=""><span class="ico"></span>Pets</div><div class=""><span class="ico"></span>Agenda</div><div class="on"><span class="ico"></span>Serviços</div><div class=""><span class="ico"></span>Perfil</div></div></div></div>
+<div class="quadro"><div class="rotulo">JAG-132 · 02 Empresa e catálogo</div><div class="cel">
+<div class="status"><span>9:41</span><span>▲ ● ▮</span></div><div class="tela"><div class="t1">Pet Shop Cheiroso</div><div class="leg">Pet shop · Vila Mariana, São Paulo</div><div class="btn sec">Conversar com a empresa</div><div class="cartao"><div class="titulo">Banho</div><div class="leg">Banho e tosa</div><div class="corpo">Banho na Pet Shop Cheiroso.</div><div class="linha"><span class="neg">R$ 70,00</span><span class="leg">1 h</span></div><div class="btn sec">Solicitar agendamento</div></div><div class="cartao"><div class="titulo">Banho e tosa</div><div class="leg">Banho e tosa</div><div class="linha"><span class="neg">R$ 110,00</span><span class="leg">1 h 30 min</span></div></div></div><div class="abas"><div class=""><span class="ico"></span>Início</div><div class=""><span class="ico"></span>Pets</div><div class=""><span class="ico"></span>Agenda</div><div class="on"><span class="ico"></span>Serviços</div><div class=""><span class="ico"></span>Perfil</div></div></div></div>
+<div class="quadro"><div class="rotulo">JAG-132 · 03 Solicitar agendamento</div><div class="cel">
+<div class="status"><span>9:41</span><span>▲ ● ▮</span></div><div class="tela"><div class="t1">Agendar Banho</div><div class="leg">Pet Shop Cheiroso</div><div class="t2">Pet</div><div class="opcoes"><div class="op sel">Thor</div><div class="op">Mia</div></div><div class="t2">Dia</div><div class="opcoes"><div class="op">ter. 17/11</div><div class="op sel">qua. 18/11</div><div class="op">qui. 19/11</div><div class="op">sex. 20/11</div></div><div class="t2">Horário</div><div class="opcoes"><div class="op sel">09:00</div><div class="op">09:30</div><div class="op">10:00</div><div class="op">14:00</div><div class="op">15:30</div></div><div class="campo"><span class="r">Observações (opcional)</span><div class="i">Ele tem medo de secador.</div></div><div class="btn prim">Enviar solicitação</div></div><div class="abas"><div class=""><span class="ico"></span>Início</div><div class=""><span class="ico"></span>Pets</div><div class=""><span class="ico"></span>Agenda</div><div class="on"><span class="ico"></span>Serviços</div><div class=""><span class="ico"></span>Perfil</div></div></div></div>
+<div class="quadro"><div class="rotulo">JAG-132 · 04 Minhas solicitações</div><div class="cel">
+<div class="status"><span>9:41</span><span>▲ ● ▮</span></div><div class="tela"><div class="t1">Minhas solicitações</div><div class="leg">Acompanhe os pedidos de agendamento.</div><div class="cartao"><div class="titulo">Banho · Thor</div><div class="leg">Pet Shop Cheiroso · qua. 18/11 às 09:00</div><span class="etq ok">Aceita · pagar</span></div><div class="cartao"><div class="titulo">Consulta clínica · Mia</div><div class="leg">Clínica Patas · sex. 20/11 às 15:30</div><span class="etq al">Aguardando a empresa</span></div><div class="cartao"><div class="titulo">Banho e tosa · Thor</div><div class="leg">Pet Shop Cheiroso · 02/11</div><span class="etq er">Recusada: agenda cheia</span></div></div><div class="abas"><div class="on"><span class="ico"></span>Início</div><div class=""><span class="ico"></span>Pets</div><div class=""><span class="ico"></span>Agenda</div><div class=""><span class="ico"></span>Serviços</div><div class=""><span class="ico"></span>Perfil</div></div></div></div>
+<div class="quadro"><div class="rotulo">JAG-132 · 05 Detalhe da solicitação</div><div class="cel">
+<div class="status"><span>9:41</span><span>▲ ● ▮</span></div><div class="tela"><div class="t1">Banho · Thor</div><div class="leg">Pet Shop Cheiroso · qua. 18/11 às 09:00</div><div class="alerta ok"><div class="neg">Aceita pela empresa</div><div class="leg" style="color:var(--t)">Valor contratado: R$ 70,00</div></div><div class="btn prim">Pagar</div><div class="cartao"><div class="titulo">Histórico</div><div class="leg">17/11 10:02 · Você enviou o pedido</div><div class="leg">17/11 11:15 · Pet Shop Cheiroso aceitou</div></div><div class="btn txt">Cancelar solicitação</div></div><div class="abas"><div class="on"><span class="ico"></span>Início</div><div class=""><span class="ico"></span>Pets</div><div class=""><span class="ico"></span>Agenda</div><div class=""><span class="ico"></span>Serviços</div><div class=""><span class="ico"></span>Perfil</div></div></div></div>
+<div class="quadro"><div class="rotulo">JAG-132 · 06 Pagar com PIX</div><div class="cel">
+<div class="status"><span>9:41</span><span>▲ ● ▮</span></div><div class="tela"><div class="t1">Pagar Banho</div><div class="leg">R$ 70,00</div><div class="t2">Meio de pagamento</div><div class="opcoes"><div class="op sel">PIX</div><div class="op">Cartão de crédito</div><div class="op">Cartão de débito</div></div><div class="cartao"><div class="titulo">Pague com PIX</div><div class="leg">Copie o código no app do seu banco.</div><div class="pix">00020126580014BR.GOV.BCB.PIX0136a1b2c3d4-0000-0000-0000-jaguara5204000053039865406070.00</div></div><div class="alerta in"><div class="neg">Aguardando o banco</div><div class="leg" style="color:var(--t)">Esta tela atualiza sozinha quando o PIX for confirmado.</div></div><div class="btn txt">Voltar</div></div><div class="abas"><div class="on"><span class="ico"></span>Início</div><div class=""><span class="ico"></span>Pets</div><div class=""><span class="ico"></span>Agenda</div><div class=""><span class="ico"></span>Serviços</div><div class=""><span class="ico"></span>Perfil</div></div></div></div>
+</div></body></html>

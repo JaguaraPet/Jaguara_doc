@@ -1,0 +1,73 @@
+<!doctype html>
+<html lang="pt-BR"><head><meta charset="utf-8"><title>JAG-131 · Agenda, eventos e notificações no app</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700&display=swap" rel="stylesheet">
+<style>
+:root{--p:#8A4B0F;--pe:#5E3209;--s:#1F5C4A;--f:#FFFFFF;--sup:#F7F3EE;--t:#1E1B18;--t2:#5C554E;
+--ok:#1E7B3A;--al:#8A5A00;--er:#B3261E;--b:#D9D1C7;--des:#ECE6DF;--sok:#E6F2EA;--sal:#FBF1DD;--ser:#FBE9E7;--sin:#E7F0ED}
+*{box-sizing:border-box;margin:0;padding:0}
+body{font-family:Inter,system-ui,sans-serif;background:#E9E5E0;color:var(--t);padding:40px}
+h1.prototipo{font:700 32px/40px Inter,system-ui,sans-serif;margin-bottom:8px}
+p.sobre{font:400 16px/24px Inter,system-ui,sans-serif;color:var(--t2);margin-bottom:32px;max-width:900px}
+.quadros{display:flex;flex-wrap:wrap;gap:48px;align-items:flex-start}
+.quadro{display:flex;flex-direction:column;gap:12px}
+.rotulo{font:600 14px/20px Inter,system-ui,sans-serif;color:var(--t2)}
+.cel{width:390px;height:844px;background:var(--f);border-radius:24px;overflow:hidden;display:flex;flex-direction:column;box-shadow:0 2px 12px rgba(0,0,0,.08)}
+.status{height:44px;display:flex;justify-content:space-between;align-items:center;padding:0 24px;font:600 14px/20px Inter,system-ui,sans-serif}
+.tela{flex:1;padding:8px 16px 16px;display:flex;flex-direction:column;gap:12px;overflow:hidden}
+.t1{font:700 28px/36px Inter,system-ui,sans-serif}.t2{font:600 22px/30px Inter,system-ui,sans-serif}.corpo{font:400 16px/24px Inter,system-ui,sans-serif}.leg{font:400 14px/20px Inter,system-ui,sans-serif;color:var(--t2)}
+.neg{font-weight:600}
+.cartao{background:var(--sup);border-radius:8px;padding:16px;display:flex;flex-direction:column;gap:8px}
+.cartao .titulo{font:600 16px/24px Inter,system-ui,sans-serif}
+.btn{min-height:44px;border-radius:8px;display:flex;align-items:center;justify-content:center;font:600 16px/24px Inter,system-ui,sans-serif;padding:0 16px}
+.btn.prim{background:var(--p);color:#fff}.btn.sec{background:var(--f);color:var(--p);border:2px solid var(--p)}
+.btn.txt{color:var(--p)}.btn.perigo{background:var(--er);color:#fff}.btn.des{background:var(--des);color:var(--t2)}
+.campo{display:flex;flex-direction:column;gap:4px}.campo .r{font:600 14px/20px Inter,system-ui,sans-serif}
+.campo .i{min-height:48px;border:1px solid var(--b);border-radius:8px;padding:12px;font:400 16px/24px Inter,system-ui,sans-serif;color:var(--t);background:#fff}
+.campo .i.vazio{color:var(--t2)}
+.alerta{border-left:4px solid;border-radius:8px;padding:12px;display:flex;flex-direction:column;gap:4px}
+.alerta.ok{background:var(--sok);border-color:var(--ok)}.alerta.er{background:var(--ser);border-color:var(--er)}
+.alerta.al{background:var(--sal);border-color:var(--al)}.alerta.in{background:var(--sin);border-color:var(--s)}
+.opcoes{display:flex;flex-wrap:wrap;gap:8px}
+.op{min-height:40px;padding:8px 14px;border-radius:20px;border:1px solid var(--b);font:400 14px/20px Inter,system-ui,sans-serif;display:flex;align-items:center}
+.op.sel{background:var(--s);color:#fff;border-color:var(--s);font-weight:600}
+.linha{display:flex;justify-content:space-between;align-items:center;gap:12px}
+.avatar{width:48px;height:48px;border-radius:24px;background:var(--sal);color:var(--p);display:flex;align-items:center;justify-content:center;font:700 18px Inter,system-ui,sans-serif;flex:none}
+.abas{height:64px;border-top:1px solid var(--b);display:flex;justify-content:space-around;align-items:center;font:600 12px/16px Inter,system-ui,sans-serif;color:var(--t2)}
+.abas div{display:flex;flex-direction:column;align-items:center;gap:4px}.abas .ico{width:22px;height:22px;border-radius:6px;background:var(--b)}
+.abas .on{color:var(--p)}.abas .on .ico{background:var(--p)}
+.chave{width:44px;height:26px;border-radius:13px;background:var(--s);position:relative;flex:none}.chave::after{content:'';position:absolute;right:3px;top:3px;width:20px;height:20px;border-radius:10px;background:#fff}
+.chave.off{background:var(--des)}.chave.off::after{left:3px;right:auto}
+.pix{font:400 12px/16px ui-monospace,monospace;background:#fff;border:1px dashed var(--b);padding:8px;border-radius:8px;word-break:break-all}
+.web{width:1440px;height:900px;background:var(--f);display:flex;box-shadow:0 2px 12px rgba(0,0,0,.08);overflow:hidden}
+.menu{width:256px;background:var(--sup);padding:24px 16px;display:flex;flex-direction:column;gap:4px;flex:none}
+.menu .marca{font:700 22px/30px Inter,system-ui,sans-serif;color:var(--p);margin-bottom:4px}.menu .area{font:400 14px/20px Inter,system-ui,sans-serif;color:var(--t2);margin-bottom:16px}
+.menu .item{padding:10px 12px;border-radius:8px;font:400 16px/24px Inter,system-ui,sans-serif}.menu .item.on{background:var(--p);color:#fff;font-weight:600}
+.menu .sair{margin-top:auto;color:var(--p);font:600 16px/24px Inter,system-ui,sans-serif;padding:10px 12px}
+.pagina{flex:1;padding:32px 40px;display:flex;flex-direction:column;gap:16px;overflow:hidden}
+table{border-collapse:collapse;width:100%;font:400 14px/20px Inter,system-ui,sans-serif}
+th{text-align:left;font-weight:600;padding:10px 12px;border-bottom:2px solid var(--b);background:var(--sup)}
+td{padding:10px 12px;border-bottom:1px solid var(--b)}
+.grade{display:grid;gap:16px}
+.etq{display:inline-block;padding:2px 8px;border-radius:12px;font:600 12px/16px Inter,system-ui,sans-serif}
+.etq.ok{background:var(--sok);color:var(--ok)}.etq.al{background:var(--sal);color:var(--al)}.etq.er{background:var(--ser);color:var(--er)}.etq.in{background:var(--sin);color:var(--s)}
+.semana{display:grid;grid-template-columns:repeat(7,1fr);gap:8px}
+.dia{background:var(--sup);border-radius:8px;padding:8px;display:flex;flex-direction:column;gap:6px;min-height:520px}
+.dia .cab{font:600 14px/20px Inter,system-ui,sans-serif}.ev{background:#fff;border-left:4px solid var(--s);border-radius:6px;padding:6px 8px;font:400 12px/16px Inter,system-ui,sans-serif}
+.ev.pend{border-left-color:var(--al)}
+.check{display:flex;gap:8px;align-items:center;font:400 14px/20px Inter,system-ui,sans-serif}.check .cx{width:18px;height:18px;border:2px solid var(--t2);border-radius:4px}
+.check .cx.m{background:var(--p);border-color:var(--p)}
+</style></head>
+<body><h1 class="prototipo">JAG-131 · Agenda, eventos e notificações no app</h1><p class="sobre">Agenda de 30 dias, novo evento, Google Agenda e notificações com preferências (UC-09, UC-10, UC-31).</p>
+<div class="quadros">
+<div class="quadro"><div class="rotulo">JAG-131 · 01 Agenda</div><div class="cel">
+<div class="status"><span>9:41</span><span>▲ ● ▮</span></div><div class="tela"><div class="t1">Agenda</div><div class="leg">Próximos 30 dias.</div><div class="opcoes"><div class="op sel">Thor</div><div class="op">Mia</div></div><div class="btn prim">Novo evento</div><div class="btn sec">Google Agenda</div><div class="t2">qua., 18/11</div><div class="cartao"><div class="titulo">09:00 · Banho</div><div class="leg">Banho e tosa · Agendamento com empresa</div></div><div class="t2">sex., 20/11</div><div class="cartao"><div class="titulo">15:30 · Consulta de rotina</div><div class="leg">Consulta · Clínica Patas</div></div></div><div class="abas"><div class=""><span class="ico"></span>Início</div><div class=""><span class="ico"></span>Pets</div><div class="on"><span class="ico"></span>Agenda</div><div class=""><span class="ico"></span>Serviços</div><div class=""><span class="ico"></span>Perfil</div></div></div></div>
+<div class="quadro"><div class="rotulo">JAG-131 · 02 Novo evento</div><div class="cel">
+<div class="status"><span>9:41</span><span>▲ ● ▮</span></div><div class="tela"><div class="t1">Novo evento</div><div class="campo"><span class="r">Título</span><div class="i">Consulta de rotina</div></div><div class="neg" style="font-size:14px">Tipo</div><div class="opcoes"><div class="op sel">Consulta</div><div class="op">Banho</div><div class="op">Passeio</div><div class="op">Outro</div></div><div class="campo"><span class="r">Data (DD/MM/AAAA)</span><div class="i">20/11/2026</div></div><div class="campo"><span class="r">Hora (HH:MM)</span><div class="i">15:30</div></div><div class="campo"><span class="r">Local (opcional)</span><div class="i">Clínica Patas</div></div><div class="leg">Você recebe um lembrete uma hora antes.</div><div class="btn prim">Salvar evento</div></div><div class="abas"><div class=""><span class="ico"></span>Início</div><div class=""><span class="ico"></span>Pets</div><div class="on"><span class="ico"></span>Agenda</div><div class=""><span class="ico"></span>Serviços</div><div class=""><span class="ico"></span>Perfil</div></div></div></div>
+<div class="quadro"><div class="rotulo">JAG-131 · 03 Google Agenda</div><div class="cel">
+<div class="status"><span>9:41</span><span>▲ ● ▮</span></div><div class="tela"><div class="t1">Google Agenda</div><div class="leg">Traga para a agenda do pet os compromissos dos próximos 30 dias.</div><div class="alerta ok"><div class="neg">Google Agenda conectado</div><div class="leg" style="color:var(--t)">Escolha o pet e toque em Sincronizar agora.</div></div><div class="cartao"><div class="titulo">Conectado: ana.ribeiro@gmail.com</div><div class="leg">Última sincronização em 17/11/2026 14:02</div><div class="opcoes"><div class="op sel">Thor</div><div class="op">Mia</div></div><div class="btn prim">Sincronizar agora</div><div class="btn txt">Desconectar</div></div><div class="btn txt">Voltar para a agenda</div></div><div class="abas"><div class=""><span class="ico"></span>Início</div><div class=""><span class="ico"></span>Pets</div><div class="on"><span class="ico"></span>Agenda</div><div class=""><span class="ico"></span>Serviços</div><div class=""><span class="ico"></span>Perfil</div></div></div></div>
+<div class="quadro"><div class="rotulo">JAG-131 · 04 Notificações</div><div class="cel">
+<div class="status"><span>9:41</span><span>▲ ● ▮</span></div><div class="tela"><div class="t1">Notificações</div><div class="opcoes"><div class="op sel">Lembretes</div><div class="op">Preferências</div></div><div class="cartao"><div class="titulo">Hora do remédio de Thor</div><div class="leg">Vermífugo · hoje às 19:30</div><span class="etq al">Programada</span></div><div class="cartao"><div class="titulo">Vacina de Thor</div><div class="leg">V10 amanhã · enviada ontem às 09:00</div><span class="etq ok">Enviada</span></div></div><div class="abas"><div class=""><span class="ico"></span>Início</div><div class=""><span class="ico"></span>Pets</div><div class=""><span class="ico"></span>Agenda</div><div class=""><span class="ico"></span>Serviços</div><div class="on"><span class="ico"></span>Perfil</div></div></div></div>
+<div class="quadro"><div class="rotulo">JAG-131 · 05 Preferências de notificação</div><div class="cel">
+<div class="status"><span>9:41</span><span>▲ ● ▮</span></div><div class="tela"><div class="t1">Notificações</div><div class="opcoes"><div class="op">Lembretes</div><div class="op sel">Preferências</div></div><div class="cartao"><div class="titulo">Medicamento</div><div class="linha"><span>Receber</span><span class="chave"></span></div><div class="opcoes"><div class="op sel">No celular</div><div class="op">Por e-mail</div></div><div class="opcoes"><div class="op">Na hora</div><div class="op sel">30 min antes</div><div class="op">1 h antes</div></div></div><div class="cartao"><div class="titulo">Vacina</div><div class="linha"><span>Receber</span><span class="chave"></span></div><div class="opcoes"><div class="op">No celular</div><div class="op sel">Por e-mail</div></div></div><div class="alerta ok"><div class="neg">Medicamento: preferência salva</div></div></div><div class="abas"><div class=""><span class="ico"></span>Início</div><div class=""><span class="ico"></span>Pets</div><div class=""><span class="ico"></span>Agenda</div><div class=""><span class="ico"></span>Serviços</div><div class="on"><span class="ico"></span>Perfil</div></div></div></div>
+</div></body></html>
