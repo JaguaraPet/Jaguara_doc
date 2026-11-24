@@ -71,7 +71,7 @@ Status: **Aprovado** (revisado e aceito pelo time), **Em revisão** (completo, a
 |---|---|---|---|
 | [UX-01 · Mapa de navegação](05-ux/UX-01-mapa-de-navegacao.md) | 1.2 | Em revisão | JAG-71, JAG-216, JAG-217 |
 | [UX-02 · Guia de estilo](05-ux/UX-02-guia-de-estilo.md) | 0.9 | Rascunho | JAG-28 |
-| [UX-03 · Protótipos de alta fidelidade](05-ux/UX-03-prototipos.md) | 0.5 | Rascunho | JAG-36, JAG-99 (e uma tarefa por tela, como JAG-83) |
+| [UX-03 · Protótipos de alta fidelidade](05-ux/UX-03-prototipos.md) | 1.0 | Em revisão | JAG-99 (telas nas JAG-83 e JAG-130 a JAG-134) |
 
 ## Testes
 
