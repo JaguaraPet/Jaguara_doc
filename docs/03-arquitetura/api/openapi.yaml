@@ -1,7 +1,7 @@
 openapi: 3.1.0
 info:
   title: Jaguara API
-  version: 1.42.0
+  version: 1.43.0
   summary: API REST da plataforma Jaguara (tutores e empresas Enterprise).
   description: |
     Contrato da API do Jaguara (tarefa JAG-68). Os recursos seguem o modelo de classes
@@ -2605,6 +2605,81 @@ paths:
           content:
             application/problem+json:
               schema: { $ref: '#/components/schemas/Problema' }
+  /admin/permissoes:
+    get:
+      tags: [Administração]
+      summary: Catálogo de permissões da plataforma (UC-29)
+      responses:
+        '200':
+          description: Permissões com o módulo e a categoria de perfil a que pertencem (vazia quando servem a mais de uma).
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  type: object
+                  required: [codigo, modulo, descricao]
+                  properties:
+                    codigo: { type: string }
+                    modulo: { type: string }
+                    descricao: { type: string }
+                    categoria: { type: string, enum: [TUTOR, EMPRESA, ADMINISTRADOR] }
+        '403': { $ref: '#/components/responses/SemPermissao' }
+  /admin/perfis:
+    get:
+      tags: [Administração]
+      summary: Matriz de acesso dos perfis globais (UC-29)
+      responses:
+        '200':
+          description: Perfis globais (Tutor, Empresa e os da administração) com as permissões e quantas contas usam cada um.
+          content:
+            application/json:
+              schema:
+                type: array
+                items: { $ref: '#/components/schemas/PerfilGlobal' }
+        '403': { $ref: '#/components/responses/SemPermissao' }
+  /admin/perfis/{perfilId}:
+    parameters:
+      - in: path
+        name: perfilId
+        required: true
+        schema: { type: string, format: uuid }
+    put:
+      tags: [Administração]
+      summary: Alterar as permissões de um perfil global (UC-29, RN35)
+      description: |
+        Vale na próxima requisição de quem usa o perfil: tokens emitidos antes recebem 401 e o
+        cliente renova a sessão, que já sai com as permissões novas. Auditado como CRITICO.
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              required: [permissoes]
+              properties:
+                permissoes:
+                  type: array
+                  minItems: 1
+                  items: { type: string }
+      responses:
+        '200':
+          description: Perfil alterado.
+          content:
+            application/json:
+              schema: { $ref: '#/components/schemas/PerfilGlobal' }
+        '403': { $ref: '#/components/responses/SemPermissao' }
+        '404': { $ref: '#/components/responses/NaoEncontrado' }
+        '409':
+          description: "O administrador tiraria admin:usuarios do próprio perfil (RN35_AUTOBLOQUEIO)."
+          content:
+            application/problem+json:
+              schema: { $ref: '#/components/schemas/Problema' }
+        '422':
+          description: "Perfil sem permissão (CT-29-02) ou com permissão de outra categoria."
+          content:
+            application/problem+json:
+              schema: { $ref: '#/components/schemas/Problema' }
   /admin/logs:
     get:
       tags: [Administração]
@@ -3627,6 +3702,18 @@ components:
         perfilId: { type: string, format: uuid }
         ativo: { type: boolean }
         pendente: { type: boolean, description: "Convite ainda não aceito: o funcionário não criou a senha (RN02)." }
+    PerfilGlobal:
+      type: object
+      required: [id, nome, categoria, permissoes, usuarios]
+      properties:
+        id: { type: string, format: uuid }
+        nome: { type: string }
+        descricao: { type: string }
+        categoria: { type: string, enum: [TUTOR, EMPRESA, ADMINISTRADOR] }
+        permissoes:
+          type: array
+          items: { type: string }
+        usuarios: { type: integer }
     PerfilEntrada:
       type: object
       required: [nome, permissoes]
