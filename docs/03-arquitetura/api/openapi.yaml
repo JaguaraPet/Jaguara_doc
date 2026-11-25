@@ -1,7 +1,7 @@
 openapi: 3.1.0
 info:
   title: Jaguara API
-  version: 1.41.0
+  version: 1.42.0
   summary: API REST da plataforma Jaguara (tutores e empresas Enterprise).
   description: |
     Contrato da API do Jaguara (tarefa JAG-68). Os recursos seguem o modelo de classes
@@ -2125,12 +2125,13 @@ paths:
           schema: { type: string, format: date }
       responses:
         '200':
-          description: Pagamentos realizados (tutor) ou recebidos (empresa).
+          description: Pagamentos realizados (tutor) ou recebidos (empresa com financeiro:ler), do mais recente para o mais antigo (CT-45-01).
           content:
             application/json:
               schema:
                 type: array
-                items: { $ref: '#/components/schemas/Pagamento' }
+                items: { $ref: '#/components/schemas/PagamentoDetalhado' }
+        '403': { $ref: '#/components/responses/SemPermissao' }
     post:
       tags: [Financeiro]
       summary: Realizar pagamento (UC-44)
@@ -2225,6 +2226,23 @@ paths:
             application/json:
               schema: { $ref: '#/components/schemas/Assinatura' }
         '409': { $ref: '#/components/responses/Conflito' }
+  /pagamentos/{pagamentoId}:
+    parameters:
+      - in: path
+        name: pagamentoId
+        required: true
+        schema: { type: string, format: uuid }
+    get:
+      tags: [Financeiro]
+      summary: Detalhe do pagamento (UC-45)
+      responses:
+        '200':
+          description: Pagamento com descrição, contraparte, pet, reembolso e se ainda pode pedir reembolso.
+          content:
+            application/json:
+              schema: { $ref: '#/components/schemas/PagamentoDetalhado' }
+        '403': { $ref: '#/components/responses/SemPermissao' }
+        '404': { $ref: '#/components/responses/NaoEncontrado' }
   /pagamentos/{pagamentoId}/reembolsos:
     parameters:
       - in: path
@@ -2234,6 +2252,7 @@ paths:
     post:
       tags: [Financeiro]
       summary: Solicitar reembolso (UC-45)
+      description: Só quem pagou, para pagamento confirmado há até 30 dias e sem outro pedido. A empresa recebe e-mail.
       requestBody:
         required: true
         content:
@@ -2242,11 +2261,20 @@ paths:
               type: object
               required: [motivo]
               properties:
-                motivo: { type: string }
+                motivo: { type: string, minLength: 10, maxLength: 1000 }
       responses:
-        '201': { description: "Reembolso EM_ANALISE." }
-        '409': { $ref: '#/components/responses/Conflito' }
-
+        '201':
+          description: "Reembolso EM_ANALISE."
+          content:
+            application/json:
+              schema: { $ref: '#/components/schemas/PagamentoDetalhado' }
+        '404': { $ref: '#/components/responses/NaoEncontrado' }
+        '409':
+          description: "Pagamento não confirmado, fora do prazo ou com outro pedido (RN39_REEMBOLSO_INDISPONIVEL, CT-45-02)."
+          content:
+            application/problem+json:
+              schema: { $ref: '#/components/schemas/Problema' }
+        '422': { $ref: '#/components/responses/Validacao' }
   /conversas:
     get:
       tags: [Comunicação]
@@ -3651,6 +3679,28 @@ components:
           type: string
           description: Motivo da recusa em linguagem do tutor, só quando RECUSADO.
         notaFiscalUrl: { type: string, format: uri }
+    PagamentoDetalhado:
+      type: object
+      required: [id, codigoTransacao, valor, dataHora, metodo, status, descricao, contraparte, podeReembolsar]
+      properties:
+        id: { type: string, format: uuid }
+        codigoTransacao: { type: string }
+        valor: { type: number }
+        dataHora: { type: string, format: date-time }
+        metodo: { $ref: '#/components/schemas/MetodoPagamento' }
+        status: { $ref: '#/components/schemas/StatusPagamento' }
+        dataConfirmacao: { type: string, format: date-time }
+        agendamentoId: { type: string, format: uuid }
+        descricao: { type: string, description: 'Serviço pago ou "Assinatura PANTERA".' }
+        contraparte: { type: string, description: Empresa para o tutor; tutor para a empresa. }
+        pet: { type: string }
+        reembolso:
+          type: object
+          properties:
+            status: { type: string, enum: [EM_ANALISE, APROVADO, NEGADO] }
+            motivo: { type: string }
+            dataSolicitacao: { type: string, format: date-time }
+        podeReembolsar: { type: boolean }
     Notificacao:
       type: object
       properties:
