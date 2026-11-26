@@ -1,7 +1,7 @@
 openapi: 3.1.0
 info:
   title: Jaguara API
-  version: 1.46.0
+  version: 1.47.0
   summary: API REST da plataforma Jaguara (tutores e empresas Enterprise).
   description: |
     Contrato da API do Jaguara (tarefa JAG-68). Os recursos seguem o modelo de classes
@@ -2628,6 +2628,156 @@ paths:
             application/json:
               schema: { type: object }
 
+  /chamados:
+    get:
+      tags: [Administração]
+      summary: Meus chamados de suporte (UC-26)
+      responses:
+        '200':
+          description: Chamados abertos pelo usuário autenticado, do mais recente para o mais antigo.
+          content:
+            application/json:
+              schema:
+                type: array
+                items: { $ref: '#/components/schemas/Chamado' }
+    post:
+      tags: [Administração]
+      summary: Abrir chamado de suporte (UC-26)
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              required: [titulo, descricao]
+              properties:
+                titulo: { type: string, minLength: 5, maxLength: 120 }
+                descricao: { type: string, minLength: 10, maxLength: 4000 }
+      responses:
+        '201':
+          description: Chamado ABERTO com o protocolo para o usuário citar.
+          content:
+            application/json:
+              schema: { $ref: '#/components/schemas/Chamado' }
+        '422': { $ref: '#/components/responses/Validacao' }
+  /chamados/{chamadoId}/complemento:
+    parameters:
+      - $ref: '#/components/parameters/ChamadoId'
+    post:
+      tags: [Administração]
+      summary: Responder ao pedido de informação do suporte (UC-26, FA1)
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema: { $ref: '#/components/schemas/MensagemChamado' }
+      responses:
+        '201':
+          description: Complemento juntado à descrição; o chamado volta para EM_ANALISE.
+          content:
+            application/json:
+              schema: { $ref: '#/components/schemas/Chamado' }
+        '404': { $ref: '#/components/responses/NaoEncontrado' }
+        '409':
+          description: "O suporte não pediu informação (CHAMADO_SEM_PEDIDO)."
+          content:
+            application/problem+json:
+              schema: { $ref: '#/components/schemas/Problema' }
+        '422': { $ref: '#/components/responses/Validacao' }
+  /admin/chamados:
+    get:
+      tags: [Administração]
+      summary: Central de suporte (UC-26)
+      description: Exige `admin:suporte`. Do mais antigo para o mais novo, para atender por ordem de chegada.
+      parameters:
+        - in: query
+          name: status
+          schema: { $ref: '#/components/schemas/StatusChamado' }
+      responses:
+        '200':
+          description: Chamados com o solicitante e o atendente.
+          content:
+            application/json:
+              schema:
+                type: array
+                items: { $ref: '#/components/schemas/ChamadoResumo' }
+        '403': { $ref: '#/components/responses/SemPermissao' }
+  /admin/chamados/{chamadoId}:
+    parameters:
+      - $ref: '#/components/parameters/ChamadoId'
+    get:
+      tags: [Administração]
+      summary: Detalhes do chamado com as intervenções (UC-26)
+      responses:
+        '200':
+          description: Chamado e histórico de intervenções.
+          content:
+            application/json:
+              schema: { $ref: '#/components/schemas/ChamadoDetalhe' }
+        '403': { $ref: '#/components/responses/SemPermissao' }
+        '404': { $ref: '#/components/responses/NaoEncontrado' }
+  /admin/chamados/{chamadoId}/intervencoes:
+    parameters:
+      - $ref: '#/components/parameters/ChamadoId'
+    post:
+      tags: [Administração]
+      summary: Registrar intervenção (UC-26, CT-26-01, RN32)
+      description: A intervenção, a nova situação e a auditoria são gravadas juntas; o solicitante recebe o aviso por e-mail.
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              required: [acaoExecutada, descricao, status]
+              properties:
+                acaoExecutada: { type: string, minLength: 3, maxLength: 255 }
+                descricao: { type: string, minLength: 5, maxLength: 2000 }
+                status: { type: string, enum: [EM_ANALISE, RESOLVIDO, FECHADO] }
+      responses:
+        '201':
+          description: Intervenção registrada e auditada.
+          content:
+            application/json:
+              schema: { $ref: '#/components/schemas/ChamadoDetalhe' }
+        '403': { $ref: '#/components/responses/SemPermissao' }
+        '404': { $ref: '#/components/responses/NaoEncontrado' }
+        '409':
+          description: "Chamado já fechado (CHAMADO_FECHADO)."
+          content:
+            application/problem+json:
+              schema: { $ref: '#/components/schemas/Problema' }
+        '422': { $ref: '#/components/responses/Validacao' }
+        '503':
+          description: "Auditoria indisponível; nada mudou (RN32_AUDITORIA_INDISPONIVEL)."
+          content:
+            application/problem+json:
+              schema: { $ref: '#/components/schemas/Problema' }
+  /admin/chamados/{chamadoId}/pedido-informacao:
+    parameters:
+      - $ref: '#/components/parameters/ChamadoId'
+    post:
+      tags: [Administração]
+      summary: Pedir informação ao solicitante (UC-26, CT-26-02)
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema: { $ref: '#/components/schemas/MensagemChamado' }
+      responses:
+        '201':
+          description: Chamado em AGUARDANDO_INFORMACAO; o solicitante recebe o pedido por e-mail.
+          content:
+            application/json:
+              schema: { $ref: '#/components/schemas/ChamadoDetalhe' }
+        '403': { $ref: '#/components/responses/SemPermissao' }
+        '404': { $ref: '#/components/responses/NaoEncontrado' }
+        '409':
+          description: "Chamado já fechado (CHAMADO_FECHADO)."
+          content:
+            application/problem+json:
+              schema: { $ref: '#/components/schemas/Problema' }
+        '422': { $ref: '#/components/responses/Validacao' }
   /admin/usuarios:
     get:
       tags: [Administração]
@@ -3021,6 +3171,11 @@ components:
       scheme: bearer
       bearerFormat: JWT
   parameters:
+    ChamadoId:
+      in: path
+      name: chamadoId
+      required: true
+      schema: { type: string, format: uuid }
     PetId:
       in: path
       name: petId
@@ -3822,6 +3977,56 @@ components:
         perfilId: { type: string, format: uuid }
         ativo: { type: boolean }
         pendente: { type: boolean, description: "Convite ainda não aceito: o funcionário não criou a senha (RN02)." }
+    StatusChamado:
+      type: string
+      enum: [ABERTO, EM_ANALISE, AGUARDANDO_INFORMACAO, RESOLVIDO, FECHADO]
+    MensagemChamado:
+      type: object
+      required: [mensagem]
+      properties:
+        mensagem: { type: string, minLength: 5, maxLength: 2000 }
+    Chamado:
+      type: object
+      required: [id, protocolo, titulo, descricao, status, dataAbertura]
+      properties:
+        id: { type: string, format: uuid }
+        protocolo: { type: string, example: SUP-20261126-7K2QD }
+        titulo: { type: string }
+        descricao: { type: string }
+        status: { $ref: '#/components/schemas/StatusChamado' }
+        dataAbertura: { type: string, format: date-time }
+        dataFechamento: { type: string, format: date-time }
+    ChamadoResumo:
+      allOf:
+        - $ref: '#/components/schemas/Chamado'
+        - type: object
+          required: [solicitante]
+          properties:
+            solicitante:
+              type: object
+              required: [id, nome, email, tipo]
+              properties:
+                id: { type: string, format: uuid }
+                nome: { type: string }
+                email: { type: string, format: email }
+                tipo: { type: string, enum: [TUTOR, EMPRESA, FUNCIONARIO, ADMINISTRADOR] }
+            atendente: { type: string, description: Nome do administrador que atendeu por último. }
+    ChamadoDetalhe:
+      allOf:
+        - $ref: '#/components/schemas/ChamadoResumo'
+        - type: object
+          required: [intervencoes]
+          properties:
+            intervencoes:
+              type: array
+              items:
+                type: object
+                required: [dataHora, acaoExecutada, descricao, autor]
+                properties:
+                  dataHora: { type: string, format: date-time }
+                  acaoExecutada: { type: string }
+                  descricao: { type: string }
+                  autor: { type: string }
     PerfilGlobal:
       type: object
       required: [id, nome, categoria, permissoes, usuarios]
