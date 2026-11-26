@@ -1,7 +1,7 @@
 openapi: 3.1.0
 info:
   title: Jaguara API
-  version: 1.45.0
+  version: 1.46.0
   summary: API REST da plataforma Jaguara (tutores e empresas Enterprise).
   description: |
     Contrato da API do Jaguara (tarefa JAG-68). Os recursos seguem o modelo de classes
@@ -1581,7 +1581,7 @@ paths:
           schema: { $ref: '#/components/schemas/StatusSolicitacao' }
       responses:
         '200':
-          description: Solicitações do usuário autenticado.
+          description: Solicitações do usuário autenticado, com os nomes do serviço, do pet e do tutor para a lista da empresa (UC-41).
           content:
             application/json:
               schema:
@@ -3694,6 +3694,10 @@ components:
         dataHoraDesejada: { type: string, format: date-time }
         status: { $ref: '#/components/schemas/StatusSolicitacao' }
         motivoRecusa: { type: string }
+        servico: { type: string, description: Nome do serviço (na listagem). }
+        pet: { type: string, description: Nome do pet (na listagem). }
+        tutor: { type: string, description: Nome do tutor (na listagem). }
+        observacoes: { type: string, description: Observações do tutor ao pedir (na listagem). }
     HistoricoSolicitacao:
       type: object
       required: [dataHora, statusNovo, autor]
