@@ -1,7 +1,7 @@
 openapi: 3.1.0
 info:
   title: Jaguara API
-  version: 1.47.0
+  version: 1.48.0
   summary: API REST da plataforma Jaguara (tutores e empresas Enterprise).
   description: |
     Contrato da API do Jaguara (tarefa JAG-68). Os recursos seguem o modelo de classes
@@ -138,7 +138,8 @@ paths:
               properties:
                 provedor: { type: string, enum: [GOOGLE, APPLE] }
                 idToken: { type: string, description: "id_token OpenID Connect emitido pelo provedor." }
-                nonce: { type: string }
+                nonce: { type: string, description: "Valor aleatório gerado pelo app; o token traz ele puro (Google) ou em SHA-256 (Apple)." }
+                senha: { type: string, format: password, description: "Senha da conta do Jaguara com o mesmo e-mail, para ligar a identidade (CT-02-04)." }
       responses:
         '200':
           description: Identidade já ligada a uma conta; sessão criada com os tokens do Jaguara.
@@ -147,7 +148,12 @@ paths:
               schema: { $ref: '#/components/schemas/Tokens' }
         '401': { $ref: '#/components/responses/NaoAutenticado' }
         '409':
-          description: Já existe conta com o mesmo e-mail; o usuário confirma a senha dela para ligar a identidade.
+          description: "Já existe conta com o mesmo e-mail: o app pede a senha dela e repete o pedido com `senha` (IDENTIDADE_SEM_VINCULO, SENHA_INCORRETA_VINCULO)."
+          content:
+            application/problem+json:
+              schema: { $ref: '#/components/schemas/Problema' }
+        '503':
+          description: "Login social sem IDs de cliente configurados (LOGIN_SOCIAL_INDISPONIVEL)."
           content:
             application/problem+json:
               schema: { $ref: '#/components/schemas/Problema' }
@@ -177,14 +183,20 @@ paths:
                 cadastroToken: { type: string }
                 nome: { type: string }
                 cpf: { type: string, pattern: '^[0-9]{11}$' }
+                telefone: { type: string, maxLength: 20 }
                 aceiteTermos: { type: boolean, const: true }
       responses:
         '201':
-          description: Conta criada com o e-mail já confirmado pelo provedor e sessão aberta.
+          description: Conta criada com o e-mail já confirmado pelo provedor e sessão aberta. A conta não tem senha; o tutor pode criar uma por "Esqueci minha senha".
           content:
             application/json:
               schema: { $ref: '#/components/schemas/Tokens' }
         '409': { $ref: '#/components/responses/Conflito' }
+        '410':
+          description: "Token de cadastro inválido ou vencido (30 minutos); entre com o provedor de novo."
+          content:
+            application/problem+json:
+              schema: { $ref: '#/components/schemas/Problema' }
         '422': { $ref: '#/components/responses/Validacao' }
   /auth/renovacao:
     post:
