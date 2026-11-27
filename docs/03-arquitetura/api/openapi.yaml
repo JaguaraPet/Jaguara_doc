@@ -1,7 +1,7 @@
 openapi: 3.1.0
 info:
   title: Jaguara API
-  version: 1.49.0
+  version: 1.50.0
   summary: API REST da plataforma Jaguara (tutores e empresas Enterprise).
   description: |
     Contrato da API do Jaguara (tarefa JAG-68). Os recursos seguem o modelo de classes
@@ -2170,6 +2170,24 @@ paths:
         '403': { $ref: '#/components/responses/SemPermissao' }
         '404': { $ref: '#/components/responses/NaoEncontrado' }
         '422': { $ref: '#/components/responses/Validacao' }
+  /empresas/{empresaId}/hoje:
+    parameters:
+      - $ref: '#/components/parameters/EmpresaId'
+    get:
+      tags: [Empresa]
+      summary: Resumo do dia da empresa (tela Hoje)
+      description: >-
+        Agenda de hoje em Brasília com tutor, alergias e situação do atendimento e do pagamento;
+        pedidos de agendamento pendentes; cobranças em aberto (só para quem vê o financeiro);
+        vacinas de pets de clientes atrasadas ou vencendo nos próximos 30 dias; faturamento e
+        atendimentos dos últimos 7 dias.
+      responses:
+        '200':
+          description: Resumo do dia.
+          content:
+            application/json:
+              schema: { $ref: '#/components/schemas/ResumoDoDia' }
+        '403': { $ref: '#/components/responses/SemPermissao' }
   /empresas/{empresaId}/indicadores:
     parameters:
       - $ref: '#/components/parameters/EmpresaId'
@@ -3330,6 +3348,89 @@ components:
           type: [string, 'null']
           format: uri
           description: Versão web do app do tutor, para o "Ver como tutor".
+    ResumoDoDia:
+      type: object
+      required: [data, agenda, solicitacoes, cobrancas, vacinas, semana]
+      properties:
+        data: { type: string, format: date }
+        agenda:
+          type: array
+          items:
+            type: object
+            required: [id, inicio, fim, status, servicoNome, petId, petNome, especie, tutorNome, profissionalId, profissionalNome, recursoNome, alergias, atendimentoId, atendimentoStatus, pago]
+            properties:
+              id: { type: string, format: uuid }
+              inicio: { type: string, format: date-time }
+              fim: { type: string, format: date-time }
+              status: { type: string, enum: [AGENDADO, CANCELADO, REALIZADO, NAO_COMPARECEU] }
+              servicoNome: { type: string }
+              petId: { type: string, format: uuid }
+              petNome: { type: string }
+              especie: { type: string }
+              tutorNome: { type: [string, 'null'] }
+              profissionalId: { type: [string, 'null'], format: uuid }
+              profissionalNome: { type: [string, 'null'] }
+              recursoNome: { type: [string, 'null'] }
+              alergias: { type: array, items: { type: string } }
+              atendimentoId: { type: [string, 'null'], format: uuid }
+              atendimentoStatus: { type: [string, 'null'], enum: [EM_ANDAMENTO, FINALIZADO, null] }
+              pago: { type: [boolean, 'null'], description: "null quando ainda não há cobrança." }
+        solicitacoes:
+          type: object
+          required: [total, itens]
+          properties:
+            total: { type: integer }
+            itens:
+              type: array
+              items:
+                type: object
+                required: [id, petNome, tutorNome, servicoNome, dataHoraDesejada, observacoes]
+                properties:
+                  id: { type: string, format: uuid }
+                  petNome: { type: string }
+                  tutorNome: { type: string }
+                  servicoNome: { type: string }
+                  dataHoraDesejada: { type: string, format: date-time }
+                  observacoes: { type: [string, 'null'] }
+        cobrancas:
+          oneOf:
+            - type: 'null'
+            - type: object
+              required: [total, valor, itens]
+              properties:
+                total: { type: integer }
+                valor: { type: string, description: "Soma em reais, com duas casas." }
+                itens:
+                  type: array
+                  items:
+                    type: object
+                    required: [id, tutorNome, petNome, descricao, valor, dataHora]
+                    properties:
+                      id: { type: string, format: uuid }
+                      tutorNome: { type: string }
+                      petNome: { type: [string, 'null'] }
+                      descricao: { type: string }
+                      valor: { type: string }
+                      dataHora: { type: string, format: date-time }
+        vacinas:
+          type: array
+          items:
+            type: object
+            required: [petId, petNome, tutorNome, tutorTelefone, vacina, proximaDose, atrasada]
+            properties:
+              petId: { type: string, format: uuid }
+              petNome: { type: string }
+              tutorNome: { type: [string, 'null'] }
+              tutorTelefone: { type: [string, 'null'] }
+              vacina: { type: string }
+              proximaDose: { type: string, format: date }
+              atrasada: { type: boolean }
+        semana:
+          type: object
+          required: [faturamento, atendimentos]
+          properties:
+            faturamento: { type: [string, 'null'], description: "Recebido nos últimos 7 dias; null sem permissão do financeiro." }
+            atendimentos: { type: integer }
     Tokens:
       type: object
       required: [accessToken, refreshToken, expiraEm]
