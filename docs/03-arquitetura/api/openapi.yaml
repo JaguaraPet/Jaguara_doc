@@ -1,7 +1,7 @@
 openapi: 3.1.0
 info:
   title: Jaguara API
-  version: 1.48.0
+  version: 1.49.0
   summary: API REST da plataforma Jaguara (tutores e empresas Enterprise).
   description: |
     Contrato da API do Jaguara (tarefa JAG-68). Os recursos seguem o modelo de classes
@@ -41,6 +41,7 @@ tags:
   - name: Privacidade
   - name: Administração
   - name: Webhooks
+  - name: Demonstração
 
 paths:
   /auth/cadastro/tutor:
@@ -3176,6 +3177,46 @@ paths:
                 properties:
                   status: { type: string, enum: [ok] }
 
+  /demonstracao:
+    post:
+      tags: [Demonstração]
+      summary: Criar uma clínica de demonstração e entrar nela
+      description: >-
+        Cria, para quem visita, uma clínica temporária com dados fictícios (agenda, clientes,
+        atendimentos, vacinas e cobranças) e devolve a sessão da conta da clínica. A clínica não
+        aparece na busca dos tutores, não envia e-mails e expira sozinha. Só existe nos ambientes
+        com a demonstração habilitada; nos outros responde 404.
+      security: []
+      responses:
+        '201':
+          description: Demonstração criada.
+          content:
+            application/json:
+              schema: { $ref: '#/components/schemas/DemonstracaoCriada' }
+        '404': { $ref: '#/components/responses/NaoEncontrado' }
+        '429': { description: "Muitas demonstrações criadas pelo mesmo endereço." }
+  /demonstracao/tutor:
+    post:
+      tags: [Demonstração]
+      summary: Entrar como a tutora da demonstração
+      security: []
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              required: [codigo]
+              properties:
+                codigo: { type: string, maxLength: 128 }
+      responses:
+        '201':
+          description: Sessão da tutora da demonstração.
+          content:
+            application/json:
+              schema: { $ref: '#/components/schemas/Tokens' }
+        '404': { $ref: '#/components/responses/NaoEncontrado' }
+        '410': { $ref: '#/components/responses/Expirado' }
 components:
   securitySchemes:
     bearerAuth:
@@ -3272,6 +3313,23 @@ components:
             properties:
               campo: { type: string }
               mensagem: { type: string }
+    DemonstracaoCriada:
+      type: object
+      required: [sessao, codigoTutor, expiraEm, formularioOpiniao, urlTutor]
+      properties:
+        sessao: { $ref: '#/components/schemas/Tokens' }
+        codigoTutor:
+          type: string
+          description: Código de uso único para entrar como a tutora da demonstração no app.
+        expiraEm: { type: string, format: date-time }
+        formularioOpiniao:
+          type: [string, 'null']
+          format: uri
+          description: Formulário de opinião mostrado durante a demonstração.
+        urlTutor:
+          type: [string, 'null']
+          format: uri
+          description: Versão web do app do tutor, para o "Ver como tutor".
     Tokens:
       type: object
       required: [accessToken, refreshToken, expiraEm]
