@@ -1,7 +1,7 @@
 openapi: 3.1.0
 info:
   title: Jaguara API
-  version: 1.55.0
+  version: 1.56.0
   summary: API REST da plataforma Jaguara (tutores e empresas Enterprise).
   description: |
     Contrato da API do Jaguara (tarefa JAG-68). Os recursos seguem o modelo de classes
@@ -314,6 +314,43 @@ paths:
             application/json:
               schema: { $ref: '#/components/schemas/Pet' }
         '422': { $ref: '#/components/responses/Validacao' }
+  /pets/{petId}/foto:
+    parameters:
+      - $ref: '#/components/parameters/PetId'
+    post:
+      tags: [Pets]
+      summary: Enviar a foto do pet
+      description: >-
+        Um responsável informa o arquivo (JPG, PNG, WEBP ou HEIC, até 8 MB) e recebe a URL para
+        enviar a foto com PUT direto ao armazenamento. A foto nova substitui a anterior.
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              required: [nomeArquivo, tamanhoBytes]
+              properties:
+                nomeArquivo: { type: string, maxLength: 255 }
+                tamanhoBytes: { type: integer, minimum: 1 }
+      responses:
+        '201':
+          description: URL de envio, válida por 5 minutos.
+          content:
+            application/json:
+              schema:
+                type: object
+                required: [urlEnvio]
+                properties:
+                  urlEnvio: { type: string, format: uri }
+        '403': { $ref: '#/components/responses/SemPermissao' }
+        '422': { $ref: '#/components/responses/Validacao' }
+    delete:
+      tags: [Pets]
+      summary: Remover a foto do pet
+      responses:
+        '204': { description: Foto removida. }
+        '403': { $ref: '#/components/responses/SemPermissao' }
   /pets/{petId}:
     parameters:
       - $ref: '#/components/parameters/PetId'
@@ -377,92 +414,6 @@ paths:
       responses:
         '204': { description: Falecimento registrado e auditado. }
         '403': { $ref: '#/components/responses/SemPermissao' }
-        '404': { $ref: '#/components/responses/NaoEncontrado' }
-  /pets/{petId}/memorial:
-    parameters:
-      - $ref: '#/components/parameters/PetId'
-    get:
-      tags: [Pets]
-      summary: Ver o memorial do pet (UC-15)
-      responses:
-        '200':
-          description: Mensagem e lembranças; as fotos vêm com URL assinada de leitura (5 minutos).
-          content:
-            application/json:
-              schema: { $ref: '#/components/schemas/Memorial' }
-        '404': { $ref: '#/components/responses/NaoEncontrado' }
-    put:
-      tags: [Pets]
-      summary: Criar ou alterar a mensagem do memorial (UC-15, RN19)
-      requestBody:
-        required: true
-        content:
-          application/json:
-            schema:
-              type: object
-              required: [mensagem, publico]
-              properties:
-                mensagem: { type: string, maxLength: 2000 }
-                publico: { type: boolean }
-      responses:
-        '200':
-          description: Memorial salvo.
-          content:
-            application/json:
-              schema: { $ref: '#/components/schemas/Memorial' }
-        '409':
-          description: "Pet sem o falecimento registrado (RN19_MEMORIAL_BLOQUEADO, CT-15-02)."
-          content:
-            application/problem+json:
-              schema: { $ref: '#/components/schemas/Problema' }
-  /pets/{petId}/memorial/itens:
-    parameters:
-      - $ref: '#/components/parameters/PetId'
-    post:
-      tags: [Pets]
-      summary: Adicionar lembrança ao memorial (UC-15)
-      description: Texto ou homenagem vão no corpo; foto (JPG, PNG, WEBP ou HEIC até 8 MB) devolve a URL assinada de envio (PUT, 5 minutos).
-      requestBody:
-        required: true
-        content:
-          application/json:
-            schema:
-              type: object
-              required: [tipo]
-              properties:
-                tipo: { type: string, enum: [FOTO, TEXTO, HOMENAGEM] }
-                conteudo: { type: string, maxLength: 2000 }
-                nomeArquivo: { type: string, maxLength: 255 }
-                tamanhoBytes: { type: integer }
-      responses:
-        '201':
-          description: Lembrança criada.
-          content:
-            application/json:
-              schema:
-                type: object
-                required: [itemId]
-                properties:
-                  itemId: { type: string, format: uuid }
-                  urlEnvio: { type: string, format: uri }
-                  expiraEm: { type: string, format: date-time }
-        '409':
-          description: "Pet sem o falecimento registrado (RN19_MEMORIAL_BLOQUEADO)."
-          content:
-            application/problem+json:
-              schema: { $ref: '#/components/schemas/Problema' }
-        '422': { $ref: '#/components/responses/Validacao' }
-  /memorial/itens/{itemId}:
-    parameters:
-      - in: path
-        name: itemId
-        required: true
-        schema: { type: string, format: uuid }
-    delete:
-      tags: [Pets]
-      summary: Remover lembrança do memorial (UC-15)
-      responses:
-        '204': { description: Lembrança removida. }
         '404': { $ref: '#/components/responses/NaoEncontrado' }
   /pets/{petId}/responsaveis:
     parameters:
@@ -4076,6 +4027,10 @@ components:
       properties:
         nome: { type: string }
         racaId: { type: string, format: uuid }
+        racaDescricao:
+          type: string
+          maxLength: 80
+          description: Raça escrita pelo tutor. Obrigatória quando a raça escolhida é "Outra (digitar)".
         dataNascimento: { type: string, format: date }
         sexo: { type: string, enum: [MACHO, FEMEA] }
         pesoKg: { type: number, exclusiveMinimum: 0 }
@@ -4197,25 +4152,6 @@ components:
         dataEmissao: { type: string, format: date }
         dataValidade: { type: string, format: date }
         dataUpload: { type: string, format: date-time }
-    Memorial:
-      type: object
-      required: [petId, nome, publico, itens]
-      properties:
-        petId: { type: string, format: uuid }
-        nome: { type: string }
-        mensagem: { type: string }
-        publico: { type: boolean }
-        itens:
-          type: array
-          items:
-            type: object
-            required: [id, tipo, dataRegistro]
-            properties:
-              id: { type: string, format: uuid }
-              tipo: { type: string, enum: [FOTO, TEXTO, HOMENAGEM] }
-              conteudo: { type: string }
-              urlFoto: { type: string, format: uri }
-              dataRegistro: { type: string, format: date-time }
     PetVinculado:
       type: object
       required: [id, nome, especie, raca, sexo, status, motivos, secoes]
@@ -4224,6 +4160,7 @@ components:
         nome: { type: string }
         especie: { type: string }
         raca: { type: string }
+        fotoUrl: { type: string, format: uri }
         sexo: { type: string }
         idade: { type: integer }
         status: { type: string }
@@ -4278,10 +4215,10 @@ components:
           properties:
             id: { type: string, format: uuid }
             especie: { type: string }
-            raca: { type: string }
+            raca: { type: string, description: "Nome da raça, ou a raça escrita pelo tutor." }
             idade: { type: integer }
             status: { $ref: '#/components/schemas/StatusPet' }
-            fotoUrl: { type: string, format: uri }
+            fotoUrl: { type: string, format: uri, description: "Leitura assinada da foto, válida por 6 horas." }
     PaginaPets:
       type: object
       properties:
