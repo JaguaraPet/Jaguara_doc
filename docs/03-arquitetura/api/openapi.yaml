@@ -1,7 +1,7 @@
 openapi: 3.1.0
 info:
   title: Jaguara API
-  version: 1.50.0
+  version: 1.51.0
   summary: API REST da plataforma Jaguara (tutores e empresas Enterprise).
   description: |
     Contrato da API do Jaguara (tarefa JAG-68). Os recursos seguem o modelo de classes
@@ -1786,6 +1786,23 @@ paths:
                 motivo: { type: string }
       responses:
         '204': { description: "Agendamento CANCELADO." }
+  /agendamentos/{agendamentoId}/confirmacao:
+    parameters:
+      - $ref: '#/components/parameters/AgendamentoId'
+    post:
+      tags: [Solicitações e agendamentos]
+      summary: Confirmar presença no agendamento
+      description: >-
+        Um responsável pelo pet confirma, a partir do lembrete (um dia e duas horas antes), que
+        vai ao agendamento. A clínica vê a confirmação na tela Hoje. Remarcar apaga a confirmação.
+      responses:
+        '201':
+          description: Presença confirmada.
+          content:
+            application/json:
+              schema: { $ref: '#/components/schemas/Agendamento' }
+        '403': { $ref: '#/components/responses/SemPermissao' }
+        '409': { description: "O agendamento não está mais ativo." }
   /agendamentos/{agendamentoId}/atendimento:
     parameters:
       - $ref: '#/components/parameters/AgendamentoId'
@@ -3357,7 +3374,7 @@ components:
           type: array
           items:
             type: object
-            required: [id, inicio, fim, status, servicoNome, petId, petNome, especie, tutorNome, profissionalId, profissionalNome, recursoNome, alergias, atendimentoId, atendimentoStatus, pago]
+            required: [id, inicio, fim, status, servicoNome, petId, petNome, especie, tutorNome, profissionalId, profissionalNome, recursoNome, alergias, atendimentoId, atendimentoStatus, confirmado, pago]
             properties:
               id: { type: string, format: uuid }
               inicio: { type: string, format: date-time }
@@ -3374,6 +3391,7 @@ components:
               alergias: { type: array, items: { type: string } }
               atendimentoId: { type: [string, 'null'], format: uuid }
               atendimentoStatus: { type: [string, 'null'], enum: [EM_ANDAMENTO, FINALIZADO, null] }
+              confirmado: { type: boolean, description: "O tutor confirmou a presença pelo lembrete." }
               pago: { type: [boolean, 'null'], description: "null quando ainda não há cobrança." }
         solicitacoes:
           type: object
@@ -3883,6 +3901,9 @@ components:
           properties:
             id: { type: string, format: uuid }
             origem: { type: string, enum: [MANUAL, AGENDAMENTO, CALENDARIO_EXTERNO] }
+            confirmado:
+              type: boolean
+              description: Só em agendamentos com empresa; o responsável já confirmou a presença.
     DespesaEntrada:
       type: object
       required: [descricao, valor, data, categoriaId]
@@ -4099,6 +4120,10 @@ components:
             status:
               type: string
               enum: [AGENDADO, CANCELADO, REALIZADO, NAO_COMPARECEU]
+            confirmadoEm:
+              type: string
+              format: date-time
+              description: Quando um responsável confirmou a presença pelo lembrete.
     AtendimentoEntrada:
       type: object
       required: [procedimentosRealizados, itens]
