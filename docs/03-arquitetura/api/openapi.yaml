@@ -1,7 +1,7 @@
 openapi: 3.1.0
 info:
   title: Jaguara API
-  version: 1.52.0
+  version: 1.53.0
   summary: API REST da plataforma Jaguara (tutores e empresas Enterprise).
   description: |
     Contrato da API do Jaguara (tarefa JAG-68). Os recursos seguem o modelo de classes
@@ -1383,6 +1383,57 @@ paths:
           content:
             application/json:
               schema: { $ref: '#/components/schemas/EmpresaPublica' }
+        '404': { $ref: '#/components/responses/NaoEncontrado' }
+  /empresas/{empresaId}/perfil-publico:
+    parameters:
+      - $ref: '#/components/parameters/EmpresaId'
+    get:
+      tags: [Empresa]
+      summary: Ler o perfil público para editar
+      responses:
+        '200':
+          description: Perfil público da empresa, com o endereço da página /e/{slug}.
+          content:
+            application/json:
+              schema: { $ref: '#/components/schemas/PerfilPublico' }
+        '403': { $ref: '#/components/responses/SemPermissao' }
+    patch:
+      tags: [Empresa]
+      summary: Editar o perfil público
+      description: >-
+        O que o tutor vê no app e na página pública: descrição, contatos, horário de
+        funcionamento, formas de pagamento, política de cancelamento e o endereço curto da página.
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema: { $ref: '#/components/schemas/PerfilPublicoEntrada' }
+      responses:
+        '200':
+          description: Perfil atualizado.
+          content:
+            application/json:
+              schema: { $ref: '#/components/schemas/PerfilPublico' }
+        '403': { $ref: '#/components/responses/SemPermissao' }
+        '409': { $ref: '#/components/responses/Conflito' }
+        '400': { $ref: '#/components/responses/Validacao' }
+  /publico/empresas/{slug}:
+    parameters:
+      - in: path
+        name: slug
+        required: true
+        schema: { type: string }
+    get:
+      tags: [Empresa]
+      summary: Página pública da empresa
+      description: Sem login. Dados públicos e serviços ativos com preço, para a página /e/{slug}.
+      security: []
+      responses:
+        '200':
+          description: Vitrine da empresa.
+          content:
+            application/json:
+              schema: { $ref: '#/components/schemas/VitrineEmpresa' }
         '404': { $ref: '#/components/responses/NaoEncontrado' }
   /empresas/{empresaId}/servicos:
     parameters:
@@ -3483,6 +3534,60 @@ components:
         podeRegistrarSaude:
           type: boolean
           description: O tutor liberou à empresa a edição clínica (vacinas, exames e receitas) deste pet.
+    FormaPagamento:
+      type: string
+      enum: [PIX, CARTAO_CREDITO, CARTAO_DEBITO, DINHEIRO, BOLETO]
+    PerfilPublicoEntrada:
+      type: object
+      properties:
+        slug:
+          type: string
+          pattern: '^[a-z0-9](?:[a-z0-9-]{1,78}[a-z0-9])$'
+          description: Endereço curto da página pública (/e/{slug}).
+        descricao: { type: [string, 'null'], maxLength: 1500 }
+        telefonePublico: { type: [string, 'null'], maxLength: 20 }
+        whatsapp: { type: [string, 'null'], maxLength: 20 }
+        instagram: { type: [string, 'null'], maxLength: 60 }
+        horarioFuncionamento: { type: [string, 'null'], maxLength: 255 }
+        formasPagamento: { type: array, items: { $ref: '#/components/schemas/FormaPagamento' } }
+        politicaCancelamento: { type: [string, 'null'], maxLength: 1500 }
+    PerfilPublico:
+      type: object
+      required: [id, nomeFantasia, tipo, slug, descricao, telefonePublico, whatsapp, instagram, horarioFuncionamento, formasPagamento, politicaCancelamento, enderecoLogradouro, enderecoNumero, enderecoBairro, enderecoCidade, enderecoUf]
+      properties:
+        id: { type: string, format: uuid }
+        nomeFantasia: { type: string }
+        tipo: { type: string, enum: [CLINICA_VETERINARIA, PET_SHOP, HOTEL_PET, CRECHE, CASA_DE_CUIDADO] }
+        slug: { type: [string, 'null'] }
+        descricao: { type: [string, 'null'] }
+        telefonePublico: { type: [string, 'null'] }
+        whatsapp: { type: [string, 'null'] }
+        instagram: { type: [string, 'null'] }
+        horarioFuncionamento: { type: [string, 'null'] }
+        formasPagamento: { type: array, items: { type: string } }
+        politicaCancelamento: { type: [string, 'null'] }
+        enderecoLogradouro: { type: string }
+        enderecoNumero: { type: string }
+        enderecoBairro: { type: string }
+        enderecoCidade: { type: string }
+        enderecoUf: { type: string }
+    VitrineEmpresa:
+      allOf:
+        - $ref: '#/components/schemas/PerfilPublico'
+        - type: object
+          required: [servicos]
+          properties:
+            servicos:
+              type: array
+              items:
+                type: object
+                required: [id, nome, categoria, preco, duracaoMinutos]
+                properties:
+                  id: { type: string, format: uuid }
+                  nome: { type: string }
+                  categoria: { type: string }
+                  preco: { type: string, description: "Em reais, com duas casas." }
+                  duracaoMinutos: { type: integer }
     Tokens:
       type: object
       required: [accessToken, refreshToken, expiraEm]
@@ -3992,6 +4097,14 @@ components:
           type: array
           description: Categorias dos serviços ativos.
           items: { type: string }
+        slug: { type: string }
+        descricao: { type: string }
+        telefone: { type: string }
+        whatsapp: { type: string }
+        instagram: { type: string }
+        horarioFuncionamento: { type: string }
+        formasPagamento: { type: array, items: { type: string } }
+        politicaCancelamento: { type: string }
     PaginaEmpresas:
       type: object
       properties:
