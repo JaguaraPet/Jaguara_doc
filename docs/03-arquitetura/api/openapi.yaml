@@ -1,7 +1,7 @@
 openapi: 3.1.0
 info:
   title: Jaguara API
-  version: 1.59.0
+  version: 1.60.0
   summary: API REST da plataforma Jaguara (tutores e empresas Enterprise).
   description: |
     Contrato da API do Jaguara (tarefa JAG-68). Os recursos seguem o modelo de classes
@@ -2588,6 +2588,56 @@ paths:
               schema: { $ref: '#/components/schemas/Avaliacao' }
         '403': { $ref: '#/components/responses/SemPermissao' }
         '404': { $ref: '#/components/responses/NaoEncontrado' }
+  /empresas/{empresaId}/plano:
+    parameters:
+      - $ref: '#/components/parameters/EmpresaId'
+    get:
+      tags: [Empresa]
+      summary: Plano da empresa, limites e uso
+      description: >-
+        A primeira leitura abre o teste grátis de 14 dias com os limites do plano Equipe. O plano
+        limita os usuários (a conta da empresa e os funcionários ativos); fora do teste e sem
+        assinatura em dia, a empresa continua usando o sistema, mas não convida mais ninguém.
+      responses:
+        '200':
+          description: Situação do plano.
+          content:
+            application/json:
+              schema: { $ref: '#/components/schemas/PlanoDaEmpresa' }
+        '403': { $ref: '#/components/responses/SemPermissao' }
+  /empresas/{empresaId}/plano/assinatura:
+    parameters:
+      - $ref: '#/components/parameters/EmpresaId'
+    post:
+      tags: [Empresa]
+      summary: Assinar ou mudar de plano
+      description: >-
+        Abre a cobrança mensal recorrente no Mercado Pago e devolve a página em que a empresa
+        autoriza o pagamento. Sem credenciais do gateway (desenvolvimento e demonstração), a
+        assinatura fica ativa na hora. O aviso do gateway chega pelo webhook de pagamentos
+        (tipo subscription_preapproval).
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              required: [plano]
+              properties:
+                plano: { $ref: '#/components/schemas/PlanoEmpresa' }
+      responses:
+        '201':
+          description: Assinatura criada.
+          content:
+            application/json:
+              schema:
+                type: object
+                required: [ativa]
+                properties:
+                  ativa: { type: boolean }
+                  urlPagamento: { type: string, format: uri }
+        '409': { description: "A equipe atual passa do limite do plano escolhido." }
+        '422': { $ref: '#/components/responses/Validacao' }
   /empresas/{empresaId}/hoje:
     parameters:
       - $ref: '#/components/parameters/EmpresaId'
@@ -3994,6 +4044,40 @@ components:
         petRaca: { type: string, maxLength: 80 }
         petSexo: { type: string, maxLength: 10, description: "M, F, Macho ou Fêmea." }
         petNascimento: { type: string, maxLength: 10, description: "DD/MM/AAAA ou AAAA-MM-DD." }
+    PlanoEmpresa:
+      type: string
+      enum: [ESSENCIAL, EQUIPE, CLINICA]
+    PlanoDaEmpresa:
+      type: object
+      required: [plano, status, emDia, testeAte, diasDeTeste, limites, uso, planos]
+      properties:
+        plano: { $ref: '#/components/schemas/PlanoEmpresa' }
+        status: { type: string, enum: [TESTE, PENDENTE, ATIVA, ATRASADA, CANCELADA] }
+        emDia: { type: boolean, description: "Teste no prazo, plano ativo ou atraso dentro da tolerância de 7 dias." }
+        testeAte: { type: string, format: date-time }
+        diasDeTeste: { type: integer }
+        periodoAte: { type: string, format: date-time }
+        limites:
+          type: object
+          required: [usuarios]
+          properties:
+            usuarios: { type: integer }
+        uso:
+          type: object
+          required: [usuarios]
+          properties:
+            usuarios: { type: integer }
+        planos:
+          type: array
+          items:
+            type: object
+            required: [plano, nome, precoMensal, usuarios, descricao]
+            properties:
+              plano: { $ref: '#/components/schemas/PlanoEmpresa' }
+              nome: { type: string }
+              precoMensal: { type: number }
+              usuarios: { type: integer }
+              descricao: { type: string }
     TipoRotina:
       type: string
       enum: [PASSEIO, BANHO, ANTIPULGAS, VERMIFUGO, ESCOVACAO, AREIA, ALIMENTACAO, OUTRO]
