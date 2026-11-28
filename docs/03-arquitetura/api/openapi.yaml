@@ -1,7 +1,7 @@
 openapi: 3.1.0
 info:
   title: Jaguara API
-  version: 1.60.0
+  version: 1.61.0
   summary: API REST da plataforma Jaguara (tutores e empresas Enterprise).
   description: |
     Contrato da API do Jaguara (tarefa JAG-68). Os recursos seguem o modelo de classes
@@ -1562,6 +1562,55 @@ paths:
         '403': { $ref: '#/components/responses/SemPermissao' }
         '409': { $ref: '#/components/responses/Conflito' }
         '422': { $ref: '#/components/responses/Validacao' }
+  /publico/cnpj/{cnpj}:
+    parameters:
+      - { in: path, name: cnpj, required: true, schema: { type: string } }
+    get:
+      tags: [Empresa]
+      summary: Consultar o CNPJ no cadastro da empresa
+      description: >-
+        Sem login. Busca razão social, endereço, situação e atividade na base pública da Receita.
+        Só CNPJ ativo e do ramo pet pode se cadastrar. CNPJ já cadastrado volta com jaCadastrado
+        e leva à contestação.
+      security: []
+      responses:
+        '200':
+          description: Dados do CNPJ.
+          content:
+            application/json:
+              schema: { $ref: '#/components/schemas/ConsultaCnpj' }
+        '422': { $ref: '#/components/responses/Validacao' }
+  /publico/cnpj/{cnpj}/contestacao:
+    parameters:
+      - { in: path, name: cnpj, required: true, schema: { type: string } }
+    post:
+      tags: [Empresa]
+      summary: '"Este CNPJ já está cadastrado. É seu?"'
+      description: Sem login. O pedido vai para o painel do administrador.
+      security: []
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              required: [nome, email, mensagem]
+              properties:
+                nome: { type: string, maxLength: 255 }
+                email: { type: string, format: email }
+                telefone: { type: string, maxLength: 20 }
+                mensagem: { type: string, maxLength: 2000 }
+      responses:
+        '201':
+          description: Pedido recebido.
+          content:
+            application/json:
+              schema:
+                type: object
+                required: [protocolo]
+                properties:
+                  protocolo: { type: string, format: uuid }
+        '409': { description: "O CNPJ não tem cadastro ou já tem pedidos em análise." }
   /publico/empresas/{slug}:
     parameters:
       - in: path
@@ -3183,6 +3232,47 @@ paths:
             application/problem+json:
               schema: { $ref: '#/components/schemas/Problema' }
         '422': { $ref: '#/components/responses/Validacao' }
+  /admin/verificacoes:
+    get:
+      tags: [Administração]
+      summary: Empresas em verificação e contestações de CNPJ
+      responses:
+        '200':
+          description: Pendências do cadastro seguro.
+          content:
+            application/json:
+              schema: { $ref: '#/components/schemas/PendenciasVerificacao' }
+        '403': { $ref: '#/components/responses/SemPermissao' }
+  /admin/verificacoes/empresas/{empresaId}:
+    parameters:
+      - $ref: '#/components/parameters/EmpresaId'
+    post:
+      tags: [Administração]
+      summary: Aprovar ou recusar a verificação da empresa
+      description: A empresa recebe o resultado por e-mail. Recusar exige o motivo.
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              required: [aprovada]
+              properties:
+                aprovada: { type: boolean }
+                motivo: { type: string, maxLength: 500 }
+      responses:
+        '204': { description: Decisão registrada. }
+        '404': { $ref: '#/components/responses/NaoEncontrado' }
+        '422': { $ref: '#/components/responses/Validacao' }
+  /admin/verificacoes/contestacoes/{id}/resolucao:
+    parameters:
+      - { in: path, name: id, required: true, schema: { type: string, format: uuid } }
+    post:
+      tags: [Administração]
+      summary: Marcar a contestação como resolvida
+      responses:
+        '204': { description: Resolvida. }
+        '404': { $ref: '#/components/responses/NaoEncontrado' }
   /admin/chamados:
     get:
       tags: [Administração]
@@ -3941,6 +4031,11 @@ components:
       type: object
       required: [id, nomeFantasia, tipo, slug, descricao, telefonePublico, whatsapp, instagram, horarioFuncionamento, formasPagamento, politicaCancelamento, enderecoLogradouro, enderecoNumero, enderecoBairro, enderecoCidade, enderecoUf]
       properties:
+        verificacao:
+          type: string
+          enum: [EM_VERIFICACAO, VERIFICADA, RECUSADA]
+          description: Só empresa verificada aparece na busca e na página pública.
+        verificacaoMotivo: { type: string, nullable: true }
         id: { type: string, format: uuid }
         nomeFantasia: { type: string }
         tipo: { type: string, enum: [CLINICA_VETERINARIA, PET_SHOP, HOTEL_PET, CRECHE, CASA_DE_CUIDADO] }
@@ -4078,6 +4173,56 @@ components:
               precoMensal: { type: number }
               usuarios: { type: integer }
               descricao: { type: string }
+    ConsultaCnpj:
+      type: object
+      required: [cnpj, encontrado, jaCadastrado, elegivel]
+      properties:
+        cnpj: { type: string }
+        encontrado: { type: boolean }
+        jaCadastrado: { type: boolean }
+        elegivel: { type: boolean }
+        baseIndisponivel: { type: boolean, description: "A base da Receita não respondeu: o cadastro segue em verificação." }
+        motivo: { type: string }
+        razaoSocial: { type: string }
+        nomeFantasia: { type: string }
+        situacao: { type: string }
+        atividade: { type: string }
+        endereco: { $ref: '#/components/schemas/Endereco' }
+    PendenciasVerificacao:
+      type: object
+      required: [empresas, contestacoes]
+      properties:
+        empresas:
+          type: array
+          items:
+            type: object
+            required: [id, cnpj, razaoSocial, nomeFantasia, email, cadastradaEm]
+            properties:
+              id: { type: string, format: uuid }
+              cnpj: { type: string }
+              razaoSocial: { type: string }
+              nomeFantasia: { type: string }
+              responsavelNome: { type: string, nullable: true }
+              cnae: { type: string, nullable: true }
+              enderecoCidade: { type: string }
+              enderecoUf: { type: string }
+              verificacaoMotivo: { type: string, nullable: true }
+              email: { type: string }
+              telefone: { type: string }
+              cadastradaEm: { type: string, format: date-time }
+        contestacoes:
+          type: array
+          items:
+            type: object
+            required: [id, cnpj, nome, email, mensagem, criadoEm]
+            properties:
+              id: { type: string, format: uuid }
+              cnpj: { type: string }
+              nome: { type: string }
+              email: { type: string }
+              telefone: { type: string, nullable: true }
+              mensagem: { type: string }
+              criadoEm: { type: string, format: date-time }
     TipoRotina:
       type: string
       enum: [PASSEIO, BANHO, ANTIPULGAS, VERMIFUGO, ESCOVACAO, AREIA, ALIMENTACAO, OUTRO]
@@ -4216,6 +4361,12 @@ components:
           enum: [CLINICA_VETERINARIA, PET_SHOP, HOTEL_PET, CRECHE, CASA_DE_CUIDADO]
         email: { type: string, format: email }
         senha: { type: string, format: password, minLength: 8 }
+        responsavelNome:
+          type: string
+          maxLength: 255
+          description: >-
+            Quem cadastra. Se o nome estiver no quadro de sócios do CNPJ, a empresa fica verificada
+            na hora; senão, fica em verificação até o administrador analisar (e não aparece na busca).
         endereco: { $ref: '#/components/schemas/Endereco' }
         aceiteTermos:
           type: boolean
