@@ -1,7 +1,7 @@
 openapi: 3.1.0
 info:
   title: Jaguara API
-  version: 1.64.0
+  version: 1.65.0
   summary: API REST da plataforma Jaguara (tutores e empresas Enterprise).
   description: |
     Contrato da API do Jaguara (tarefa JAG-68). Os recursos seguem o modelo de classes
@@ -729,6 +729,28 @@ paths:
               schema:
                 type: array
                 items: { $ref: '#/components/schemas/ModeloRotina' }
+  /pets/{petId}/cuidador-hoje:
+    parameters:
+      - $ref: '#/components/parameters/PetId'
+    put:
+      tags: [Rotina]
+      summary: Definir quem cuida do pet hoje
+      description: Sem tutorId, o próprio tutor fica com o dia. Só entre os responsáveis ativos do pet.
+      requestBody:
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                tutorId: { type: string, format: uuid }
+      responses:
+        '200':
+          description: Quem cuida hoje.
+          content:
+            application/json:
+              schema: { $ref: '#/components/schemas/CuidadorHoje' }
+        '403': { $ref: '#/components/responses/SemPermissao' }
+        '422': { $ref: '#/components/responses/Validacao' }
   /pets/{petId}/rotinas:
     parameters:
       - $ref: '#/components/parameters/PetId'
@@ -4427,6 +4449,13 @@ components:
         legenda: { type: string }
         tiradaEm: { type: string, format: date }
         enviadaPor: { type: string, description: "Primeiro nome de quem enviou." }
+    CuidadorHoje:
+      type: object
+      required: [tutorId, nome, souEu]
+      properties:
+        tutorId: { type: string, format: uuid }
+        nome: { type: string, description: "Primeiro nome." }
+        souEu: { type: boolean }
     TipoRotina:
       type: string
       enum: [PASSEIO, BANHO, ANTIPULGAS, VERMIFUGO, ESCOVACAO, AREIA, ALIMENTACAO, OUTRO]
@@ -4499,6 +4528,18 @@ components:
               especie: { type: string }
               fotoUrl: { type: [string, 'null'] }
               itens: { type: array, items: { $ref: '#/components/schemas/ItemDoDia' } }
+              responsaveis:
+                type: array
+                items:
+                  type: object
+                  required: [tutorId, nome]
+                  properties:
+                    tutorId: { type: string, format: uuid }
+                    nome: { type: string }
+              cuidadorHoje:
+                oneOf:
+                  - $ref: '#/components/schemas/CuidadorHoje'
+                  - type: 'null'
         agendamentos:
           type: array
           items:
@@ -4522,6 +4563,22 @@ components:
               vacina: { type: string }
               proximaDose: { type: string, format: date }
               atrasada: { type: boolean }
+        sugestoes:
+          type: array
+          description: >-
+            Lembretes do tipo "faz 2 meses do último banho", a partir dos serviços já feitos (banho e tosa
+            depois de 45 dias, consulta depois de 330), quando não há outro agendado. Não é recomendação veterinária.
+          items:
+            type: object
+            required: [petId, petNome, servicoId, servicoNome, empresaNome, diasDesde, texto]
+            properties:
+              petId: { type: string, format: uuid }
+              petNome: { type: string }
+              servicoId: { type: string, format: uuid }
+              servicoNome: { type: string }
+              empresaNome: { type: string }
+              diasDesde: { type: integer }
+              texto: { type: string }
         celebracoes:
           type: array
           description: Aniversário do pet e aniversário dele no Jaguara, no dia.
