@@ -1,7 +1,7 @@
 openapi: 3.1.0
 info:
   title: Jaguara API
-  version: 1.51.0
+  version: 1.52.0
   summary: API REST da plataforma Jaguara (tutores e empresas Enterprise).
   description: |
     Contrato da API do Jaguara (tarefa JAG-68). Os recursos seguem o modelo de classes
@@ -1749,6 +1749,20 @@ paths:
   /agendamentos/{agendamentoId}:
     parameters:
       - $ref: '#/components/parameters/AgendamentoId'
+    get:
+      tags: [Solicitações e agendamentos]
+      summary: Detalhe do agendamento para o atendimento
+      description: >-
+        Serviço com a categoria (que decide os campos do atendimento estruturado), pet com as
+        alergias, tutor, profissional e se o tutor liberou o registro de saúde para a empresa.
+      responses:
+        '200':
+          description: Detalhe do agendamento.
+          content:
+            application/json:
+              schema: { $ref: '#/components/schemas/AgendamentoDetalhe' }
+        '403': { $ref: '#/components/responses/SemPermissao' }
+        '404': { $ref: '#/components/responses/NaoEncontrado' }
     patch:
       tags: [Solicitações e agendamentos]
       summary: Remarcar agendamento (UC-24)
@@ -3449,6 +3463,26 @@ components:
           properties:
             faturamento: { type: [string, 'null'], description: "Recebido nos últimos 7 dias; null sem permissão do financeiro." }
             atendimentos: { type: integer }
+    AgendamentoDetalhe:
+      type: object
+      required: [id, dataHoraInicio, dataHoraFim, status, servicoId, servicoNome, categoria, petId, petNome, alergias, tutorNome, profissionalNome, empresaNome, podeRegistrarSaude]
+      properties:
+        id: { type: string, format: uuid }
+        dataHoraInicio: { type: string, format: date-time }
+        dataHoraFim: { type: string, format: date-time }
+        status: { type: string, enum: [AGENDADO, CANCELADO, REALIZADO, NAO_COMPARECEU] }
+        servicoId: { type: string, format: uuid }
+        servicoNome: { type: string }
+        categoria: { type: string, enum: [CONSULTA, EXAME, CIRURGIA, VACINACAO, BANHO_TOSA, HOSPEDAGEM, PET_SITTER, CRECHE, OUTRO] }
+        petId: { type: string, format: uuid }
+        petNome: { type: string }
+        alergias: { type: array, items: { type: string } }
+        tutorNome: { type: [string, 'null'] }
+        profissionalNome: { type: [string, 'null'] }
+        empresaNome: { type: string }
+        podeRegistrarSaude:
+          type: boolean
+          description: O tutor liberou à empresa a edição clínica (vacinas, exames e receitas) deste pet.
     Tokens:
       type: object
       required: [accessToken, refreshToken, expiraEm]
@@ -3777,6 +3811,11 @@ components:
           properties:
             id: { type: string, format: uuid }
             valido: { type: boolean }
+            verificadaPor:
+              type: string
+              description: >-
+                Nome da empresa que registrou a vacina no atendimento. A carteira mostra o selo
+                "Aplicada por" com esse nome; sem o campo, o registro foi feito pelo tutor.
     TratamentoEntrada:
       type: object
       required: [medicamento, dosagem, viaAdministracao, intervaloHoras, dataInicio]
